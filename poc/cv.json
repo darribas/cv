@@ -1,0 +1,123 @@
+{
+  "$schema": "./cv.schema.json",
+  "//": "PROOF OF CONCEPT. A representative slice of the CV as structured data. The point is to test whether hand-editing this feels good. Try: open in VS Code, add an entry, hover a field for its description, mistype a key and watch it underline red. Publications live in publications.json (CSL-JSON).",
+
+  "basics": {
+    "name": "Daniel Arribas-Bel",
+    "title": "Curriculum Vitae",
+    "affiliation": [
+      "Department of Geography and Planning",
+      "University of Liverpool",
+      "Roxby Building",
+      "74 Bedford St S",
+      "Liverpool",
+      "L69 7ZT",
+      "United Kingdom"
+    ],
+    "email": "D.Arribas-Bel@liverpool.ac.uk",
+    "url": "https://darribas.org"
+  },
+
+  "sections": [
+    {
+      "title": "Education",
+      "type": "education",
+      "entries": [
+        {
+          "date": "2010",
+          "degree": "PhD Economics",
+          "institution": "Universidad de Zaragoza",
+          "location": "Spain",
+          "thesis": "Essays on the Distribution and Spatial Structure of Cities.",
+          "supervisor": "Fernando Sanz-Gracia.",
+          "committee": "Prof. Michael J. Batty (chair), Prof. Sergio J. Rey, Prof. Enrique Lopez Bazo, Dr. Rafael Boix Domenech."
+        },
+        {
+          "date": "2008",
+          "degree": "MSc. Economics",
+          "institution": "Universidad de Zaragoza",
+          "location": "Spain",
+          "thesis": "Kangaroos, Cities and Space: a First Approach to the Australian Urban System."
+        },
+        {
+          "date": "2006",
+          "degree": "BS. Economics",
+          "institution": "Universidad de Zaragoza",
+          "location": "Spain"
+        }
+      ]
+    },
+
+    {
+      "title": "Current Academic Appointments",
+      "type": "appointments",
+      "entries": [
+        {
+          "date": "2022-",
+          "role": "Professor in Geographic Data Science",
+          "organisation": "Department of Geography and Planning, University of Liverpool."
+        },
+        {
+          "date": "2025-",
+          "role": "Co-Director",
+          "organisation": "Imago Smart Data Research UK Data Service for Imagery."
+        }
+      ]
+    },
+
+    {
+      "title": "Research Income",
+      "type": "research-income",
+      "//note": "Only a handful of Awards are included in the POC. Every entry carries its true year; the renderer prints the year once per group and blanks the repeats (the blank [] labels in the .tex). Amounts are numbers + a currency code; the renderer chooses the symbol (see the £/€/$ mix below).",
+      "entries": [
+        {
+          "date": "2024",
+          "funder": "Economic and Social Research Council, UK Research and Innovation",
+          "title": "The SDR UK Imagery Data Service for Sustainability, Prosperity and Wellbeing (Imago).",
+          "scheme": "Smart Data Research UK Data Services.",
+          "role": "PI",
+          "period": "2024/29",
+          "amount": { "value": 6788641, "currency": "GBP" }
+        },
+        {
+          "date": "2024",
+          "funder": "The Royal Society",
+          "title": "Learning from UK-France cross border railway transportation: border effect modelling and operational modes for the China-Laos Railway.",
+          "scheme": "International Exchanges.",
+          "role": "CoI",
+          "amount": { "value": 12000, "currency": "GBP" }
+        },
+        {
+          "date": "2024",
+          "funder": "European Space Agency",
+          "title": "EuroFab: European Urban Fabric Classification Using Artificial Intelligence.",
+          "scheme": "Tender.",
+          "role": "CoI",
+          "amount": { "value": 250000, "currency": "EUR" }
+        },
+        {
+          "date": "2023",
+          "funder": "Geospatial Commission",
+          "title": "National Land Data Programme Turing Demonstrator Extension.",
+          "scheme": "Grant funding agreement with the Geospatial Commission (Department for Science, Innovation and Technology).",
+          "role": "PI",
+          "amount": { "value": 99955, "currency": "GBP" }
+        },
+        {
+          "date": "2014",
+          "funder": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University",
+          "title": "Space in Hierarchical Linear Models using Python.",
+          "role": "PI",
+          "amount": { "value": 18000, "currency": "USD" }
+        }
+      ]
+    },
+
+    {
+      "title": "Publications",
+      "type": "publications",
+      "source": "publications.json",
+      "//note": "Publications are CSL-JSON — the standard Zotero exports and pandoc/Typst read. The renderer sorts them by year for free."
+    }
+  ]
+}

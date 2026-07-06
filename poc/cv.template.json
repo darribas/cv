@@ -1,0 +1,67 @@
+{
+  "//": "COPY-PASTE LIBRARY. This file is never rendered. To add an entry: find the matching section type below, copy one block from its 'entries' array into the real cv.json, change the values, and delete the '//' hint keys. The schema will autocomplete and validate as you type.",
+
+  "sections": [
+    {
+      "title": "<Section heading, e.g. 'Education'>",
+      "type": "education",
+      "entries": [
+        {
+          "date": "2010",
+          "degree": "PhD Economics",
+          "institution": "Universidad de Zaragoza",
+          "//location": "optional — shown in parentheses; delete if none",
+          "location": "Spain",
+          "//thesis": "optional — shown italic",
+          "thesis": "Thesis title here.",
+          "//supervisor": "optional",
+          "supervisor": "Name Surname.",
+          "//committee": "optional",
+          "committee": "Prof. A (chair), Prof. B, Dr. C."
+        }
+      ]
+    },
+
+    {
+      "title": "<e.g. 'Current Academic Appointments'>",
+      "type": "appointments",
+      "entries": [
+        {
+          "//date": "year or range; open ranges end with '-' (e.g. '2022-')",
+          "date": "2022-",
+          "role": "Professor in Geographic Data Science",
+          "//organisation": "optional",
+          "organisation": "Department of Geography and Planning, University of Liverpool."
+        }
+      ]
+    },
+
+    {
+      "title": "Research Income",
+      "type": "research-income",
+      "entries": [
+        {
+          "//date": "always the real year; the renderer prints it once per group and blanks repeats",
+          "date": "2024",
+          "funder": "Awarding body (shown italic).",
+          "title": "Project or grant title.",
+          "//scheme": "optional — funding scheme/programme",
+          "scheme": "Scheme name.",
+          "//role": "PI | CoI | Scholar | ...",
+          "role": "PI",
+          "//period": "optional — e.g. '2024/29'",
+          "period": "2024/29",
+          "//amount": "value is a plain number; currency is GBP | EUR | USD — the renderer prints £/€/$",
+          "amount": { "value": 100000, "currency": "GBP" }
+        }
+      ]
+    },
+
+    {
+      "//": "Publications are not inlined here. Point 'source' at a CSL-JSON file. Add publications there in CSL-JSON (what Zotero exports); no bespoke format to learn.",
+      "title": "Publications",
+      "type": "publications",
+      "source": "publications.json"
+    }
+  ]
+}
