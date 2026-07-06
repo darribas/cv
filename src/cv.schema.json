@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://darribas.org/cv/cv.schema.json",
+  "title": "CV",
+  "description": "Structured source of truth for the CV body. Publications live separately as CSL-JSON (publications.json). The renderer (cv.typ) reads only keys it knows, so any key beginning with '//' is a comment it ignores.",
+  "type": "object",
+  "required": ["basics", "sections"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "basics": { "$ref": "#/$defs/basics" },
+    "sections": {
+      "type": "array",
+      "description": "Ordered CV sections; array order is render order.",
+      "items": { "$ref": "#/$defs/section" }
+    }
+  },
+  "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
+  "additionalProperties": false,
+
+  "$defs": {
+    "comment": {
+      "description": "Free-text annotation ignored by the renderer.",
+      "type": ["string", "array", "object", "number", "boolean"]
+    },
+
+    "basics": {
+      "type": "object",
+      "description": "Top-of-page identity block.",
+      "required": ["name", "affiliation", "email", "url"],
+      "properties": {
+        "name": { "type": "string" },
+        "title": { "type": "string", "description": "Document heading, e.g. 'Curriculum Vitae'." },
+        "affiliation": { "type": "array", "items": { "type": "string" }, "description": "Address lines, one per line under the name." },
+        "email": { "type": "string", "format": "email" },
+        "url": { "type": "string", "format": "uri" }
+      },
+      "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
+      "additionalProperties": false
+    },
+
+    "sectionType": {
+      "description": "Selects the entry shape and how the renderer formats it.",
+      "enum": [
+        "education", "positions", "editorial", "awards", "grant", "project",
+        "visits", "talks", "events", "courses", "people", "text-list",
+        "named", "publications"
+      ]
+    },
+
+    "section": {
+      "type": "object",
+      "required": ["title"],
+      "description": "A CV section: either flat (type + entries) or grouped (groups). Publications use type 'publications' + source.",
+      "properties": {
+        "title": { "type": "string", "description": "Heading text; becomes a PDF bookmark." },
+        "type": { "$ref": "#/$defs/sectionType" },
+        "note": { "$ref": "#/$defs/comment" },
+        "entries": { "type": "array", "items": { "$ref": "#/$defs/entry" } },
+        "groups": { "type": "array", "items": { "$ref": "#/$defs/group" }, "description": "Bold sub-sections, each with its own type + entries." },
+        "source": { "type": "string", "description": "Path to a CSL-JSON file (publications sections only)." }
+      },
+      "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
+      "additionalProperties": false
+    },
+
+    "group": {
+      "type": "object",
+      "required": ["title"],
+      "description": "A bold sub-section within a section (a level-2 heading / PDF sub-bookmark).",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "$ref": "#/$defs/sectionType" },
+        "note": { "$ref": "#/$defs/comment" },
+        "entries": { "type": "array", "items": { "$ref": "#/$defs/entry" } },
+        "category": { "type": "string", "description": "For publications groups: the CSL 'category' value to filter on." }
+      },
+      "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
+      "additionalProperties": false
+    },
+
+    "amount": {
+      "type": "object",
+      "description": "A monetary figure. The renderer prints the symbol from 'currency', so the source never hard-codes £/€/$.",
+      "required": ["value", "currency"],
+      "properties": {
+        "value": { "type": "number", "description": "Numeric amount, no separators, e.g. 6788641." },
+        "currency": { "enum": ["GBP", "EUR", "USD"] }
+      },
+      "additionalProperties": false
+    },
+
+    "entry": {
+      "type": "object",
+      "description": "One CV item. Which fields apply depends on the section/group 'type' (see cv.template.json for a worked example per type). All fields are optional here so the editor offers them everywhere; the renderer uses only the ones its type knows.",
+      "properties": {
+        "date": { "type": "string", "description": "Left-column label (usually a year or range; open ranges end '-'). Repeated consecutive values are blanked automatically." },
+
+        "degree": { "type": "string", "description": "education: e.g. 'PhD Economics'." },
+        "institution": { "type": "string", "description": "education/visits: awarding or host institution." },
+        "location": { "type": "string", "description": "education/visits: shown in parentheses / after the institution." },
+        "thesis": { "type": "string", "description": "education: thesis title (italic)." },
+        "supervisor": { "type": "string", "description": "education." },
+        "committee": { "type": "string", "description": "education." },
+
+        "role": { "type": "string", "description": "positions/editorial/grant/project/visits: e.g. 'Professor…', 'Co-editor', 'PI'." },
+        "organisation": { "type": "string", "description": "positions: employer/host." },
+        "journal": { "type": "string", "description": "editorial: journal name (italic)." },
+
+        "title": { "type": "string", "description": "awards/events (italic), talks (quoted), grant/project (plain): the item's title." },
+        "detail": { "type": "string", "description": "awards/events/people: trailing description." },
+
+        "funder": { "type": "string", "description": "grant: awarding body (italic)." },
+        "scheme": { "type": "string", "description": "grant: funding scheme/programme." },
+        "period": { "type": "string", "description": "grant: award period, e.g. '2024/29'." },
+        "amount": { "$ref": "#/$defs/amount" },
+
+        "code": { "type": "string", "description": "grant/project reference code, rendered in monospace (e.g. NE/T001240/1)." },
+        "people": { "type": "string", "description": "project: PIs/collaborators." },
+        "sponsor": { "type": "string", "description": "project: funder (free text)." },
+        "funding": { "type": "string", "description": "project: amount as free text (irregular historical formats)." },
+
+        "venue": { "type": "string", "description": "talks: venue, place and date of the talk." },
+
+        "name": { "type": "string", "description": "courses/named: course, software, or language name." },
+        "years": { "type": "string", "description": "courses: years taught." },
+        "url": { "type": "string", "description": "courses/named: project or course URL." },
+
+        "text": { "type": "string", "description": "text-list: free-text line." },
+        "note": { "$ref": "#/$defs/comment" }
+      },
+      "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
+      "additionalProperties": false
+    }
+  }
+}

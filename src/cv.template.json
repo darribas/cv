@@ -1,0 +1,125 @@
+{
+  "//": "COPY-PASTE LIBRARY (never rendered). To add an entry: find the section 'type' below, copy one entry block into the matching section in cv.json, edit the values, delete the '//' hint keys. The schema autocompletes and validates as you type. Publications are NOT here — add them to publications.json in CSL-JSON.",
+
+  "sections": [
+    {
+      "title": "Education",
+      "type": "education",
+      "entries": [
+        { "date": "2010", "degree": "PhD Economics", "institution": "Universidad de Zaragoza", "location": "Spain", "//thesis": "optional, italic", "thesis": "Thesis title.", "//supervisor": "optional", "supervisor": "Name.", "//committee": "optional", "committee": "Prof. A (chair), Dr. B." }
+      ]
+    },
+    {
+      "//": "Current / Honorary / Other / Prior appointments all use 'positions'.",
+      "title": "Current Academic Appointments",
+      "type": "positions",
+      "entries": [
+        { "//date": "open ranges end with '-'", "date": "2022-", "role": "Professor in Geographic Data Science", "//organisation": "optional", "organisation": "Department …, University of Liverpool." }
+      ]
+    },
+    {
+      "title": "Editorial Appointments",
+      "type": "editorial",
+      "entries": [
+        { "date": "2019-", "role": "Co-editor", "//journal": "rendered italic", "journal": "Environment and Planning B - Urban Analytics and City Science" }
+      ]
+    },
+    {
+      "title": "Honors and Awards",
+      "type": "awards",
+      "entries": [
+        { "date": "2020", "//title": "rendered italic", "title": "Award name", "//detail": "optional trailing text", "detail": "(inaugural). Awarding body." }
+      ]
+    },
+    {
+      "//": "Research Income is grouped: 'grant' entries and 'project' entries have different shapes.",
+      "title": "Research Income",
+      "groups": [
+        {
+          "title": "Awards",
+          "type": "grant",
+          "entries": [
+            { "//date": "always the real year; repeats are blanked automatically", "date": "2024", "//funder": "italic", "funder": "Funding body", "title": "Project title.", "//scheme": "optional", "scheme": "Scheme name.", "//role": "PI | CoI | … (optional)", "role": "PI", "//period": "optional, e.g. 2024/29", "period": "2024/29", "//amount": "value is a plain number; currency is GBP | EUR | USD", "amount": { "value": 100000, "currency": "GBP" } }
+          ]
+        },
+        {
+          "title": "Projects (as researcher)",
+          "type": "project",
+          "entries": [
+            { "date": "2011-2013", "//title": "italic", "title": "Project title", "//code": "optional grant reference", "code": "ECO2009-09332", "//people": "optional", "people": "PI Name (PI) and Other (Co-PI)", "role": "Researcher (dates)", "sponsor": "Funder (free text)", "//funding": "free-text amount (irregular formats)", "funding": "€42,900" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Research Visits",
+      "type": "visits",
+      "entries": [
+        { "date": "2018", "institution": "Host institution", "//location": "optional", "location": "City (Country)", "//role": "optional", "role": "Visitor" }
+      ]
+    },
+    {
+      "//": "Invited Lectures / Workshops — the talk title is quoted, venue is free text (place + month).",
+      "title": "Invited Lectures",
+      "type": "talks",
+      "entries": [
+        { "date": "2026", "//title": "rendered in quotes", "title": "Talk title", "//venue": "venue, place, month", "venue": "Some University. City (Country). June." }
+      ]
+    },
+    {
+      "//": "Conference/event organisation — title italic.",
+      "title": "Conferences and Events",
+      "type": "events",
+      "entries": [
+        { "date": "2025", "//title": "italic", "title": "Session/workshop name", "//detail": "optional", "detail": "Where and with whom." }
+      ]
+    },
+    {
+      "//": "Teaching courses — no date column; name + years + url.",
+      "title": "Teaching",
+      "type": "courses",
+      "entries": [
+        { "name": "Geographic Data Science", "//years": "optional", "years": "2015-2020", "//url": "optional", "url": "https://darribas.org/gds_course" }
+      ]
+    },
+    {
+      "//": "Supervision / examining — name + detail.",
+      "title": "Supervision",
+      "type": "people",
+      "entries": [
+        { "date": "2025-", "name": "Person Name", "//detail": "optional role/programme", "detail": "PDRA, Imago Data Service." }
+      ]
+    },
+    {
+      "//": "Free-text lines (conference participation, referee lists, misc service).",
+      "title": "Conferences (participation)",
+      "type": "text-list",
+      "entries": [
+        { "date": "2025", "text": "Annual Meeting of the AAG, Detroit (USA); GISRUK, Bristol (UK)." }
+      ]
+    },
+    {
+      "//": "Software / languages — the name replaces the date column (rendered full width).",
+      "title": "Scientific Software",
+      "type": "named",
+      "entries": [
+        { "name": "PySAL", "//detail": "optional", "detail": "Python library of spatial analysis. Core development team.", "//url": "optional", "url": "https://pysal.org" }
+      ]
+    },
+    {
+      "//": "Publications are read from a CSL-JSON file, grouped by a custom 'category' key. Point 'source' at publications.json and list the groups in render order.",
+      "title": "Publications",
+      "type": "publications",
+      "source": "publications.json",
+      "groups": [
+        { "title": "Books", "category": "book" },
+        { "title": "Peer-reviewed journal articles", "category": "journal-article" },
+        { "title": "Conference Proceedings", "category": "conference" },
+        { "title": "Other academic articles", "category": "other-article" },
+        { "title": "Book chapters", "category": "book-chapter" },
+        { "title": "Other", "category": "other" },
+        { "title": "Working Papers", "category": "working-paper" }
+      ]
+    }
+  ]
+}
