@@ -1,0 +1,8 @@
+# Preview / scratch build artifacts.
+# The committed, published PDF lives at docs/cv.pdf and is NOT ignored.
+build/
+*.png
+.DS_Store
+
+# Migration reference — the old LaTeX-built PDF, kept locally for comparison only
+notes/cv-current.pdf
