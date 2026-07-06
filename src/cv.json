@@ -1,0 +1,217 @@
+{
+  "$schema": "./cv.schema.json",
+  "//": "CV body — single source of truth. Publications are in publications.json (CSL). Sections migrated so far: front matter through Research Visits, plus Scientific Software and Language Skills. Narrative lists (Publications, Invited Lectures, Conferences, Teaching, Supervision, Service) are added in later migration stages.",
+
+  "basics": {
+    "name": "Daniel Arribas-Bel",
+    "title": "Curriculum Vitae",
+    "affiliation": [
+      "Department of Geography and Planning",
+      "University of Liverpool",
+      "Roxby Building",
+      "74 Bedford St S",
+      "Liverpool",
+      "L69 7ZT",
+      "United Kingdom"
+    ],
+    "email": "D.Arribas-Bel@liverpool.ac.uk",
+    "url": "https://darribas.org"
+  },
+
+  "sections": [
+    {
+      "title": "Education",
+      "type": "education",
+      "entries": [
+        {
+          "date": "2010",
+          "degree": "PhD Economics",
+          "institution": "Universidad de Zaragoza",
+          "location": "Spain",
+          "thesis": "Essays on the Distribution and Spatial Structure of Cities.",
+          "supervisor": "Fernando Sanz-Gracia.",
+          "committee": "Prof. Michael J. Batty (chair), Prof. Sergio J. Rey, Prof. Enrique Lopez Bazo, Dr. Rafael Boix Domenech."
+        },
+        {
+          "date": "2008",
+          "degree": "MSc. Economics",
+          "institution": "Universidad de Zaragoza",
+          "location": "Spain",
+          "thesis": "Kangaroos, Cities and Space: a First Approach to the Australian Urban System."
+        },
+        {
+          "date": "2006",
+          "degree": "BS. Economics",
+          "institution": "Universidad de Zaragoza",
+          "location": "Spain"
+        }
+      ]
+    },
+
+    {
+      "title": "Current Academic Appointments",
+      "type": "positions",
+      "entries": [
+        { "date": "2022-", "role": "Professor in Geographic Data Science", "organisation": "Department of Geography and Planning, University of Liverpool." },
+        { "date": "2025-", "role": "Co-Director", "organisation": "Imago Smart Data Research UK Data Service for Imagery." }
+      ]
+    },
+
+    {
+      "title": "Honorary Appointments",
+      "type": "positions",
+      "entries": [
+        { "date": "2022-", "role": "Affiliate", "organisation": "Center for Open Geographical Science, San Diego State University." },
+        { "date": "2016-", "role": "Fellow", "organisation": "Center for Spatial Data Science, University of Chicago." },
+        { "date": "2006-", "role": "Researcher", "organisation": "ADETRE Research Group, Universidad de Zaragoza." },
+        { "date": "2020-2022", "role": "Honorary Senior Lecturer", "organisation": "Department of Computer Science, University of Liverpool." },
+        { "date": "2018-2022", "role": "Affiliate", "organisation": "Center for Geospatial Sciences, University of California Riverside." },
+        { "date": "2017-2019", "role": "Member", "organisation": "Smart Cities UB Chair, Universitat de Barcelona." }
+      ]
+    },
+
+    {
+      "title": "Editorial Appointments",
+      "type": "editorial",
+      "entries": [
+        { "date": "2019-", "role": "Co-editor", "journal": "Environment and Planning B - Urban Analytics and City Science" },
+        { "date": "2025-", "role": "Editorial Board", "journal": "Annals of the American Association of Geographers" },
+        { "date": "2021-", "role": "Editorial Board", "journal": "Journal of Geographical Systems" },
+        { "date": "2019-", "role": "Editorial Board", "journal": "Spatial Economic Analysis" },
+        { "date": "2017-", "role": "Editorial Board", "journal": "Geographical Analysis" },
+        { "date": "2020-2024", "role": "Associate Editor", "journal": "Journal of the Royal Statistical Society Series A - Statistics in Society" },
+        { "date": "2016-2022", "role": "Editorial Board", "journal": "Transactions in GIS" },
+        { "date": "2015-2018", "role": "Book Reviews Editor", "journal": "Environment and Planning B - Urban Analytics and City Science" }
+      ]
+    },
+
+    {
+      "title": "Other Appointments",
+      "type": "positions",
+      "entries": [
+        { "date": "2021-", "role": "Steering committee, workstream coordinator Urban Analytics", "organisation": "The OECD Laboratory for Geospatial Analysis. OECD." },
+        { "date": "2016-2022", "role": "Programme Director", "organisation": "MSc in Geographic Data Science, University of Liverpool." },
+        { "date": "2017-2022", "role": "Chair", "organisation": "Quantitative Methods Research Group, Royal Geographical Society." }
+      ]
+    },
+
+    {
+      "title": "Prior Academic Appointments",
+      "type": "positions",
+      "entries": [
+        { "date": "2021-2025", "role": "Deputy Programme Director", "organisation": "Urban Analytics, The Alan Turing Institute." },
+        { "date": "2020-2023", "role": "ESRC Fellow", "organisation": "The Alan Turing Institute." },
+        { "date": "2018-2022", "role": "Senior Lecturer in Geographic Data Science", "organisation": "Department of Geography and Planning, University of Liverpool." },
+        { "date": "2015-2018", "role": "Lecturer in Geographic Data Science", "organisation": "Department of Geography and Planning, University of Liverpool." },
+        { "date": "2012-2016", "role": "Research Associate", "organisation": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University." },
+        { "date": "2014-2015", "role": "Lecturer in Human Geography", "organisation": "School of Geography, Earth and Environmental Sciences, University of Birmingham (UK)." },
+        { "date": "2012-2014", "role": "Postdoctoral researcher", "organisation": "Department of Spatial Economics, Vrije Universiteit. Amsterdam (The Netherlands)." },
+        { "date": "2011-2012", "role": "Postdoctoral Research Associate", "organisation": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University." },
+        { "date": "2006-2010", "role": "PhD Student", "organisation": "Department of Economic Analysis, Universidad de Zaragoza." }
+      ]
+    },
+
+    {
+      "title": "Honors and Awards",
+      "type": "awards",
+      "entries": [
+        { "date": "2026", "title": "Media Achievement Award", "detail": "for the GLaD podcast. American Association of Geographers. Joint with Rachel Franklin and Levi Wolf." },
+        { "date": "2024", "title": "Taylor & Francis Award", "detail": "for “excellence in the practice and promotion of teaching in higher education”. Royal Geographical Society." },
+        { "date": "2021", "title": "“Keeping the conversation going” - The use of Teams to sustain engagement in Geographic Data Science learning.", "detail": "Faculty Learning, Teaching and Student Experience Award Winner. Faculty of Science and Engineering. University of Liverpool." },
+        { "date": "2020", "title": "Spatial Data Scientist of the Year", "detail": "(inaugural). Spatial Data Science Conference (Online). CARTO." },
+        { "date": "2006", "title": "Premio extraordinario de licenciatura", "detail": "(Best student of the year in economics at the University of Zaragoza)." }
+      ]
+    },
+
+    {
+      "title": "Research Income",
+      "groups": [
+        {
+          "title": "Awards",
+          "type": "grant",
+          "entries": [
+            { "date": "2024", "funder": "Economic and Social Research Council, UK Research and Innovation", "title": "The SDR UK Imagery Data Service for Sustainability, Prosperity and Wellbeing (Imago).", "scheme": "Smart Data Research UK Data Services.", "role": "PI", "period": "2024/29", "amount": { "value": 6788641, "currency": "GBP" } },
+            { "date": "2024", "funder": "The Royal Society", "title": "Learning from UK-France cross border railway transportation: border effect modelling and operational modes for the China-Laos Railway.", "scheme": "International Exchanges.", "role": "CoI", "amount": { "value": 12000, "currency": "GBP" } },
+            { "date": "2024", "funder": "European Space Agency", "title": "EuroFab: European Urban Fabric Classification Using Artificial Intelligence.", "scheme": "Tender.", "role": "CoI", "amount": { "value": 250000, "currency": "EUR" } },
+            { "date": "2024", "funder": "European Space Agency", "title": "EO Informed Agent Based Models for Digital Twins Applications.", "scheme": "Tender.", "role": "CoI", "amount": { "value": 399739, "currency": "EUR" } },
+            { "date": "2023", "funder": "Geospatial Commission", "title": "National Land Data Programme Turing Demonstrator Extension.", "scheme": "Grant funding agreement with the Geospatial Commission (Department for Science, Innovation and Technology).", "role": "PI", "amount": { "value": 99955, "currency": "GBP" } },
+            { "date": "2022", "funder": "Geospatial Commission", "title": "Using scenario-based land use modelling to identify the impacts from policy demands on land use change in a large conurbation.", "scheme": "Grant funding agreement for the National Land Data Programme - Land Use Demonstrator.", "role": "PI", "period": "2022/23", "amount": { "value": 182329, "currency": "GBP" } },
+            { "date": "2022", "funder": "The Alan Turing Institute", "title": "The Science of Cities and Regions.", "scheme": "Out of budget process.", "role": "Co-I", "period": "2022/25", "amount": { "value": 2996046, "currency": "GBP" } },
+            { "date": "2022", "funder": "Economic and Social Research Council (ESRC)", "title": "Supporting Post Pandemic Recovery and Resilience through New Forms of Data.", "scheme": "ESRC AHRC UK South Korea SSH Connections Grants.", "role": "CoI", "period": "2022/23", "amount": { "value": 138893.36, "currency": "GBP" } },
+            { "date": "2022", "funder": "Fundación La Caixa", "title": "Building and shaping cities for a healthy and prosperous future.", "scheme": "Social Research Grants.", "role": "CoI", "period": "2022/23", "amount": { "value": 100000, "currency": "EUR" } },
+            { "date": "2022", "funder": "Engineering and Physical Sciences Research Council (EPSRC)", "title": "ITINERANT: InequaliTies IN Experiencing uRbAn fuNcTion. Cuebiq data subscription.", "role": "CoI", "period": "2022", "amount": { "value": 14000, "currency": "GBP" } },
+            { "date": "2021", "funder": "Engineering and Physical Sciences Research Council (EPSRC)/The Alan Turing Institute", "title": "InequaliTies IN Experiencing uRbAn fuNcTion (ITINERANT).", "role": "PI", "period": "2021/22", "amount": { "value": 96624, "currency": "GBP" } },
+            { "date": "2021", "funder": "Natural Environment Research Council (NERC)", "title": "Nitrogen Fixation in the Arctic Ocean.", "scheme": "Standard grant,", "code": "NE/T001240/1", "role": "CoI", "period": "2021/23", "amount": { "value": 733137, "currency": "GBP" } },
+            { "date": "2020", "funder": "Economic and Social Research Council (ESRC)", "title": "Learning an urban grammar from satellite data through AI.", "scheme": "Joint ESRC/The Alan Turing Institute Fellowship,", "code": "ES/T005238/1", "role": "PI", "period": "2020/23", "amount": { "value": 426224, "currency": "GBP" } },
+            { "date": "2020", "funder": "Maritime Research and Innovation UK (MarRI-UK)", "title": "Assuring safe port navigation by applying machine learning (ML) to wave data for automated monitoring of changes in nearshore bathymetry.", "role": "CoI", "period": "2020/21", "amount": { "value": 169232, "currency": "GBP" } },
+            { "date": "2019", "funder": "University of Liverpool Industrial Strategy Fund", "title": "Envisaging Liverpool's Future Digital City Region and Smart Governance.", "scheme": "Together with Prof. Alex Singleton (PI) and Prof. Mark Boyle (CoI).", "role": "CoI", "amount": { "value": 23000, "currency": "GBP" } },
+            { "date": "2019", "funder": "Kings College London Faculty Education Fund", "title": "Conjuring: Self-Contained Jupyter Hub for Teaching.", "scheme": "Together with Dr. Jon Reades (PI) and Dr. Steffen Zschaler (CoI).", "role": "CoI", "amount": { "value": 4975, "currency": "GBP" } },
+            { "date": "2018", "funder": "ODA Research Seed Fund, University of Liverpool", "title": "Past and future of urban structures in Latin American cities.", "role": "PI", "amount": { "value": 8887, "currency": "GBP" } },
+            { "date": "2017", "funder": "Santander Bank", "title": "Travel Grant.", "role": "PI", "amount": { "value": 1000, "currency": "GBP" } },
+            { "date": "2014", "funder": "FOSTER EU-funded (FP7)", "title": "Workshop on Open Workflows.", "scheme": "Together with Thomas de Graaff.", "role": "CoI", "amount": { "value": 2150, "currency": "EUR" } },
+            { "date": "2014", "funder": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University", "title": "Space in Hierarchical Linear Models using Python.", "role": "PI", "amount": { "value": 18000, "currency": "USD" } },
+            { "date": "2007", "funder": "Spanish Ministry of Education and Science", "title": "University Staff Training Programme (in Spanish, “Formación de Personal Universitario”, FPU).", "scheme": "Pre-Doctoral grant.", "period": "2007/10", "amount": { "value": 48000, "currency": "EUR" } }
+          ]
+        },
+        {
+          "title": "Projects (as researcher)",
+          "type": "project",
+          "entries": [
+            { "date": "2009-2013", "title": "Migrant Diversity and Regional Disparity in Europe", "people": "Peter Nijkamp (PI) and Jacques Poot (Co-PI)", "role": "Post-doctoral researcher (June, 2012-March, 2014)", "sponsor": "NORFACE research program on migration", "funding": "€2,548,920" },
+            { "date": "2011-2013", "title": "Affordable Housing and Walkable Neighborhoods A National Urban Analysis", "people": "Julia Koschinsky and Emily Talen (PI and Co-PI)", "role": "Researcher (January-May, 2012)", "sponsor": "U.S. Department of Housing and Urban Development", "funding": "US$500,000" },
+            { "date": "2011-2013", "title": "Flexible Geospatial Visual Analytics and Simulation Technologies to Enhance Criminal Justice Decision Support Systems", "people": "Luc Anselin and Serge Rey (PI and Co-PI)", "role": "Researcher (January-December, 2011)", "sponsor": "U.S. Department of Justice, National Institute of Justice", "funding": "US$1.4 million" },
+            { "date": "2010", "title": "Estrategia de Zaragoza y su entorno en el horizonte 2020", "role": "Scholar", "sponsor": "Ebrópolis" },
+            { "date": "2009-2012", "title": "Aspectos teóricos y empíricos asociados al fenómeno de urban sprawl", "code": "ECO2009-09332", "role": "Scholar", "sponsor": "Ministry of Science and Innovation, Government of Spain", "funding": "€42,900" },
+            { "date": "2007-2009", "title": "La distribución del tamaño de las ciudades: regularidades empíricas y modelos teóricos explicativos", "code": "SEJ2006-04893", "role": "Scholar", "sponsor": "Ministry of Science and Education, Government of Spain", "funding": "€34,485" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "title": "Research Visits",
+      "type": "visits",
+      "entries": [
+        { "date": "2023", "institution": "CEMFI", "location": "Madrid (Spain)", "role": "External Faculty" },
+        { "date": "2022", "institution": "CEMFI", "location": "Madrid (Spain)", "role": "External Faculty" },
+        { "date": "2021", "institution": "CEMFI", "location": "Madrid (Spain)", "role": "External Faculty" },
+        { "date": "2019", "institution": "Research in Spatial Economics (Rise) group. Universidad EAFIT", "location": "Medellin (Colombia)", "role": "Visitor" },
+        { "date": "2019", "institution": "Instituto Nacional de Pesquisas Espaciais (INPE, National Institute for Space Research)", "location": "São José dos Campos (Brazil)", "role": "Visitor" },
+        { "date": "2019", "institution": "Instituto de Pesquisa Econômica Aplicada (IPEA, Institute of Applied Economic Research)", "location": "Brasilia (Brazil)", "role": "Visitor" },
+        { "date": "2019", "institution": "Centro de Desenvolvimento e Planejamento Regional da UFMG (CEDEPLAR, Centre for Development and Regional Planning). Universidade Federal de Minas Gerais", "location": "Belo Horizonte (Brazil)", "role": "Visitor" },
+        { "date": "2018", "institution": "Center for Geospatial Sciences, University of California, Riverside", "location": "Riverside (USA)", "role": "Visitor" },
+        { "date": "2017", "institution": "Center for Spatial Data Science, University of Chicago", "location": "Chicago (USA)", "role": "Visitor" },
+        { "date": "2017", "institution": "Spatial Structures in the Social Sciences, Brown University", "location": "Providence (USA)", "role": "Visitor" },
+        { "date": "2015", "institution": "Kinder Institute for Urban Research, Rice University", "location": "Houston (USA)", "role": "July-August. Visiting scholar" },
+        { "date": "2014", "institution": "Department of Economics, University of Houston", "location": "Houston (USA)", "role": "June-August. Visiting scholar" },
+        { "date": "2011", "institution": "Department of Spatial Economics, The Faculty of Economics and Business Administration, Vrije Universiteit", "location": "Amsterdam (The Netherlands)", "role": "July-August. Visiting researcher" },
+        { "date": "2010", "institution": "Department of Spatial Economics, The Faculty of Economics and Business Administration, Vrije Universiteit", "location": "Amsterdam (The Netherlands)", "role": "September. Visiting PhD student" },
+        { "date": "2010", "institution": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University", "location": "Tempe, AZ (USA)", "role": "March-May. Visiting PhD student" },
+        { "date": "2009", "institution": "Department of Spatial Economics, The Faculty of Economics and Business Administration, Vrije Universiteit", "location": "Amsterdam (The Netherlands)", "role": "September-December. Visiting PhD student" },
+        { "date": "2008-09", "institution": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University", "location": "Tempe, AZ (USA)", "role": "August-June. Visiting PhD student" }
+      ]
+    },
+
+    {
+      "title": "Scientific Software",
+      "type": "named",
+      "entries": [
+        { "name": "PySAL", "detail": "Python library of spatial analysis. Core development team.", "url": "https://pysal.org" },
+        { "name": "gds_env", "detail": "A containerised platform for Geographic Data Science. Creator and maintainer.", "url": "https://darribas.org/gds_env/" },
+        { "name": "contextily", "detail": "Contextual tiles in Python. Creator and core developer.", "url": "https://contextily.readthedocs.io/" },
+        { "name": "xyzservices", "detail": "XYZ basemaps in Python. Creator and developer.", "url": "https://xyzservices.readthedocs.io/" },
+        { "name": "GeoDaSpace", "detail": "Advanced spatial econometrics. Core development team." }
+      ]
+    },
+
+    {
+      "title": "Language Skills",
+      "type": "named",
+      "entries": [
+        { "name": "Spanish", "detail": "Native." },
+        { "name": "English", "detail": "Fluent writing, reading and speaking. Maximum level by the Institute of Modern Languages at the University of Zaragoza." },
+        { "name": "French", "detail": "Medium writing, reading and speaking. Fourth year (out of five) at the Institute of Modern Languages at the University of Zaragoza." }
+      ]
+    }
+  ]
+}
