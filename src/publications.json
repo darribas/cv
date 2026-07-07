@@ -1,0 +1,3463 @@
+[
+  {
+    "id": "rey2023geographic",
+    "type": "book",
+    "title": "Geographic Data Science with Python",
+    "author": [
+      {
+        "family": "Rey",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Wolf",
+        "given": "L. J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "category": "book",
+    "URL": "https://geographicdata.science/book/"
+  },
+  {
+    "id": "murphy2025navigating",
+    "type": "article-journal",
+    "title": "Navigating coastal resilience: Exploring population density and coastal distance dynamics along the gold coast",
+    "author": [
+      {
+        "family": "Murphy",
+        "given": "J"
+      },
+      {
+        "family": "Mahabir",
+        "given": "R"
+      },
+      {
+        "family": "Phinn",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Global Challenges & Regional Science",
+    "volume": "3, 100019",
+    "DOI": "10.1016/j.gcrs.2025.100019"
+  },
+  {
+    "id": "fleischmann2024decoding",
+    "type": "article-journal",
+    "title": "Decoding (urban) form and function using spatially explicit deep learning",
+    "author": [
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Computers, Environment and Urban Systems",
+    "volume": "112, 102147",
+    "DOI": "10.1016/j.compenvurbsys.2024.102147"
+  },
+  {
+    "id": "kenyon2024extracting",
+    "type": "article-journal",
+    "title": "Extracting Features from Satellite Imagery to Understand the Size and Scale of Housing Sub-Markets in Madrid",
+    "author": [
+      {
+        "family": "Kenyon",
+        "given": "G.E"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Robinson",
+        "given": "C"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Land",
+    "volume": "13, 575",
+    "DOI": "10.3390/land13050575"
+  },
+  {
+    "id": "kenyon2024intraurban",
+    "type": "article-journal",
+    "title": "Intra-urban house prices in Madrid following the financial crisis: an exploration of spatial inequality",
+    "author": [
+      {
+        "family": "Kenyon",
+        "given": "G.E"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Robinson",
+        "given": "C"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "npj Urban Sustain",
+    "volume": "4, 26",
+    "DOI": "10.1038/s42949-024-00161-0"
+  },
+  {
+    "id": "calafiore2023inequalities",
+    "type": "article-journal",
+    "title": "Inequalities in experiencing urban functions. An exploration of human digital (geo-)footprints",
+    "author": [
+      {
+        "family": "Calafiore",
+        "given": "A"
+      },
+      {
+        "family": "Samardzhiev",
+        "given": "K"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning B - Urban Analytics and City Science",
+    "DOI": "10.1177/23998083231208"
+  },
+  {
+    "id": "salat2023synthetic",
+    "type": "article-journal",
+    "title": "Synthetic population Catalyst: A micro-simulated population of England with circadian activities",
+    "author": [
+      {
+        "family": "Salat",
+        "given": "H"
+      },
+      {
+        "family": "Carlino",
+        "given": "D"
+      },
+      {
+        "family": "Benitez-Paez",
+        "given": "F"
+      },
+      {
+        "family": "Zanchetta",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Birkin",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning B - Urban Analytics and City Science",
+    "DOI": "10.1177/23998083231203066"
+  },
+  {
+    "id": "murphy2023spatialtemporal",
+    "type": "article-journal",
+    "title": "Spatial-temporal variability: characterisation of a beach system using high resolution radar data",
+    "author": [
+      {
+        "family": "Murphy",
+        "given": "J"
+      },
+      {
+        "family": "Plater",
+        "given": "A"
+      },
+      {
+        "family": "Bird",
+        "given": "C"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Frontiers in Marine Science",
+    "volume": "10",
+    "DOI": "10.3389/fmars.2023.1142077"
+  },
+  {
+    "id": "owen2023tracking",
+    "type": "article-journal",
+    "title": "Tracking the Transit Divide: A Multilevel Modelling Approach of Urban Inequalities and Train Ridership Disparities in Chicago",
+    "author": [
+      {
+        "family": "Owen",
+        "given": "D"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Sustainability",
+    "volume": "15(11)",
+    "DOI": "10.3390/su15118821"
+  },
+  {
+    "id": "arribasbel2022spatial",
+    "type": "article-journal",
+    "title": "Spatial Signatures - Understanding (urban) spaces through form and function",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Habitat International",
+    "volume": "128",
+    "DOI": "10.1016/j.habitatint.2022.102641"
+  },
+  {
+    "id": "fleischmann2022geographical",
+    "type": "article-journal",
+    "title": "Geographical characterisation of British urban form and function using the spatial signatures framework",
+    "author": [
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Scientific Data",
+    "volume": "9, 546",
+    "DOI": "10.1038/s41597-022-01640-8"
+  },
+  {
+    "id": "rowe2022urban",
+    "type": "article-journal",
+    "title": "Urban exodus? Understanding human mobility in Britain during the COVID-19 pandemic using Meta-Facebook data",
+    "author": [
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Calafiore",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Samardzhiev",
+        "given": "K"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Population, Space and Place",
+    "volume": "29, e2637",
+    "DOI": "10.1002/psp.2637"
+  },
+  {
+    "id": "patias2022local",
+    "type": "article-journal",
+    "title": "Local urban attributes defining ethnically segregated areas across English cities: A multilevel approach",
+    "author": [
+      {
+        "family": "Patias",
+        "given": "N"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Cities",
+    "volume": "132",
+    "DOI": "10.1016/j.cities.2022.103967"
+  },
+  {
+    "id": "samardzhiev2022functional",
+    "type": "article-journal",
+    "title": "Functional signatures in Great Britain: A dataset",
+    "author": [
+      {
+        "family": "Samardzhiev",
+        "given": "K"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Calafiore",
+        "given": "A"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Data in Brief",
+    "volume": "43",
+    "DOI": "10.1016/j.dib.2022.108335"
+  },
+  {
+    "id": "comber2022dynamicimd",
+    "type": "article-journal",
+    "title": "Dynamic-IMD (D-IMD): Introducing activity spaces to deprivation measurement in London, Birmingham and Liverpool",
+    "author": [
+      {
+        "family": "Comber",
+        "given": "S"
+      },
+      {
+        "family": "Park",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Cities",
+    "volume": "127",
+    "DOI": "10.1016/j.cities.2022.103733"
+  },
+  {
+    "id": "chen2022assessing",
+    "type": "article-journal",
+    "title": "Assessing the value of user-generated images of urban surroundings for house price estimation",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "M"
+      },
+      {
+        "family": "Liu",
+        "given": "Y"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Landscape and Urban Planning",
+    "volume": "226",
+    "DOI": "10.1016/j.landurbplan.2022.104486"
+  },
+  {
+    "id": "singleton2022estimating",
+    "type": "article-journal",
+    "title": "Estimating generalized measures of local neighbourhood context from multispectral satellite images using a convolutional neural network",
+    "author": [
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Murray",
+        "given": "J"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Computers, Environment and Urban Systems",
+    "volume": "95",
+    "DOI": "10.1016/j.compenvurbsys.2022.101802"
+  },
+  {
+    "id": "patias2021trajectories",
+    "type": "article-journal",
+    "title": "Trajectories of neighbourhood inequality in Britain: Unpacking inter-regional socioeconomic imbalances, 1971-2011",
+    "author": [
+      {
+        "family": "Patias",
+        "given": "N"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "The Geographical Journal",
+    "DOI": "10.1111/geoj.12420"
+  },
+  {
+    "id": "rey2021the",
+    "type": "article-journal",
+    "title": "The PySAL Ecosystem: Philosophy and Implementation",
+    "author": [
+      {
+        "family": "Rey",
+        "given": "S. J"
+      },
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Amaral",
+        "given": "P"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Cortes",
+        "given": "R. X"
+      },
+      {
+        "family": "Gaboardi",
+        "given": "J. D"
+      },
+      {
+        "family": "Kang",
+        "given": "W"
+      },
+      {
+        "family": "Knaap",
+        "given": "E"
+      },
+      {
+        "family": "Li",
+        "given": "Z"
+      },
+      {
+        "family": "Lumnitz",
+        "given": "S"
+      },
+      {
+        "family": "Oshan",
+        "given": "T. M"
+      },
+      {
+        "family": "Shao",
+        "given": "H"
+      },
+      {
+        "family": "Wolf",
+        "given": "L. J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geographical Analysis",
+    "DOI": "10.1111/gean.12276"
+  },
+  {
+    "id": "arribasbel2021open",
+    "type": "article-journal",
+    "title": "Open data products - A framework for creating valuable analysis ready data",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Green",
+        "given": "M"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Geographical Systems",
+    "DOI": "10.1007/s10109-021-00363-5"
+  },
+  {
+    "id": "wolf2021on",
+    "type": "article-journal",
+    "title": "On Spatial and Platial Dependence: Examining Shrinkage in Spatially Dependent Multilevel Models",
+    "author": [
+      {
+        "family": "Wolf",
+        "given": "L. J"
+      },
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Mobley",
+        "given": "L. R"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Annals of the American Association of Geographers",
+    "DOI": "10.1080/24694452.2020.1841602"
+  },
+  {
+    "id": "alharbi2021sustainable",
+    "type": "article-journal",
+    "title": "Sustainable Development Goal Relational Modelling and Prediction: Introducing the SDG-CAP-EXT Methodology",
+    "author": [
+      {
+        "family": "Alharbi",
+        "given": "Y"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Coenen",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article"
+  },
+  {
+    "id": "patias2021sustainable",
+    "type": "article-journal",
+    "title": "Sustainable urban development indicators in Great Britain from 2001 to 2016",
+    "author": [
+      {
+        "family": "Patias",
+        "given": "N"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Cavazzi",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Landscape and Urban Planning",
+    "volume": "214, 104148",
+    "DOI": "10.1016/j.landurbplan.2021.104148"
+  },
+  {
+    "id": "liu2021identifying",
+    "type": "article-journal",
+    "title": "Identifying and understanding road-constrained areas of interest (AOIs) through spatiotemporal taxi GPS data: A case study in New York City",
+    "author": [
+      {
+        "family": "Liu",
+        "given": "Y"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Chen",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Computers, Environment and Urban Systems",
+    "volume": "86",
+    "DOI": "10.1016/j.compenvurbsys.2020.101592"
+  },
+  {
+    "id": "calafiore2021a",
+    "type": "article-journal",
+    "title": "A geographic data science framework for the functional and contextual analysis of human dynamics within global cities",
+    "author": [
+      {
+        "family": "Calafiore",
+        "given": "A"
+      },
+      {
+        "family": "Palmer",
+        "given": "G"
+      },
+      {
+        "family": "Comber",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Computers, Environment and Urban Systems",
+    "volume": "85",
+    "DOI": "10.1016/j.compenvurbsys.2020.101539"
+  },
+  {
+    "id": "comber2020using",
+    "type": "article-journal",
+    "title": "Using Convolutional Autoencoders to Extract Visual Features of Leisure and Retail Environments",
+    "author": [
+      {
+        "family": "Comber",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Dolega",
+        "given": "L"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Landscape and Urban Planning",
+    "volume": "202"
+  },
+  {
+    "id": "thompson2020key",
+    "type": "article-journal",
+    "title": "Key questions for modelling COVID-19 exit strategies",
+    "author": [
+      {
+        "family": "Thompson",
+        "given": "R. N"
+      },
+      {
+        "family": "Hollingsworth",
+        "given": "T. D"
+      },
+      {
+        "family": "Isham",
+        "given": "V"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Ashby",
+        "given": "B"
+      },
+      {
+        "family": "Britton",
+        "given": "T"
+      },
+      {
+        "family": "Challenor",
+        "given": "P"
+      },
+      {
+        "family": "Chappell",
+        "given": "L. H. K"
+      },
+      {
+        "family": "Clapham",
+        "given": "H"
+      },
+      {
+        "family": "Cunniffe",
+        "given": "N. J"
+      },
+      {
+        "family": "Dawid",
+        "given": "A. P"
+      },
+      {
+        "family": "Donnelly",
+        "given": "C. A"
+      },
+      {
+        "family": "Eggo",
+        "given": "R. M"
+      },
+      {
+        "family": "Funk",
+        "given": "S"
+      },
+      {
+        "family": "Gilbert",
+        "given": "N"
+      },
+      {
+        "family": "Glendinning",
+        "given": "P"
+      },
+      {
+        "family": "Gog",
+        "given": "J. R"
+      },
+      {
+        "family": "Hart",
+        "given": "W. S"
+      },
+      {
+        "family": "Heesterbeek",
+        "given": "H"
+      },
+      {
+        "family": "House",
+        "given": "T"
+      },
+      {
+        "family": "Keeling",
+        "given": "M"
+      },
+      {
+        "family": "Kiss",
+        "given": "I. Z"
+      },
+      {
+        "family": "Kretzschmar",
+        "given": "M. E"
+      },
+      {
+        "family": "Lloyd",
+        "given": "A. L"
+      },
+      {
+        "family": "McBryde",
+        "given": "E. S"
+      },
+      {
+        "family": "McCaw",
+        "given": "J. M"
+      },
+      {
+        "family": "McKinley",
+        "given": "T. J"
+      },
+      {
+        "family": "Miller",
+        "given": "J. C"
+      },
+      {
+        "family": "Morris",
+        "given": "M"
+      },
+      {
+        "family": "O'Neill",
+        "given": "P. D"
+      },
+      {
+        "family": "Parag",
+        "given": "K. V"
+      },
+      {
+        "family": "Pearson",
+        "given": "C. A. B"
+      },
+      {
+        "family": "Pellis",
+        "given": "L"
+      },
+      {
+        "family": "Pulliam",
+        "given": "J. R. C"
+      },
+      {
+        "family": "Ross",
+        "given": "J. V"
+      },
+      {
+        "family": "Tomba",
+        "given": "G. S"
+      },
+      {
+        "family": "Silverman",
+        "given": "B. W"
+      },
+      {
+        "family": "Struchiner",
+        "given": "C. J"
+      },
+      {
+        "family": "Tildesley",
+        "given": "M. J"
+      },
+      {
+        "family": "Trapman",
+        "given": "P"
+      },
+      {
+        "family": "Webb",
+        "given": "C. R"
+      },
+      {
+        "family": "Mollison",
+        "given": "D"
+      },
+      {
+        "family": "Restif",
+        "given": "O"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Proceedings of the Royal Society B: Biological Sciences",
+    "volume": "287(1932), 20201405",
+    "DOI": "10.1098/rspb.2020.1405"
+  },
+  {
+    "id": "puenteajovn2020how",
+    "type": "article-journal",
+    "title": "How sensitive is city size distribution to the definition of city? The case of Spain",
+    "author": [
+      {
+        "family": "Puente-Ajovín",
+        "given": "M"
+      },
+      {
+        "family": "Ramos",
+        "given": "A"
+      },
+      {
+        "family": "Sanz-Gracia",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Economics Letters",
+    "volume": "197",
+    "DOI": "10.1016/j.econlet.2020.109643"
+  },
+  {
+    "id": "franklin2020who",
+    "type": "article-journal",
+    "title": "Who Counts? Gender, Gatekeeping, and Quantitative Human Geography",
+    "author": [
+      {
+        "family": "Franklin",
+        "given": "R"
+      },
+      {
+        "family": "Houlden",
+        "given": "V"
+      },
+      {
+        "family": "Robinson",
+        "given": "C"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Delmelle",
+        "given": "E. C"
+      },
+      {
+        "family": "Demšar",
+        "given": "U"
+      },
+      {
+        "family": "Miller",
+        "given": "H. J"
+      },
+      {
+        "family": "O'Sullivan",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "The Professional Geographer"
+  },
+  {
+    "id": "chen2020a",
+    "type": "article-journal",
+    "title": "A reproducible notebook to acquire, process and analyse satellite imagery",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "M"
+      },
+      {
+        "family": "Fahrner",
+        "given": "D"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "REGION",
+    "volume": "7(2), R15-R46",
+    "DOI": "10.18335/region.v7i2.295"
+  },
+  {
+    "id": "olson2020classification",
+    "type": "article-journal",
+    "title": "Classification and Regression via Integer Optimization for Neighborhood Change",
+    "author": [
+      {
+        "family": "Olson",
+        "given": "A. W"
+      },
+      {
+        "family": "Zhang",
+        "given": "K"
+      },
+      {
+        "family": "Calderon-Figueroa",
+        "given": "F"
+      },
+      {
+        "family": "Yakubov",
+        "given": "R"
+      },
+      {
+        "family": "Sanner",
+        "given": "S"
+      },
+      {
+        "family": "Silver",
+        "given": "D"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geographical Analysis"
+  },
+  {
+    "id": "chen2020quantifying",
+    "type": "article-journal",
+    "title": "Quantifying characteristics of the local urban environment through geotagged Flickr photographs and image recognition",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "International Journal of Geo-Information",
+    "volume": "9, 264",
+    "DOI": "10.3390/ijgi9040264"
+  },
+  {
+    "id": "lumnitz2020splot",
+    "type": "article-journal",
+    "title": "splot - visual analytics for spatial statistics",
+    "author": [
+      {
+        "family": "Lumnitz",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Cortes",
+        "given": "R. X"
+      },
+      {
+        "family": "Gaboardi",
+        "given": "J. D"
+      },
+      {
+        "family": "Griess",
+        "given": "V"
+      },
+      {
+        "family": "Kang",
+        "given": "W"
+      },
+      {
+        "family": "Oshan",
+        "given": "T. M"
+      },
+      {
+        "family": "Wolf",
+        "given": "L"
+      },
+      {
+        "family": "Rey",
+        "given": "S"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Open Source Software",
+    "volume": "5(47), 1882",
+    "DOI": "10.21105/joss.01882"
+  },
+  {
+    "id": "arribasbel2019buildings",
+    "type": "article-journal",
+    "title": "Building(s and) cities: Delineating urban areas with a machine learning algorithm",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D."
+      },
+      {
+        "family": "Garcia-Lopez",
+        "given": "M.-A."
+      },
+      {
+        "family": "Viladecans-Marsal",
+        "given": "E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Urban Economics",
+    "DOI": "10.1016/j.jue.2019.103217"
+  },
+  {
+    "id": "comber2019building",
+    "type": "article-journal",
+    "title": "Building Hierarchies of Retail Centers Using Bayesian Multilevel Models",
+    "author": [
+      {
+        "family": "Comber",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Dong",
+        "given": "G"
+      },
+      {
+        "family": "Dolega",
+        "given": "L"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Annals of the American Association of Geographers",
+    "DOI": "10.1080/24694452.2019.1667219"
+  },
+  {
+    "id": "singleton2019geographic",
+    "type": "article-journal",
+    "title": "Geographic Data Science",
+    "author": [
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geographic Analysis",
+    "DOI": "10.1111/gean.12194"
+  },
+  {
+    "id": "stubbings2019a",
+    "type": "article-journal",
+    "title": "A Hierarchical Urban Forest Index Using Street-Level Imagery and Deep Learning",
+    "author": [
+      {
+        "family": "Stubbings",
+        "given": "P"
+      },
+      {
+        "family": "Peskett",
+        "given": "J"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Remote Sensing",
+    "volume": "11(12)",
+    "DOI": "10.3390/rs11121395"
+  },
+  {
+    "id": "arribasbel2019a",
+    "type": "article-journal",
+    "title": "A course on Geographic Data Science",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "The Journal of Open Source Education",
+    "volume": "2(14), 42",
+    "DOI": "10.21105/jose.00042"
+  },
+  {
+    "id": "comber2019machine",
+    "type": "article-journal",
+    "title": "Machine learning innovations in address matching: A practical comparison of word2vec and CRFs",
+    "author": [
+      {
+        "family": "Comber",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Transactions in GIS",
+    "volume": "23(2), 334-348"
+  },
+  {
+    "id": "liu2019a",
+    "type": "article-journal",
+    "title": "A principal component analysis (PCA)-based framework for automated variable selection in geodemographic classification",
+    "author": [
+      {
+        "family": "Liu",
+        "given": "Y"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geo-spatial Information Science",
+    "DOI": "10.1080/10095020.2019.1621549"
+  },
+  {
+    "id": "davies2019buy",
+    "type": "article-journal",
+    "title": "Buy online collect in-store: Exploring grocery click & collect using a national case study",
+    "author": [
+      {
+        "family": "Davies",
+        "given": "A. E"
+      },
+      {
+        "family": "Dolega",
+        "given": "L"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "International Journal of Retail and Distribution Management"
+  },
+  {
+    "id": "chen2019understanding",
+    "type": "article-journal",
+    "title": "Understanding the dynamics of urban areas of interest through volunteered geographic information",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Geographical Systems"
+  },
+  {
+    "id": "dong2019inferring",
+    "type": "article-journal",
+    "title": "Inferring neighbourhood quality with property transaction records by using a locally adaptive spatial multi-level model",
+    "author": [
+      {
+        "family": "Dong",
+        "given": "G"
+      },
+      {
+        "family": "Alexiou",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Wolf",
+        "given": "L.J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Computers, Environment and Urban Systems"
+  },
+  {
+    "id": "arribasbel2018geography",
+    "type": "article-journal",
+    "title": "Geography and Computers: Past, present, and future",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Reades",
+        "given": "J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geography Compass"
+  },
+  {
+    "id": "arribasbel2018use",
+    "type": "article-journal",
+    "title": "Use and Validation of Location-Based Services in Urban Research: An Example with Dutch Restaurants",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Bakens",
+        "given": "J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Urban Studies",
+    "volume": "56(5), 868:884"
+  },
+  {
+    "id": "arribasbel2018spatial",
+    "type": "article-journal",
+    "title": "Spatial dynamics of cultural diversity in the Netherlands",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Bakens",
+        "given": "J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning B - Urban Analytics and City Science",
+    "DOI": "10.1177/2399808318783748"
+  },
+  {
+    "id": "arribasbel2017characterizing",
+    "type": "article-journal",
+    "title": "Characterizing the Spatial Structure(s) of Cities 'on the fly': the Space-Time Calendar",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Tranos",
+        "given": "E"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geographical Analysis",
+    "volume": "50(2), 162-181",
+    "DOI": "10.1111/gean.12137"
+  },
+  {
+    "id": "gerritse2017concrete",
+    "type": "article-journal",
+    "title": "Concrete agglomeration benefits: do roads improve urban connections or just attract more people?",
+    "author": [
+      {
+        "family": "Gerritse",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Regional Studies",
+    "volume": "52(8), 1134-1149"
+  },
+  {
+    "id": "wolf2017stochastic",
+    "type": "article-journal",
+    "title": "Stochastic Efficiency of Bayesian MCMC in Spatial Econometric Models: An Empirical Comparison",
+    "author": [
+      {
+        "family": "Wolf",
+        "given": "L"
+      },
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Geographical Analysis",
+    "volume": "50, 97-119",
+    "DOI": "10.1111/gean.12135"
+  },
+  {
+    "id": "arribasbel2017remote",
+    "type": "article-journal",
+    "title": "Remote sensing-based measurement of Living Environment Deprivation: Improving classical approaches with machine learning",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Patino",
+        "given": "J.E"
+      },
+      {
+        "family": "Duque",
+        "given": "J.C"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "PLOS ONE",
+    "volume": "12(5), e0176684"
+  },
+  {
+    "id": "comber2017waiting",
+    "type": "article-journal",
+    "title": "'Waiting on the train': The anticipatory (causal) effects of Crossrail in Ealing",
+    "author": [
+      {
+        "family": "Comber",
+        "given": "S"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Transport Geography",
+    "volume": "64, 13-22"
+  },
+  {
+    "id": "arribasbel2016how",
+    "type": "article-journal",
+    "title": "How diverse can measures of segregation be? Results from Monte Carlo simulations of an agent-based model",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      },
+      {
+        "family": "Poot",
+        "given": "J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning A",
+    "volume": "48(10), 2046-2066"
+  },
+  {
+    "id": "folch2016spatial",
+    "type": "article-journal",
+    "title": "Spatial Variation in the Quality of American Community Survey Estimates",
+    "author": [
+      {
+        "family": "Folch",
+        "given": "D"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Koschinsky",
+        "given": "K"
+      },
+      {
+        "family": "Spielman",
+        "given": "S"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Demography",
+    "volume": "53(5), 1535-1554"
+  },
+  {
+    "id": "arribasbel2015cultural",
+    "type": "article-journal",
+    "title": "Cultural Diversity and Urban Buzz",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning C -- Government and Policy",
+    "volume": "33, 1-17"
+  },
+  {
+    "id": "arribasbel2015from",
+    "type": "article-journal",
+    "title": "From manufacturing belt, to rust belt, to college country - A Visual Narrative of the US Urban Growth",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Gerritse",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning A",
+    "volume": "47(6), 1241-1253"
+  },
+  {
+    "id": "arribasbel2015the",
+    "type": "article-journal",
+    "title": "The size distribution of employment centers within the U.S. Metropolitan Areas",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Ramos",
+        "given": "A"
+      },
+      {
+        "family": "Sanz Gracia",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning B: Planning and Design",
+    "volume": "42, 23-39"
+  },
+  {
+    "id": "arribasbel2015cyber",
+    "type": "article-journal",
+    "title": "Cyber Cities: Social Media as a Tool for Understanding Cities",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      },
+      {
+        "family": "Steenbruggen",
+        "given": "J"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Applied Spatial Analysis and Policy",
+    "volume": "8(3), 231-247"
+  },
+  {
+    "id": "arribasbel2014the",
+    "type": "article-journal",
+    "title": "The Validity of the Monocentric City Model in a Polycentric Age: US Metropolitan areas in 1990, 2000 and 2010",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Sanz Gracia",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Urban Geography",
+    "volume": "35(7), 980-997"
+  },
+  {
+    "id": "arribasbel2014accidental",
+    "type": "article-journal",
+    "title": "Accidental, Open and Everywhere: Emerging Data Sources for the Understanding of Cities",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Applied Geography",
+    "volume": "49, 45-53"
+  },
+  {
+    "id": "kourtit2014migrant",
+    "type": "article-journal",
+    "title": "Migrant Entrepreneurs as Urban 'Health Angels' -- Contrasts in Growth Strategies",
+    "author": [
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "International Planning Studies"
+  },
+  {
+    "id": "arribasbel2013selforganizing",
+    "type": "article-journal",
+    "title": "Self-organizing maps and the US urban spatial structure",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Schmidt",
+        "given": "C. R"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Environment and Planning B: Planning and Design",
+    "volume": "2, 362-371"
+  },
+  {
+    "id": "arribasbel2013benchmarking",
+    "type": "article-journal",
+    "title": "Benchmarking of World cities through self-organizing maps",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Cities",
+    "volume": "31, 248-257"
+  },
+  {
+    "id": "anselin2013spatial",
+    "type": "article-journal",
+    "title": "Spatial fixed effects and spatial dependence",
+    "author": [
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Papers in Regional Science",
+    "volume": "92(1), 3-17"
+  },
+  {
+    "id": "amaral2013testing",
+    "type": "article-journal",
+    "title": "Testing for spatial error dependence in probit models",
+    "author": [
+      {
+        "family": "Amaral",
+        "given": "P. V"
+      },
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Letters in Spatial Resource and Sciences",
+    "volume": "6(2), 91-101"
+  },
+  {
+    "id": "arribasbel2012improving",
+    "type": "article-journal",
+    "title": "Improving the Multi-Dimensional Comparison of Simulation Results: A Spatial Visualization Approach",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Koschinsky",
+        "given": "J"
+      },
+      {
+        "family": "Amaral",
+        "given": "P. V"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Letters in Spatial and Resource Sciences",
+    "volume": "5(2), 55-63"
+  },
+  {
+    "id": "kourtit2012smart",
+    "type": "article-journal",
+    "title": "Smart Cities Perspective - a Comparative European Study by Means of Self-Organizing Maps",
+    "author": [
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Innovation: The European Journal of Social Science Research",
+    "volume": "25(2), 229-246"
+  },
+  {
+    "id": "arribasbel2012kangaroos",
+    "type": "article-journal",
+    "title": "Kangaroos, cities and space: a first approach to the Australian urban system",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Sanz-Gracia",
+        "given": "F"
+      },
+      {
+        "family": "Ximenez-de-Embún",
+        "given": "D. P"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "category": "journal-article"
+  },
+  {
+    "id": "kourtit2012high",
+    "type": "article-journal",
+    "title": "High Performers in Complex Spatial Systems: A Self-Organizing Mapping Approach with Reference to The Netherlands",
+    "author": [
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "The Annals of Regional Science",
+    "volume": "48(2), 501-527"
+  },
+  {
+    "id": "arribasbel2011multidimensional",
+    "type": "article-journal",
+    "title": "Multidimensional urban sprawl in Europe: a self-organizing map approach",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      },
+      {
+        "family": "Schoelten",
+        "given": "H"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2011
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Computers, Environment and Urban Systems",
+    "volume": "35(4), 265-275"
+  },
+  {
+    "id": "rey2011measuring",
+    "type": "article-journal",
+    "title": "Measuring Spatial Dynamics in Metropolitan Areas",
+    "author": [
+      {
+        "family": "Rey",
+        "given": "S.J"
+      },
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Folch",
+        "given": "D. C"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Sastré Gutiérrez",
+        "given": "M. L"
+      },
+      {
+        "family": "Interlante",
+        "given": "L"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2011
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Economic Development Quarterly",
+    "volume": "25(1), 54-64"
+  },
+  {
+    "id": "wagg2026using",
+    "type": "paper-conference",
+    "title": "Using Earth Observation Informed Agent-Based Models to build a Scenario Planning Digital Twin for Local Energy Policies",
+    "author": [
+      {
+        "family": "Wagg",
+        "given": "D"
+      },
+      {
+        "family": "Malleson",
+        "given": "N"
+      },
+      {
+        "family": "Beltran",
+        "given": "A"
+      },
+      {
+        "family": "Tipuric",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "category": "conference",
+    "DOI": "10.5194/egusphere-egu26-22325"
+  },
+  {
+    "id": "alharbi2021sustainable-b",
+    "type": "paper-conference",
+    "title": "Sustainable Development Goals Monitoring and Forecasting using Time Series Analysis",
+    "author": [
+      {
+        "family": "Alharbi",
+        "given": "Y"
+      },
+      {
+        "family": "Coenen",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "conference"
+  },
+  {
+    "id": "alharbi2020sustainable",
+    "type": "paper-conference",
+    "title": "Sustainable Development Goal Relational Modelling: Introducing the SDG-CAP Methodology",
+    "author": [
+      {
+        "family": "Alharbi",
+        "given": "Y"
+      },
+      {
+        "family": "Coenen",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "conference"
+  },
+  {
+    "id": "alharbi2020sustainable-b",
+    "type": "paper-conference",
+    "title": "Sustainable Development Goal Relational Modelling: Introducing the SDG-RMF Methodology",
+    "author": [
+      {
+        "family": "Alharbi",
+        "given": "Y"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Coenen",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "conference"
+  },
+  {
+    "id": "alharbi2019sustainable",
+    "type": "paper-conference",
+    "title": "Sustainable Development Goal Attainment Prediction: A Hierarchical Framework using Time Series Modelling",
+    "author": [
+      {
+        "family": "Alharbi",
+        "given": "Y"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Coenen",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "conference"
+  },
+  {
+    "id": "arribasbel2026satellite",
+    "type": "article-journal",
+    "title": "Satellite Salvation? Why satellite imagery is (part of) the answer to our urban data needs",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Franklin",
+        "given": "R"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Urban Analytics and City Science",
+    "volume": "53(5)",
+    "DOI": "10.1177/23998083261456945"
+  },
+  {
+    "id": "beecham2026open",
+    "type": "article-journal",
+    "title": "Open spatial science as routine practice: Urban Data/Code contributions from GISRUK 2024",
+    "author": [
+      {
+        "family": "Beecham",
+        "given": "R"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Urban Analytics and City Science",
+    "volume": "53(3)",
+    "DOI": "10.1177/23998083261431404"
+  },
+  {
+    "id": "arribasbel2025ai",
+    "type": "article-journal",
+    "title": "AI in land use",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Metzler",
+        "given": "B"
+      },
+      {
+        "family": "Lynn",
+        "given": "S"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Urban Analytics and City Science",
+    "volume": "52(2)",
+    "DOI": "10.1177/23998083251316384"
+  },
+  {
+    "id": "malleson2024digital",
+    "type": "article-journal",
+    "title": "Digital twins on trial: Can they actually solve wicked societal problems and change the world for better?",
+    "author": [
+      {
+        "family": "Malleson",
+        "given": "N."
+      },
+      {
+        "family": "Franklin",
+        "given": "R."
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D."
+      },
+      {
+        "family": "Cheng",
+        "given": "T."
+      },
+      {
+        "family": "Birkin",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Urban Analytics and City Science",
+    "volume": "51(6), 1181-1186",
+    "DOI": "10.1177/23998083241262893"
+  },
+  {
+    "id": "arribasbel2024in",
+    "type": "article-journal",
+    "title": "In praise of (spatial) bundles",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Urban Analytics and City Science",
+    "DOI": "10.1177/23998083231224151"
+  },
+  {
+    "id": "arribasbel2021urban",
+    "type": "article-journal",
+    "title": "Urban data/code: A new EP-B section",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Alvanides",
+        "given": "S"
+      },
+      {
+        "family": "Batty",
+        "given": "M"
+      },
+      {
+        "family": "Crooks",
+        "given": "A"
+      },
+      {
+        "family": "See",
+        "given": "L"
+      },
+      {
+        "family": "Wolf",
+        "given": "L"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B - Urban Analytics and City Science",
+    "volume": "48(9), 2517-2519",
+    "DOI": "10.1177/23998083211059670"
+  },
+  {
+    "id": "rowe2020the",
+    "type": "article-journal",
+    "title": "The Potential of Notebooks for Scientific Publication, Reproducibility and Dissemination",
+    "author": [
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Maier",
+        "given": "G"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Rey",
+        "given": "S"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "REGION",
+    "volume": "7(3), E1-E5",
+    "DOI": "10.18335/region.v7i3.357"
+  },
+  {
+    "id": "arribasbel2018big",
+    "type": "article-journal",
+    "title": "Big Urban Data: Challenges and Opportunities for Geographical Analysis",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Tranos",
+        "given": "E"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Geographical Analysis",
+    "DOI": "10.1111/gean.12157"
+  },
+  {
+    "id": "harris2017more",
+    "type": "article-journal",
+    "title": "More bark than bytes? Reflections on 21+ years of geocomputation",
+    "author": [
+      {
+        "family": "Harris",
+        "given": "R"
+      },
+      {
+        "family": "O'Sullivan",
+        "given": "D"
+      },
+      {
+        "family": "Gahegan",
+        "given": "M"
+      },
+      {
+        "family": "Charlton",
+        "given": "M"
+      },
+      {
+        "family": "Comber",
+        "given": "L"
+      },
+      {
+        "family": "Longley",
+        "given": "P"
+      },
+      {
+        "family": "Brunsdon",
+        "given": "C"
+      },
+      {
+        "family": "Malleson",
+        "given": "N"
+      },
+      {
+        "family": "Heppenstall",
+        "given": "A"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Evans",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Urban Analytics and City Science",
+    "volume": "44(4), 598-617"
+  },
+  {
+    "id": "arribasbel2016london",
+    "type": "article-journal",
+    "title": "London: The Information Capital: 100 Maps and Graphics That Will Change How You View the City. James Cheshire and Oliver Uberti. London: Particular Books (Penguin), 2014.",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Papers in Regional Science",
+    "volume": "96(1), 223-224"
+  },
+  {
+    "id": "arribasbel2016geocomputation",
+    "type": "article-journal",
+    "title": "Geocomputation: A Practical Primer, edited by Chris Brunson and Alex Singleton.",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Journal of Regional Science",
+    "volume": "56(1), 176-178"
+  },
+  {
+    "id": "arribasbel2015review",
+    "type": "article-journal",
+    "title": "Review of Simulation of Complex Systems in GIS, by Patrice Laglois",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Environment and Planning B: Planning and Design",
+    "volume": "42, 564-567"
+  },
+  {
+    "id": "arribasbel2015the-b",
+    "type": "article-journal",
+    "title": "The spoken postcodes",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Regional Studies, Regional Science",
+    "volume": "2(1), 457-460"
+  },
+  {
+    "id": "arribasbel2015woowii",
+    "type": "article-journal",
+    "title": "WooW-II: Workshop on open workflows",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Graaff",
+        "given": "T"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "REGION",
+    "volume": "2(2), R1-R2"
+  },
+  {
+    "id": "arribasbel2014spatial",
+    "type": "article-journal",
+    "title": "Spatial Data, Analysis, and Regression - A mini course",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "REGION",
+    "volume": "1(1), R1"
+  },
+  {
+    "id": "arribasbel2012monocentricity",
+    "type": "article-journal",
+    "title": "Monocentricity? Commuting flows visually.",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Gerritse",
+        "given": "M"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "category": "other-article",
+    "container-title": "Featured Graphic, Environment and Planning A",
+    "volume": "44(9), 2041-2042"
+  },
+  {
+    "id": "arribasbel2024geographic",
+    "type": "chapter",
+    "title": "Geographic data science: a manifesto",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Graser",
+        "given": "A"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "ISBN": "978 1 80220 322 6"
+  },
+  {
+    "id": "arribasbel2023an",
+    "type": "chapter",
+    "title": "An image library: The potential of imagery in (quantitative) social sciences",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Chen",
+        "given": "M"
+      },
+      {
+        "family": "Comber",
+        "given": "S"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "DOI": "10.4337/9781789903942"
+  },
+  {
+    "id": "boeing2020gis",
+    "type": "chapter",
+    "title": "GIS and Computational Notebooks",
+    "author": [
+      {
+        "family": "Boeing",
+        "given": "G"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "editor": [
+      {
+        "literal": "John P. Wilson"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "container-title": "The Geographic Information Science & Technology Body of Knowledge (1st Quarter 2021 Edition)",
+    "DOI": "10.22224/gistbok/2021.1.2"
+  },
+  {
+    "id": "arribasbel2018statistics",
+    "type": "chapter",
+    "title": "Statistics, Modelling, and Data Science",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D."
+      }
+    ],
+    "editor": [
+      {
+        "family": "Ash",
+        "given": "J."
+      },
+      {
+        "family": "Kitchin",
+        "given": "R."
+      },
+      {
+        "family": "Leszczynski",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "container-title": "Digital Geographies",
+    "page": "129-140",
+    "publisher": "SAGE"
+  },
+  {
+    "id": "degraaff2018demographic",
+    "type": "chapter",
+    "title": "Demographic Aging and Employment Dynamics in German Regions: Modeling Regional Heterogeneity",
+    "author": [
+      {
+        "family": "de Graaff",
+        "given": "T."
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D."
+      },
+      {
+        "family": "Ozgen",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "container-title": "Modelling Aging and Migration Effects on Spatial Labor Markets",
+    "page": "211-231",
+    "publisher": "Springer, Cham"
+  },
+  {
+    "id": "arribasbel2017looking",
+    "type": "chapter",
+    "title": "Looking at John Snow's cholera map from the XXIst century: a practical primer on Reproducibility and Open Science",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D."
+      },
+      {
+        "family": "de Graaff",
+        "given": "T."
+      },
+      {
+        "family": "Rey",
+        "given": "S.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "container-title": "Regional Research Fontiers"
+  },
+  {
+    "id": "kourtit2013the",
+    "type": "chapter",
+    "title": "The Creative Urban Diaspora Economy: A Disparity Analysis among Migrant Entrepreneurs.",
+    "author": [
+      {
+        "family": "Kourtit",
+        "given": "K"
+      },
+      {
+        "family": "Nijkamp",
+        "given": "P"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "editor": [
+      {
+        "family": "Kresl",
+        "given": "P."
+      },
+      {
+        "family": "Vaughan",
+        "given": "C.P"
+      },
+      {
+        "family": "Sobrino",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "book-chapter",
+    "container-title": "Handbook of Research Methods and Applications in Urban Economies"
+  },
+  {
+    "id": "arribasbel2025el",
+    "type": "article",
+    "title": "El papel de la geografía en la revolución de datos: ejemplos desde la ciencia de datos geográficos",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "category": "other",
+    "container-title": "Geografía, cambio global y vulnerabilidad territorial. Herramientas para el conocimiento de un mundo en transformación permanente",
+    "publisher": "Universidad de La Laguna (Spain)",
+    "URL": "http://riull.ull.es/xmlui/handle/915/42264"
+  },
+  {
+    "id": "thealanturinginstitute2024geospatial",
+    "type": "article",
+    "title": "Geospatial AI for Land Use, by The Alan Turing Institute",
+    "author": [
+      {
+        "literal": "The Alan Turing Institute"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "category": "other",
+    "URL": "https://www.gov.uk/government/publications/geospatial-ai-for-land-use-by-the-alan-turing-institute/geospatial-ai-for-land-use-by-the-alan-turing-institute"
+  },
+  {
+    "id": "darlingtonpollock2021what",
+    "type": "article",
+    "title": "What do 'left behind' areas looklike over time?",
+    "author": [
+      {
+        "family": "Darlington-Pollock",
+        "given": "F"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Rowe",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "category": "other",
+    "URL": "https://localtrust.org.uk"
+  },
+  {
+    "id": "arribasbel2019imagery",
+    "type": "article",
+    "title": "Imagery: A better 'picture' of the city",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "other",
+    "URL": "https://cp.catapult.org.uk/2019/12/13/imagery-a-better-picture-of-the-city/"
+  },
+  {
+    "id": "rowe2019policy",
+    "type": "article",
+    "title": "Policy Brief: Neighbourhood Change and Trajectories of Inequality in Britain, 1971-2011",
+    "author": [
+      {
+        "family": "Rowe",
+        "given": "F"
+      },
+      {
+        "family": "Patias",
+        "given": "N"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "other",
+    "container-title": "UK2070 Commission"
+  },
+  {
+    "id": "arribasbel2019six",
+    "type": "article",
+    "title": "Six 15-minute walks capture the diversity, history of Houston neighborhoods",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "category": "other",
+    "container-title": "Urban Edge Blog",
+    "publisher": "Kinder Institute for Urban Research, Rice University",
+    "URL": "https://kinder.rice.edu/urbanedge/2019/04/08/maps-six-15-minute-walks-capture-diversity-history-houston-neighborhoods"
+  },
+  {
+    "id": "arribasbel2015does",
+    "type": "article",
+    "title": "Does Twitter make us view cities differently?",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "category": "other",
+    "container-title": "University of Birmingham Tumblr blog. May 15th, 2015",
+    "URL": "http://unibirmingham.tumblr.com/post/119013810163/does-twitter-make-us-view-cities-differently"
+  },
+  {
+    "id": "arribasbel2014open",
+    "type": "article",
+    "title": "Open Workflows for Open Regional Science",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "category": "other",
+    "container-title": "NARSC Newsletter. Issue 1, No.2, June",
+    "URL": "http://www.narsc.org/newsite/wp-content/uploads/2014/06/NARSCNewsJune2014-Final2.pdf"
+  },
+  {
+    "id": "arribasbel2013cultural",
+    "type": "article",
+    "title": "Cultural diversity and increased urban buzz",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "other",
+    "container-title": "Migration: New Developments. Spring 2013",
+    "publisher": "NORFACE Research Programme on Migration",
+    "URL": "http://www.norface-migration.org/files/NORFACE_2013_single.pdf"
+  },
+  {
+    "id": "arribasbel2013heterogeneity",
+    "type": "manuscript",
+    "title": "Heterogeneity and Dependence in Geo-Referenced Micro Data: Random Effects vs True Contagion",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Florax",
+        "given": "R"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "working-paper"
+  },
+  {
+    "id": "arribasbel2013on",
+    "type": "manuscript",
+    "title": "On the existence of agglomeration shadows at the metropolitan level",
+    "author": [
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      },
+      {
+        "family": "Sanz Gracia",
+        "given": "F"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "category": "working-paper"
+  },
+  {
+    "id": "anselin2012technical",
+    "type": "manuscript",
+    "title": "Technical Aspects of Implementing GMM Estimation of the Spatial Error Model in PySAL and GeoDaSpace",
+    "author": [
+      {
+        "family": "Anselin",
+        "given": "L"
+      },
+      {
+        "family": "Amaral",
+        "given": "P. V"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "category": "working-paper",
+    "URL": "https://geodacenter.asu.edu/drupal_files/sperrorgmm_wp2.pdf"
+  }
+]
