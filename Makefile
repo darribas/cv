@@ -3,25 +3,36 @@
 # Source of truth is src/ (hand-edited JSON + the Typst renderer).
 # Build outputs go to docs/ (served by GitHub Pages later).
 
-TYPST   ?= typst
-SRC     := src/cv.typ
-PDF     := docs/cv.pdf
-JSON    := $(wildcard src/*.json)
-PREVIEW := build/preview
-FONTS   := fonts
+TYPST    ?= typst
+PYTHON   ?= python3
+SRC      := src/cv.typ
+PDF      := docs/cv.pdf
+HTML     := docs/index.html
+JSON     := $(wildcard src/*.json)
+PREVIEW  := build/preview
+FONTS    := fonts
 
-.PHONY: pdf watch preview validate clean
+.PHONY: site pdf html watch preview validate clean
 
-## pdf: build the CV PDF into docs/  (default target)
+## site: build both the PDF and the HTML page  (default target)
+site: pdf html
+
+## pdf: build the CV PDF into docs/
 pdf: $(PDF)
 
 $(PDF): $(SRC) $(JSON) | docs
 	$(TYPST) compile --font-path $(FONTS) $(SRC) $(PDF)
 
+## html: build the CV web page into docs/ (index.html, style.css, fonts/)
+html: $(HTML)
+
+$(HTML): src/render_html.py src/style.css $(JSON) | docs
+	$(PYTHON) src/render_html.py
+
 docs:
 	mkdir -p docs
 
-## watch: rebuild on save while editing
+## watch: rebuild the PDF on save while editing
 watch: | docs
 	$(TYPST) watch --font-path $(FONTS) $(SRC) $(PDF)
 
@@ -34,7 +45,8 @@ preview: | docs
 validate:
 	@for f in $(JSON); do python3 -m json.tool "$$f" > /dev/null && echo "OK  $$f"; done
 
-## clean: remove build/preview artifacts (the committed PDF stays)
+## clean: remove build/preview artifacts (the committed PDF/HTML stay)
 clean:
 	rm -rf $(PREVIEW)
-	rm -f $(PDF)
+	rm -f $(PDF) $(HTML) docs/style.css
+	rm -rf docs/fonts
