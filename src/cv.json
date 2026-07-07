@@ -1,6 +1,6 @@
 {
   "$schema": "./cv.schema.json",
-  "//": "CV body — single source of truth. Publications are in publications.json (CSL). Sections migrated so far: front matter through Research Visits, plus Scientific Software and Language Skills. Narrative lists (Publications, Invited Lectures, Conferences, Teaching, Supervision, Service) are added in later migration stages.",
+  "//": "CV body — single source of truth. Publications are in publications.json (CSL). All sections of cv-darribas.tex are now migrated; see notes/MIGRATION-REVIEW.md for the migration log.",
 
   "basics": {
     "name": "Daniel Arribas-Bel",
@@ -205,6 +205,325 @@
         { "date": "2010", "institution": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University", "location": "Tempe, AZ (USA)", "role": "March-May. Visiting PhD student" },
         { "date": "2009", "institution": "Department of Spatial Economics, The Faculty of Economics and Business Administration, Vrije Universiteit", "location": "Amsterdam (The Netherlands)", "role": "September-December. Visiting PhD student" },
         { "date": "2008-09", "institution": "GeoDa Center for Geospatial Analysis and Computation, Arizona State University", "location": "Tempe, AZ (USA)", "role": "August-June. Visiting PhD student" }
+      ]
+    },
+
+    {
+      "title": "Invited Lectures",
+      "groups": [
+        {
+          "title": "Keynote speeches",
+          "type": "talks",
+          "entries": [
+            {"date": "2026", "title": "Understanding Cities with New Forms of Data", "venue": "SPACERAISE summer school, Grand Sasso Science Institute. L'Aquila (Italy)"},
+            {"date": "2022", "title": "Making it easy for Regional Scientists to consider (urban) form & function", "venue": "Spatial Economic Analysis Lecture. Regional Science Association International, British and Irish Section. July. Stirling (UK)"},
+            {"date": "2021", "title": "El papel de la Geografía en la revolución de datos: ejemplos desde la Ciencia de Datos Geográficos", "venue": "XXVII Congreso de la Asociación Española de Geografía. December. Tenerife (Spain)"},
+            {"date": "2021", "title": "Building 'Geographic Data Science…'", "venue": "International Conference on Geospatial Information Sciences. November. Mexico"},
+            {"date": "2021", "title": "Building 'Geographic Data Science…'", "venue": "Geoinformation Science Symposium (virtual). October. Indonesia"}
+          ]
+        },
+        {
+          "title": "Seminars",
+          "type": "talks",
+          "entries": [
+            {"date": "2026", "title": "Embeddings for the rest of us", "venue": "Universidad de Zaragoza. June"},
+            {"date": "2026", "title": "Making satellites more useful, usable and used in social research and policy", "venue": "Universidad de Zaragoza. June"},
+            {"date": "2026", "title": "Making satellites more useful, usable and used in social research and policy", "venue": "University of Leeds. June"},
+            {"date": "2025", "title": "The case for satellite imagery in social science and policymaking", "venue": "Chinese Academy of Sciences. Beijing (China). May"},
+            {"date": "2025", "title": "The case for satellite imagery in social science and policymaking", "venue": "Southwest University. Chongqing (China). May"},
+            {"date": "2023", "title": "Decoding urban form and function in Great Britain", "venue": "IOER Forum. Leibniz Institute of Ecological Urban and Regional Development. November"},
+            {"date": "2023", "title": "Decoding urban form and function in Great Britain", "venue": "Economic Geography and Spatial Economics Seminar Series. London School of Economics. October"},
+            {"date": "2023", "title": "Urban Grammar - Decoding the socio-economic landscape with satellite imagery", "venue": "Workshop on Migration, Climate Change and Economic Development. Universidad de Zaragoza. September"},
+            {"date": "2023", "title": "Decoding the Socio-Economic landscape with satellite imagery", "venue": "Bank of England. July"},
+            {"date": "2023", "title": "Learning from Deep Learning - Lessons from using computer vision to identify (urban) form and function in open data satellite imagery", "venue": "AI and Sustainable Cities workshop. The Alan Turing Institute, UCL & QMUL workshop. June"},
+            {"date": "2023", "title": "Measuring (even) better the Urban-Rural continuum", "venue": "JRC Webinar Series. Future of Cities. Online. April"},
+            {"date": "2023", "title": "Developing detailed, consistent and scalable characterisations of urban form & function", "venue": "Masters Gathering. Industrial Technology Research Institute, Taiwan (online). April"},
+            {"date": "2022", "title": "Making it easy for regional scientists to consider (urban) form & function", "venue": "Economic Data Science Seminar Series. Office for National Statistics. November"},
+            {"date": "2022", "title": "Open by Default - Developing reproducible, computational research", "venue": "Royal Statistical Society, Merseyside chapter. Session on open data sources. June"},
+            {"date": "2022", "title": "Urban Analytics@Turing", "venue": "Brown bag series. Mansueto Institute for Urban Innovation. University of Chicago. May"},
+            {"date": "2021", "title": "Building 'Geographic Data Science…'", "venue": "Diplomado en Análisis de Datos para las Ciencias Sociales (remote). Universidad de Caldas. Colombia"},
+            {"date": "2021", "title": "Geographic Data Science: why, what, how", "venue": "HM Land Registry Data Science seminars"},
+            {"date": "2021", "title": "(Urban) Form & Function in Great Britain", "venue": "Urban Analytics monthly meetup (remote). Alan Turing Institute (UK)"},
+            {"date": "2021", "title": "Infusing our understanding of cities with Geographic Data Science", "venue": "(remote). ETH Zurich (Switzerland)"},
+            {"date": "2021", "title": "Spatial Signatures -- Understanding (urban) spaces through form and function", "venue": "(remote). ESRC Urban Big Data Centre seminar series. University of Glasgow. Glasgow (UK)"},
+            {"date": "2020", "title": "Building 'Geographic Data Science…'", "venue": "MSc in Economics seminar, Universidad de San Andrés (Argentina). Online. November"},
+            {"date": "2020", "title": "Urban Analytics - Maximising the value of big data for enhanced urban policy making", "venue": "Building Smart Cities with Citizens and for the Public Good: A Symposium. Organised by the Heseltine Institute, University of Liverpool. Liverpool. March"},
+            {"date": "2019", "title": "Using New Forms of Data & Machine Learning to Understand Cities", "venue": "Innovation LAB seminar series, OECD. Paris (France). December"},
+            {"date": "2019", "title": "Images as (policy-ready) data", "venue": "Acto Anual de Política Regional y Fondos Europeos en España (Annual Event for Regional Policy and European Funds in Spain). Madrid (Spain). November"},
+            {"date": "2019", "title": "Building(s and) Cities", "venue": "MacArthur Foundation workshop on Urban Modelling & Complexity Science. Centre for Advanced Spatial Analysis, University College London. London (UK). September"},
+            {"date": "2019", "title": "Infusing Urban Analytics with Geographic Data Science", "venue": "Urban Analytics at the interface between environment, human health and behaviour workshop. Tongji University (China). July"},
+            {"date": "2019", "title": "Urban Analysis with Geographic Data Science and New Forms of Data", "venue": "Instituto Nacional de Pesquisas Espaciais (INPE) (Brazil). March"},
+            {"date": "2019", "title": "Infusing Urban and Regional Policy with Geographic Data Science", "venue": "Instituto de Pesquisa Economica Aplicada (IPEA) (Brazil). March"},
+            {"date": "2019", "title": "Infusing Urban and Regional analysis with Geographic Data Science", "venue": "CUSP Seminars, King's College London. London (UK). January"},
+            {"date": "2019", "title": "Accessing & Visualizing Satellite Data", "venue": "Workshop on Ocean and Coastal Monitoring and Modelling for Coastal Zone Management. Commonweath Marine Economies Programme. St. Vincent & Grenada. January"},
+            {"date": "2018", "title": "Infusing Urban and Regional analysis with Geographic Data Science", "venue": "University of Toronto, Toronto (Canada). November"},
+            {"date": "2018", "title": "Infusing Urban & Regional work with New Forms of Data", "venue": "OECD, Paris (France). September"},
+            {"date": "2018", "title": "Geographic Data Science - What, why, and how", "venue": "300,000Km/s, Barcelona (Spain). March"},
+            {"date": "2018", "title": "An Updatable Index of Neighborhood Desirability", "venue": "IEB Seminars, Universitat de Barcelona (Spain). February"},
+            {"date": "2018", "title": "New methods for new data? A few urban examples", "venue": "Data Science Seminars. ShopDirect, Liverpool. January"},
+            {"date": "2017", "title": "Towards a Geographic Data Science that Works for Everyone", "venue": "Spatial Data Science Conference. CARTO HQ, Brooklyn. December"},
+            {"date": "2017", "title": "The Spatial Structure of Cities Through The Lens Of New Forms Of Data", "venue": "CASA Seminars. Centre for Advanced Spatial Analysis. University College London. November"},
+            {"date": "2017", "title": "Looking at Cities with New Lenses", "venue": "Roxby Centenary Lecture, University of Liverpool. November"},
+            {"date": "2017", "title": "Bringing new forms of data to the study of cities", "venue": "UK Data Service Webinar. February"},
+            {"date": "2017", "title": "Remote Sensing-Based Measurement of Living Environment Deprivation - Improving Classical Approaches with Machine Learning", "venue": "GVC/City REDI Seminar Series, University of Birmingham. (Birmingham, UK). February"},
+            {"date": "2017", "title": "Bringing New Forms of Data to the Study of Cities", "venue": "Ritsumeikan University (Kyoto, Japan). January"},
+            {"date": "2016", "title": "Smart Cities - Examples, Opportunities and Challenges from Urban Research", "venue": "Smart Cities: myth or reality? event held by the Telefonica Chair on Smart Cities and the IEB. University of Barcelona (Spain). January"},
+            {"date": "2015", "title": "The (geo)data revolution and the need for (Geographic) Data Science", "venue": "Remote lecture for the postgraduate course Research Design in Urban Science, coordinated by Professor Marina Alberti. University of Washington (US). October"},
+            {"date": "2015", "title": "New approaches to measure the spatial structure(s) of cities", "venue": "Geospatial Big Data seminars. University College London (UK). March"},
+            {"date": "2014", "title": "Seeing cities through the lens of new (big) data -- Some examples", "venue": "University of Liverpool (UK). December"},
+            {"date": "2014", "title": "Seeing cities through the lens of new (big) data", "venue": "Institute for Employment Research (IAB). Nuremberg (Germany). September"},
+            {"date": "2014", "title": "Spatial Analysis & Spatial Regression", "venue": "Third year module in the Bachelor in Economics' Minor in Geography. Two lectures (3h). University of Utrecht (Netherlands). February"},
+            {"date": "2014", "title": "New data & old Regional Science -- Some examples", "venue": "GeoDa Center Brownbag series, Arizona State University (USA). February"},
+            {"date": "2014", "title": "Agglomeration Lights and Shadows within metropolitan areas -- US Cities in 2000", "venue": "Department of Global Economics & Management internal seminars, University of Groningen (Netherlands). February"},
+            {"date": "2012", "title": "GeoDaSpace: advanced spatial econometrics made easy", "venue": "V Spatial Econometrics Seminar in honour of Jean Paelink, Universidade de Coimbra (Portugal). October"},
+            {"date": "2012", "title": "An introduction to R (with Nick Malizia)", "venue": "Graduates for Integrative Society and Environment Research (GISER), Arizona State University. March"},
+            {"date": "2011", "title": "Studying urban polycentricity in the US with spatial analysis methods", "venue": "European Investment Bank. July"},
+            {"date": "2007", "title": "45 minutes on Geographical and Urban Economics", "venue": "Bremen International Graduate School of Social Sciences. December"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "title": "Conferences and Events",
+      "groups": [
+        {
+          "title": "Organization",
+          "type": "events",
+          "entries": [
+            {"date": "2025", "title": "The Interesting Data and Methods Sessions", "detail": "Series of sessions organised with Rachel Franklin, Elizabeth Delmelle, and Isabelle Nilsson at the AAG Annual Meeting. Detroit (US). April"},
+            {"date": "2023", "title": "The Future of Urban Analytics", "detail": "Series of sessions organised between the Alan Turing Institute, the University of Liverpool, and the University of Leeds at the AAG Annual Meeting"},
+            {"date": "2022", "title": "Workshop: Urban Analytics in Policymaking", "detail": "OECD Laboratory for Geospatial Analysis. Online"},
+            {"date": "2021-2023", "title": "Spatial Analytics and Data - The Interviews", "detail": "Sponsored by the Royal Geographical Society and The Alan Turing Institute. With Rachel Franklin and Levi Wolf"},
+            {"date": "2018", "title": "The Potential of Satellite Imagery for Studying Human Activity", "detail": "workshop held at the University of Liverpool. Co-organised with Francisco Rowe. June"},
+            {"date": "2017", "title": "Geographic Data Science", "detail": "special sessions and panel for the Annual Meeting of the AAG , held in Boston, MA. Co-organized with Mark Birkin, Marynia Kolak, Nick Malleson, Alex Singleton and Seth Spielman"},
+            {"date": "2016", "title": "Big Data for Urban and Regional Analysis", "detail": "special sessions for the Annual Meeting of the AAG , held in San Francisco, CA. Co-organized with Emmanouil Tranos"},
+            {"date": "2014/15", "title": "Big Data Lunch Seminars", "detail": "co-organized with Emmanouil Tranos and University of Birmingham Institute of Advanced Studies"},
+            {"date": "2015", "title": "Big Data for Urban and Regional Analysis", "detail": "special sessions for the Annual Meeting of the AAG , held in Chicago, IL. Co-organized with David Folch and Emmanouil Tranos"},
+            {"date": "2014", "title": "Applications of new sources of (big) data in Regional Science", "detail": "special sessions for the 61st NARSC Meetings, held in Washington, DC. Co-organized with David Folch"},
+            {"date": "2014", "title": "Big Data Day", "detail": "co-organized with Emmanouil Tranos and University of Birmingham Institute of Advanced Studies. September"}
+          ]
+        },
+        {
+          "title": "Participation",
+          "type": "text-list",
+          "entries": [
+            {"date": "2025", "text": "Annual Meeting of the AAG, Detroit (USA); GISRUK, Bristol (UK); Living Planet Symposium, Vienna (Austria)"},
+            {"date": "2023", "text": "Annual Meeting of the AAG, Denver (USA)"},
+            {"date": "2021", "text": "International Seminar on Urban Form. Glasgow (UK, online)"},
+            {"date": "2018", "text": "Annual Meeting of the AAG, New Orleans (USA)"},
+            {"date": "2017", "text": "Annual Meeting of the AAG, Boston (USA); GIS Research UK, GISRUK, Manchester (UK)"},
+            {"date": "2016", "text": "Annual Meeting of the AAG, San Francisco (USA); Workshop on Big Data and Transport organized by the Joint Research Centre of the European Comission, Sevilla (Spain); Convening on Urban Data Science - University of Chicago, Chicago (USA)"},
+            {"date": "2015", "text": "NARSC Meetings, Portland (OR, USA); GIS Research UK - GISRUK, Leeds (UK); Annual Meeting of the AAG, Chicago (USA)"},
+            {"date": "2014", "text": "Western Regional Science Association Meeting, San Diego (USA); Tinbergen Institute Workshop, Amsterdam (NL); Workshop on Big Data and Urban Informatics, University of Illinois at Chicago (USA); Department of Economics, University of Houston (USA), NARSC Meetings"},
+            {"date": "2013", "text": "Western Regional Science Association Meeting, Santa Barbara (USA); NORFACE Migration Conference, London (UK); Tinbergen Institute Workshop, Amsterdam (NL); ERSA Congress, Palermo (Italy); Dutch-Israeli Workshop on Regional-Science, Groningen (NL); 5th. NORFACE Migration Conference, Berlin (Germany); NARSC Meetings, Atlanta (USA)"},
+            {"date": "2012", "text": "Spatial Econometrics Association World Conference, Salvador (Brazil); ERSA Congress, Bratislava (Slovakia); NORFACE “Increasing Heterogeneity in the Workforce and its Impact”, Nuremberg (Germany)"},
+            {"date": "2011", "text": "Eureka Seminar, VU University, Amsterdam (NL); ERSA Congress, Barcelona (Spain); NARSC Meetings, Miami (USA); Tinbergen Institute Complex-City Workshop, Amsterdam (NL)"},
+            {"date": "2010", "text": "Workshop on Urban Dynamics URBANICS, Marbella (Chile); ERSA Congress, Jonköping (Sweden); Workshop Urban Systems 2.0., Delft (NL); FOSS4G, Barcelona (Spain)"},
+            {"date": "2009", "text": "Spatial Econometrics Association World Conference, Barcelona (Spain); NARSC Meetings, San Francisco (USA)"},
+            {"date": "2008", "text": "RESER, Sttutgart (Germany); Spatial Econometrics Association World Conference, Brooklyn (USA)"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "title": "Teaching",
+      "groups": [
+        {
+          "title": "Postgraduate",
+          "type": "courses",
+          "entries": [
+            {"name": "Geographic Data Science", "years": "2015-2020", "url": "https://darribas.org/gds_course"},
+            {"name": "Web Mapping and Analysis", "years": "2020-", "url": "https://darribas.org/wmn"},
+            {"name": "Spatial Modelling for Data Scientists", "years": "2021", "url": "https://gdsl-ul.github.io/san"},
+            {"name": "Data Science Studio", "years": "2018-", "url": "https://darribas.org/data_science_studio"},
+            {"name": "Spatial Analysis", "years": "2015-20", "url": "https://darribas.org/spa_notes"}
+          ]
+        },
+        {
+          "title": "Undergraduate",
+          "type": "courses",
+          "entries": [
+            {"name": "Geographic Data Science", "years": "2015-", "url": "https://darribas.org/gds_course"},
+            {"name": "Virtual Field Class", "years": "2021-"},
+            {"name": "Field Class Year 3, Barcelona", "years": "2015-20"},
+            {"name": "Geography undergraduate dissertation supervisions", "years": "2014-2020"},
+            {"name": "Field Class Year 1, Shropshire", "years": "2014"},
+            {"name": "Geography Year 1 and 2 Tutorials", "years": "2014-2020"},
+            {"name": "Research Methods for Dissertations", "years": "2014"}
+          ]
+        },
+        {
+          "title": "Workshops and Short Courses",
+          "type": "talks",
+          "entries": [
+            {"date": "2026", "title": "Embeddings for the rest of us", "venue": "SPACERAISE summer school, Grand Sasso Science Institute. L'Aquila (Italy)"},
+            {"date": "2023", "title": "Geographic Data Science for Applied Economists", "venue": "(remote). 15h course. CEMFI. Madrid (Spain). November"},
+            {"date": "2023", "title": "Urban Analytics", "venue": "(remote). 4h session at the MSc Engineers for Smart Cities. Université Côte D'Azur. November"},
+            {"date": "2023", "title": "Spatial autocorrelation", "venue": "Spatial Data Science Bootcamp (with Levi Wolf). CARTO. London. February"},
+            {"date": "2022", "title": "Super-Charging your (Regression) Model with Space and Geography", "venue": "Together with Pedro Amaral. Center for Spatial Data Science. University of Chicago. May"},
+            {"date": "2021", "title": "Python for Geographic Data Science", "venue": "Urban Systems Lab. Imperial College London. 2-day course"},
+            {"date": "2021", "title": "Geographic Data Science for Regional Economists", "venue": "(remote). 8h course. Universitat de València. Valencia (Spain)"},
+            {"date": "2021", "title": "Geographic Data Science for Applied Economists", "venue": "(remote). 15h course. CEMFI. Madrid (Spain)"},
+            {"date": "2020", "title": "Enriching your Analytics with Geographic Data Science", "venue": "(remote). 2h workshop. Spatial Data Science Conference (online). CARTO"},
+            {"date": "2020", "title": "Geographic Data Science for Regional Scientists", "venue": "(remote). 2h workshop. Spanish Association of Regional Science (online) Conference"},
+            {"date": "2020", "title": "Data Science studio in Python", "venue": "(remote). 8h workshop. CDRC. UK"},
+            {"date": "2020", "title": "Data Science studio in Python", "venue": "(remote). 8h workshop. Universitat de Barcelona. Barcelona (Spain)"},
+            {"date": "2019", "title": "Introduction to machine learning in Python", "venue": "One-day workshop. OECD. Paris (France)"},
+            {"date": "2019", "title": "R & Py Spatial Analysis workshop", "venue": "One-day workshop, jointly taught with Roger Bivand. European Colloquium on Theoretical and Quantitative Geography. Luxemourg"},
+            {"date": "2018", "title": "Geographic Data Science in Python", "venue": "Three-day course. University of Toronto (Toronto). November"},
+            {"date": "2018", "title": "Geographic Data Science in Python", "venue": "Three-day course. University of Luxembourg (Luxembourg). September"},
+            {"date": "2018", "title": "Introduction to Python for Data Science", "venue": "Two-day course. OECD (Paris). September"},
+            {"date": "2018", "title": "Python for Geographic Data Science", "venue": "Two-day course for the Q-Step Programme. University College London (UK). June"},
+            {"date": "2018", "title": "Introduction to Python for Geographic Data Science", "venue": "One-day course for the Consumer Data Research Centre. University of Leeds (UK). May"},
+            {"date": "2017", "title": "Geographic Data Science for Urban Analytics", "venue": "4 day workshop jointly taught with Alex Singleton at the Ritsumeikan University. Kyoto (Japan). January"},
+            {"date": "2016", "title": "Geographic Data Science with PySAL and the pydata stack", "venue": "4h workshop jointly taught with Sergio J. Rey at the 15th. annual Scientific Computing with Python Conference. Austin (USA). July"},
+            {"date": "2014", "title": "Spatial Data, Analysis and Regression mini-course", "venue": "14h workshop taught at the Institute for Employment Research (IAB). Nuremberg (Germany). September"},
+            {"date": "2014", "title": "Workshop on open Workflows II", "venue": "1.5 day workshop jointly taught with Thomas de Graaff at the Department of Spatial Economics, VU University. Amsterdam (Netherlands). September"},
+            {"date": "2014", "title": "Spatial Data, Analysis and Regression mini-course", "venue": "12h workshop taught at the Department of Economics, University of Houston. Houston (USA). August"},
+            {"date": "2013", "title": "Geo-computation in Python", "venue": "Workshop taught at the VII Jornadas de SIG Libre. March 6th. SIGTE, Universitat de Girona (Spain). March"},
+            {"date": "2012", "title": "Modeling Spatial Systems: Networks and Spatial Econometrics", "venue": "One day intensive course jointly taught with Dr. Emmanouil Tranos. Department of Spatial Economics, VU University. Amsterdam (Netherlands). December"},
+            {"date": "2012", "title": "An introduction to spatial analysis and spatial econometrics with OpenGeoDa and GeoDaSpace", "venue": "Salvador (Brazil). July"},
+            {"date": "2012", "title": "OpenGeoDa, GeoDaSpace and PySAL Lab instructor", "venue": "Spatial Econometrics Advanced Institute. Catholic University. Rome (Italy). May"},
+            {"date": "2009", "title": "Spatial Data Analysis in Ecology and Conservation", "venue": "hosted by the National Centre for Biological Sciences in collaboration with the Nature Conservation Foundation and the GeoDa Center. Bangalore (India). July"}
+          ]
+        },
+        {
+          "title": "Assistantship",
+          "type": "talks",
+          "entries": [
+            {"date": "2010", "title": "Microeconomics II", "venue": "Bachelor in Business Administration, Department of Economic Analysis, Universidad de Zaragoza (Spain). Principal instructor: Gemma Larramona. September-December"},
+            {"date": "2010", "title": "Mejorando la experiencia de aprendizaje de los estudiantes de microeconomía intermedia. Elaboración de cuestionarios de autoevaluación en Moodle con feedback automático", "venue": "(Project \"Improving the learning experience of intermediate microeconomics students. Fabrication of self-evaluation questionaires in Moodle with automatic feedback\"). PIIDUZ-10-2-492. Universidad de Zaragoza. Member. 01/09/2010-30/06/2011. Coordinator: Domingo Pérez Ximénez de Embún"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "title": "Line management - Supervision",
+      "groups": [
+        {
+          "title": "Postdoctoral Researchers",
+          "type": "people",
+          "entries": [
+            {"date": "2025-", "name": "Martina Pardy", "detail": "PDRA, Imago Data Service for Imagery"},
+            {"date": "2025-", "name": "Fang Chen", "detail": "PDRA, Imago Data Service for Imagery"},
+            {"date": "2025-", "name": "Shaonlee Patranabis", "detail": "PDRA, Imago Data Service for Imagery"},
+            {"date": "2023-25", "name": "Stuart Lynn", "detail": "Lead Research Data Scientist"},
+            {"date": "2023-25", "name": "Barbara Metzler", "detail": "PDRA"},
+            {"date": "2020-24", "name": "Martin Fleischmann", "detail": "PDRA"},
+            {"date": "2022-23", "name": "Anna Zanchetta", "detail": "PDRA"},
+            {"date": "2021-22", "name": "Alessia Calafiore", "detail": "PDRA"}
+          ]
+        },
+        {
+          "title": "Supervisor",
+          "type": "people",
+          "entries": [
+            {"date": "2025-", "name": "Baromasak Klanreungsang", "detail": "University of Liverpool (Primary supervisor)"},
+            {"date": "2024-", "name": "Yuta Sato", "detail": "ESRC NWSSDTP"},
+            {"date": "2020-2025", "name": "Gladys Kenyon", "detail": "ESRC CDAS CDT, with Idealista (Primary supervisor)"},
+            {"date": "2020-24", "name": "Qihao Liu", "detail": "University of Liverpool"},
+            {"date": "2019-25", "name": "James Murphy", "detail": "ESRC CDAS CDT, with Marlan Maritime Technologies (Primary supervisor)"},
+            {"date": "2018-24", "name": "Danial Owen", "detail": "ESRC CDAS CDT (Primary supervisor)"},
+            {"date": "2018-23", "name": "Sian Teesdale", "detail": "ESRC CDAS CDT, with ESRI-Here. Unfinished"},
+            {"date": "2022", "name": "John Freeman", "detail": "ESRC CDAS CDT, with Health & Safety Executive. Unfinished (Primary supervisor)"},
+            {"date": "2022", "name": "Meruyert Kenzhebay", "detail": "ESRC CDAS CDT, with MGISS. Unfinished"},
+            {"date": "2017-22", "name": "Melanie Green", "detail": "ESRC CDAS CDT, with Ordnance Survey. Unfinished (Primary supervisor)"},
+            {"date": "2017-23", "name": "Krasen Samardzhiev", "detail": "ESRC CDAS CDT, with CARTO (Primary supervisor)"},
+            {"date": "2018-22", "name": "Yassir Alharbi", "detail": "University of Liverpool"},
+            {"date": "2017-21", "name": "Nikos Patias", "detail": "ESRC CDAS CDT, with Ordnance Survey"},
+            {"date": "2017-21", "name": "Sam Comber", "detail": "ESRC NWSSDTP, with Local Data Company (Primary supervisor)"},
+            {"date": "2016-21", "name": "Meixu Chen", "detail": "University of Liverpool (Primary supervisor)"},
+            {"date": "2016-21", "name": "Yunzhe Liu", "detail": "University of Liverpool"},
+            {"date": "2016-21", "name": "Ellen Talbot", "detail": "ESRC NWSSDTP"},
+            {"date": "2016-18", "name": "Muhammad Hakim Bin Danial", "detail": "University of Liverpool"},
+            {"date": "2016-18", "name": "Kush Tackar", "detail": "University of Liverpool"}
+          ]
+        },
+        {
+          "title": "Visitor Host",
+          "type": "people",
+          "entries": [
+            {"date": "2024-25", "name": "Paula Falcao", "detail": "Universidade Federal de Minas Gerais. Brazil"},
+            {"date": "2023-24", "name": "Ugur Ursavas", "detail": "Zonguldak Bülent Ecevit University. Turkey"},
+            {"date": "2022", "name": "Marianna Magagnoli", "detail": "Universitat de Barcelona. Spain"},
+            {"date": "2019", "name": "Júlio Cesar Lopes", "detail": "Universidade Católica de Brasília. Brazil"},
+            {"date": "2017", "name": "Cassiano Ricardo Dalberto", "detail": "Universidade Federal de Minas Gerais. Brazil"}
+          ]
+        },
+        {
+          "title": "Committee Member",
+          "type": "people",
+          "entries": [
+            {"date": "2025", "name": "Job Rosier", "detail": "Characterization of urban land use and urban land dynamics in data scarce regions. VU University (Amsterdam). External examiner. April"},
+            {"date": "2021", "name": "Mohammed Ibrahim", "detail": "A Computer Vision System for Detecting and Analysing Critical Events in Cities. University College London. External examiner. April"},
+            {"date": "2021", "name": "Sarah Catherine Gadd", "detail": "Analysing spatio-temporal networks with continuous-time models. University of Leeds. External examiner. April"},
+            {"date": "2020", "name": "Michele Ferretti", "detail": "Geographies of Code: Decompiling the 'Smart City' through the study of software engineering practices. Kings College London (UK). External examiner. December"},
+            {"date": "2020", "name": "Jacob Macdonald", "detail": "Leveraging Geospatial Statistics for Measuring and Valuing the Urban Environment. Universidade Nova de Lisboa (Portugal). Committee member. July"},
+            {"date": "2020", "name": "Helena Nilsson", "detail": "Spatial Organisation of Retail Activities. Jönköping University. Examiner. May"},
+            {"date": "2019", "name": "Alec Edward Davies", "detail": "The era of repurposed data: Exploring health via Data Science and new forms of data. University of Liverpool. Internal examiner. January"},
+            {"date": "2018", "name": "Helen V. Roberts", "detail": "Investigating the role of social media and smart device applications in understanding human-environment relationships in urban green spaces. University of Birmingham. External examiner. February"},
+            {"date": "2016", "name": "Linda Woods", "detail": "A Statistical and Geographical Analysis of Workplace Accidents in Great Britain. University of Liverpool. Internal examiner. December"},
+            {"date": "2015", "name": "Jorge Eduardo Patiño Quinchía", "detail": "Citiscape, Poverty and Crime: a Quantitative Assessment Using VHR Imagery. Universitat Politècnica de València. External referee and committee member. December"}
+          ]
+        },
+        {
+          "title": "Master",
+          "type": "people",
+          "entries": [
+            {"date": "2012", "name": "Hada Melissa Sáenz Vela", "detail": "“Análisis exploratorio de Características Socioeconómicas de México mediante la aplicación de métodos de agregación espacial, 2010”. Universidad Autónoma de Cohauila, Centro de Investigaciones Socioeconómicas. Lector (member of Committee). September"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "title": "Service to University and Community",
+      "groups": [
+        {
+          "title": "Journal Referee",
+          "type": "text-list",
+          "entries": [
+            {"date": "", "text": "African Journal of Agricultural Research (1), Annals of the American Association of Geographers (1), Annals of GIS (1), Annals of Regional Science (4), Applied Geography (3), Applied Spatial Analysis and Policy (1), Computers, Environment and Urban Systems (12), Environment and Planning A (2) / B (12) / C (1), European Planning Studies (1), European Urban and Regional Studies (1), Geographical Analysis (8), Innovation (1), International Journal of Sustainable Development (1), International Journal of GIS (2), International Regional Science Review (6), Journal of Geographical Systems (1), Journal of Geography and Regional Planning (1), Journal of Housing and the Built Environment (1), Journal of Regional Science (1), Journal of Statistical Software (2), Journal of Transport Geography (2), Journal of Urban Management (1), Journal of Urbanism (1), Landscape and Urban Planning (1), Nature Human Behaviour (1), Papers in Regional Science (5), Proceedings of the Python in Science Conference (2), REGION (1), Regional Science Policy and Practice (1), Regional Studies (4), Spatial Economic Analysis (4), Spatial Networks (1), Tourism Economics (1), Transactions in GIS (3), Urban Geography (2). Urban Studies (3)"}
+          ]
+        },
+        {
+          "title": "External Examination Experience",
+          "type": "text-list",
+          "entries": [
+            {"date": "2024-", "text": "University College London (UK): MSc in Social and Geographic Data Science"},
+            {"date": "2022-2025", "text": "University of Leeds (UK): MSc in Urban Data Science and Analytics"},
+            {"date": "2019-2023", "text": "University of Glasgow (UK): MSc in Urban Analytics"}
+          ]
+        },
+        {
+          "title": "External Review/Panel Experience",
+          "type": "text-list",
+          "entries": [
+            {"date": "2021", "text": "UKRI. Agile Research and Innovation response to COVID-19 issues (EPSRC Panel). Panel member"},
+            {"date": "2019", "text": "Wellcome. Open Research Fund Awards. Panel member"},
+            {"date": "2018", "text": "Jisc Geographic Data Service. Test & Feedback Panel. Member"}
+          ]
+        },
+        {
+          "title": "Other",
+          "type": "text-list",
+          "entries": [
+            {"date": "2023-", "text": "Co-host, The GLaD Podcast", "url": "https://gladpodcast.podbean.com"},
+            {"date": "2024", "text": "Scientific Committee Member, World Multidisciplinary Congress on Civil Engineering, Architecture, and Urban Planning. Ostrava (Czech Republic)"},
+            {"date": "2018", "text": "Mentor, Google Summer of Code. Project: “splot: visualisation in PySAL”"},
+            {"date": "2017", "text": "Mentor, Google Summer of Code. Project: “Regionalization in PySAL”"},
+            {"date": "2016", "text": "Mentor, Google Summer of Code. Project: “Spatial Interaction Modeling in PySAL”"},
+            {"date": "2016", "text": "Paper reviewer of the proceedings, 2016 Python for Scientific Computing (SciPy) Conference"},
+            {"date": "2015", "text": "Paper reviewer of the proceedings, 2015 Python for Scientific Computing (SciPy) Conference"},
+            {"date": "2014-", "text": "Young Scholars Committee Member. Centre for Geocomputation. Ryerson University (Canada)"},
+            {"date": "2014-", "text": "Paper reviewer of the proceedings, 2014 Python for Scientific Computing (SciPy) Conference"},
+            {"date": "2014-", "text": "Program committee member, 2014 Python for Scientific Computing (SciPy) Conference"},
+            {"date": "2013", "text": "Epainos Award / Young Regional Scientist Sessions. Reviewer. 53rd. ERSA Congress"}
+          ]
+        }
       ]
     },
 

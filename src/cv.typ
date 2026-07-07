@@ -153,7 +153,7 @@
   #e.name#if "detail" in e [. #e.detail]
 ]
 
-#let render-textlist(label, e) = entry(label)[#e.text]
+#let render-textlist(label, e) = entry(label)[#e.text#if "url" in e [. #weblink(e.url)]]
 
 // software / language: the name replaces the date column, so render full width.
 #let render-named(e) = block(above: 0.95em, below: 0.95em)[
