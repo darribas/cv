@@ -29,21 +29,21 @@ concurrency:
 permissions:
   contents: write
 
-env:
-  TYPST_VERSION: 0.15.0
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Typst
+      - name: Install Typst (latest release)
         run: |
-          curl -fsSL "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" \
+          curl -fsSL "https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz" \
             | tar xJ
           sudo mv "typst-x86_64-unknown-linux-musl/typst" /usr/local/bin/typst
-          typst --version
+          echo "### Typst version" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          typst --version | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate JSON
         run: make validate
