@@ -1,10 +1,11 @@
-name: Build CV PDF
+name: Build CV site
 
-# Rebuilds docs/cv.pdf whenever the data or renderer change, and commits the
-# result back on pushes to main. On pull requests it only builds (no commit)
-# so a broken source is caught before merge. See ARCHITECTURE.md for why this
-# needs nothing beyond the Typst binary itself — no TeXLive, no system fonts
-# (TeX Gyre Pagella is bundled in fonts/).
+# Rebuilds docs/ (cv.pdf, index.html, style.css, fonts/) whenever the data or
+# either renderer changes, and commits the result back on pushes to main. On
+# pull requests it only builds (no commit) so a broken source is caught
+# before merge. See ARCHITECTURE.md for why this needs nothing beyond the
+# Typst binary and stdlib Python — no TeXLive, no system fonts (TeX Gyre
+# Pagella is bundled in fonts/), no extra Python packages.
 
 on:
   push:
@@ -13,14 +14,14 @@ on:
       - "src/**"
       - "fonts/**"
       - "Makefile"
-      - ".github/workflows/build-pdf.yml"
+      - ".github/workflows/build-site.yml"
   pull_request:
     branches: [main]
     paths:
       - "src/**"
       - "fonts/**"
       - "Makefile"
-      - ".github/workflows/build-pdf.yml"
+      - ".github/workflows/build-site.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -48,17 +49,20 @@ jobs:
       - name: Validate JSON
         run: make validate
 
-      - name: Build PDF
+      - name: Build site
         # A fresh checkout's file mtimes don't reflect commit history, so
         # make's timestamp check can't be trusted to detect "source changed" —
-        # force the rebuild rather than risk silently reusing a stale PDF.
-        run: rm -f docs/cv.pdf && make pdf
+        # force the rebuild rather than risk silently reusing stale output.
+        run: |
+          rm -f docs/cv.pdf docs/index.html docs/style.css
+          rm -rf docs/fonts
+          make site
 
-      - name: Commit rebuilt PDF
+      - name: Commit rebuilt site
         if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/cv.pdf
-          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Rebuild CV PDF [skip ci]"
+          git add docs/
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Rebuild CV site [skip ci]"
           git push

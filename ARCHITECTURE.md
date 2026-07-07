@@ -208,9 +208,24 @@ and CSL-JSON keeps the "everything is JSON" principle intact:
 
 ## Known costs & open questions
 
-- **Elegant HTML from Typst** is the least-settled downstream: Typst's HTML export
-  is experimental. Fallbacks: a small script over the data, or pandoc via a
-  Markdown rendering. Does not block the PDF work.
+- **HTML is a second Python renderer, not Typst's HTML export** — tested
+  directly against `cv.typ` (Typst 0.15, `--features html`): it silently drops
+  nearly all content, because `grid`/`stack`/`align`/`v()` are ignored during
+  HTML export, and `entry()` — the layout helper every section type but
+  `named` routes through — is built on `grid`. Confirms Decision 2's plan
+  (HTML ← a second template/script over the same data) rather than reworking
+  the PDF renderer's layout to accommodate an incomplete export path.
+- **Web-only / PDF-extended fields** (e.g. a publication's code-repository
+  URL — informal for a standard academic PDF, but worth showing on the web,
+  and possibly in an alternate PDF variant): no data-model change needed for
+  the web-only case — a renderer only shows a field if its template
+  references it, so a new field just stays invisible to whichever renderer
+  doesn't mention it. For an *extended PDF variant* that opts into such
+  fields, the plan is a `sys.inputs` flag in `cv.typ` (e.g. `variant`,
+  read via `--input variant=extended`), gating the one or two spots that
+  read extra fields — deferred until the website-merge TODO item actually
+  introduces the first such field, since it costs nothing to add then and
+  there's nothing to scaffold against yet.
 
 ## Status
 
@@ -222,3 +237,10 @@ docs and the template file were enough; a scratchpad proof-of-concept validated
 this early on and has since been removed as redundant with `src/`. The
 original `.tex` and its one-shot migration parser have likewise been retired
 (`notes/MIGRATION-REVIEW.md` has the commit).
+
+TODO items 1–4 are now done: the GitHub Action (`.github/workflows/
+build-site.yml`) rebuilds and commits both the PDF and the HTML page on every
+push, and `src/render_html.py` is the second renderer HTML needed — Typst's
+own HTML export was tested and confirmed unusable for this document (see
+above). GitHub Pages itself (the repo setting that actually serves `docs/`
+publicly) is not yet switched on — the last step before item 4 is fully live.

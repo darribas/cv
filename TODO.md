@@ -8,12 +8,13 @@ as given if useful!
 
 ## Important
 
-### GH Pages rendering
+### Turn on GitHub Pages
 
-Once the PDF build is stable, add a HTML build that creates a web version of
-the CV. This should be elegant, aligned with the look of the PDF, and require
-no changes from the source file so that can remain the main source of truth
-and is the only one to be edited.
+The HTML build itself is done (`src/render_html.py`, see `LOG.md`) and the
+GitHub Action already commits it to `docs/` on every push. The one remaining
+step is flipping the actual repo setting — Settings → Pages → Deploy from
+branch → `main` / `/docs` — so it's publicly served. Left for the author to
+decide when to go live, not a build task.
 
 ## Further extensions
 

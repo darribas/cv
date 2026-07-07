@@ -1,0 +1,246 @@
+/* style.css — the HTML renderer's stylesheet (src/render_html.py).
+   Source of truth for the web look; copied to docs/style.css at build time.
+   Aims for the same Palatino-academic feel as the PDF (src/cv.typ), not a
+   pixel match — a web page reads differently than a printed page. */
+
+@font-face {
+  font-family: "TeX Gyre Pagella";
+  src: url("fonts/texgyrepagella-regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TeX Gyre Pagella";
+  src: url("fonts/texgyrepagella-bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TeX Gyre Pagella";
+  src: url("fonts/texgyrepagella-italic.otf") format("opentype");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: "TeX Gyre Pagella";
+  src: url("fonts/texgyrepagella-bolditalic.otf") format("opentype");
+  font-weight: bold;
+  font-style: italic;
+}
+
+:root {
+  --serif: "TeX Gyre Pagella", "Palatino Linotype", Palatino, Georgia, serif;
+  --mono: ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --fg-muted: #55524d;
+  --rule: #cfc9bd;
+  --link: #00004d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17140f;
+    --fg: #ebe6dc;
+    --fg-muted: #b6afa1;
+    --rule: #4a463d;
+    --link: #a9c4ff;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  /* base for every rem measurement below, incl. body's own inherited size --
+     bumped up from the 16px default since the page read smaller than the PDF */
+  font-size: 19px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--serif);
+  line-height: 1.5;
+}
+
+main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+a {
+  color: var(--link);
+}
+a:hover { text-decoration-thickness: 2px; }
+
+code, .mono {
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Header                                                                  */
+/* ---------------------------------------------------------------------- */
+
+header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+header .doctitle {
+  letter-spacing: 0.2em;
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+header h1 {
+  font-size: 1.6rem;
+  font-variant: small-caps;
+  margin: 0 0 0.7rem;
+}
+header .affiliation {
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  margin: 0 0 0.6rem;
+  line-height: 1.4;
+}
+header .contact {
+  font-size: 0.85rem;
+  margin: 0;
+}
+.btn-pdf {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
+  box-sizing: border-box;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+  line-height: 1.2;
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--link);
+  border: 1px solid var(--link);
+  border-radius: 3px;
+  padding: 0.3rem 0.7rem;
+  text-decoration: none;
+}
+.btn-pdf:hover {
+  color: var(--bg);
+  background: var(--link);
+}
+.btn-toc {
+  right: auto;
+  left: 0;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Section / sub-section headings                                         */
+/* ---------------------------------------------------------------------- */
+
+section { scroll-margin-top: 1rem; }
+h3 { scroll-margin-top: 1rem; }
+
+section h2 {
+  font-variant: small-caps;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.35rem;
+  margin: 2.4rem 0 1rem;
+}
+section:first-of-type h2 { margin-top: 0; }
+
+section h3 {
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.8rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Entries — mirrors cv.typ's entry() grid: label column + body            */
+/* ---------------------------------------------------------------------- */
+
+.entry {
+  display: grid;
+  grid-template-columns: minmax(3.6rem, auto) 1fr;
+  column-gap: 0.9rem;
+  margin: 0.85em 0;
+  align-items: baseline;
+}
+.entry .date {
+  text-align: right;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.entry .body { min-width: 0; }
+.entry .small { font-size: 0.85em; }
+
+.named {
+  margin: 0.85em 0;
+}
+
+footer {
+  margin-top: 3rem;
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Section nav — a floating popover triggered by the "Sections" button in  */
+/* the header (see .btn-toc above). No JS: the Popover API handles         */
+/* show/hide, outside-click and Escape dismissal natively. Two columns +   */
+/* a generous (rarely-hit) max-height means the full list fits without a   */
+/* visible scrollbar in normal use.                                        */
+/* ---------------------------------------------------------------------- */
+
+#toc-pop {
+  position: fixed;
+  top: 4.5rem;
+  left: 1.25rem;
+  margin: 0;
+  width: 27rem;
+  max-width: calc(100vw - 2.5rem);
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+#toc-pop ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 1.5rem;
+}
+#toc-pop li { margin: 0.45rem 0; break-inside: avoid; }
+#toc-pop a { text-decoration: none; font-size: 0.92rem; }
+#toc-pop a:hover { text-decoration: underline; }
+
+/* Below ~40rem, the two corner-absolute header buttons collide with the
+   centered doctitle/name text. Un-absolute them into a plain flex row
+   above the title instead, via the shared wrapper (inert at wider widths,
+   where each button still corner-positions itself independently). */
+@media (max-width: 40rem) {
+  .header-actions {
+    position: static;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .header-actions .btn-pdf,
+  .header-actions .btn-toc {
+    position: static;
+  }
+}
