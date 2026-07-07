@@ -37,8 +37,6 @@
   --fg-muted: #55524d;
   --rule: #cfc9bd;
   --link: #00004d;
-  --nav-bg: #faf8f3;
-  --nav-border: #e4ddce;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,8 +46,6 @@
     --fg-muted: #b6afa1;
     --rule: #4a463d;
     --link: #a9c4ff;
-    --nav-bg: #1e1a14;
-    --nav-border: #343026;
   }
 }
 
@@ -120,6 +116,12 @@ header .contact {
   top: 0;
   right: 0;
   display: inline-block;
+  box-sizing: border-box;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+  line-height: 1.2;
   font-family: var(--serif);
   font-size: 0.78rem;
   font-variant: small-caps;
@@ -133,6 +135,10 @@ header .contact {
 .btn-pdf:hover {
   color: var(--bg);
   background: var(--link);
+}
+.btn-toc {
+  right: auto;
+  left: 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -188,57 +194,53 @@ footer {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Navigation — a <details> disclosure, collapsible on mobile, forced      */
-/* into an always-open sidebar on wide viewports (no JS either way).       */
+/* Section nav — a floating popover triggered by the "Sections" button in  */
+/* the header (see .btn-toc above). No JS: the Popover API handles         */
+/* show/hide, outside-click and Escape dismissal natively. Two columns +   */
+/* a generous (rarely-hit) max-height means the full list fits without a   */
+/* visible scrollbar in normal use.                                        */
 /* ---------------------------------------------------------------------- */
 
-nav details {
-  background: var(--nav-bg);
-  border-bottom: 1px solid var(--nav-border);
+#toc-pop {
+  position: fixed;
+  top: 4.5rem;
+  left: 1.25rem;
+  margin: 0;
+  width: 27rem;
+  max-width: calc(100vw - 2.5rem);
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
 }
-nav summary {
-  cursor: pointer;
-  padding: 0.9rem 1.25rem;
-  font-weight: 700;
-  font-variant: small-caps;
-  list-style: none;
-}
-nav summary::-webkit-details-marker { display: none; }
-nav summary::after {
-  content: " ▾";
-}
-nav details[open] summary::after {
-  content: " ▴";
-}
-nav ul {
+#toc-pop ul {
   list-style: none;
   margin: 0;
-  padding: 0 1.25rem 1rem;
+  padding: 0;
   columns: 2;
   column-gap: 1.5rem;
 }
-nav li { margin: 0.3rem 0; }
-nav a {
-  text-decoration: none;
-  font-size: 0.92rem;
-}
-nav a:hover { text-decoration: underline; }
+#toc-pop li { margin: 0.45rem 0; break-inside: avoid; }
+#toc-pop a { text-decoration: none; font-size: 0.92rem; }
+#toc-pop a:hover { text-decoration: underline; }
 
-@media (min-width: 64rem) {
-  body {
-    display: grid;
-    grid-template-columns: 15rem 1fr;
-    align-items: start;
+/* Below ~40rem, the two corner-absolute header buttons collide with the
+   centered doctitle/name text. Un-absolute them into a plain flex row
+   above the title instead, via the shared wrapper (inert at wider widths,
+   where each button still corner-positions itself independently). */
+@media (max-width: 40rem) {
+  .header-actions {
+    position: static;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
   }
-  nav {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    border-right: 1px solid var(--nav-border);
+  .header-actions .btn-pdf,
+  .header-actions .btn-toc {
+    position: static;
   }
-  nav details { border-bottom: none; height: 100%; }
-  nav summary { display: none; }
-  nav ul { columns: 1; padding: 1.25rem; }
-  main { padding: 2.5rem 3rem 4rem; margin: 0; max-width: 46rem; }
 }
