@@ -8,25 +8,6 @@ as given if useful!
 
 ## Important
 
-### Reformatting and cleaning up
-
-The `.tex` file currently contains everything needed, but it's a mess. At
-least the following needs fixing:
-
-a. Removing unused commented out elements
-b. Every sub/section needs to be built as such. Currently, sectioning is
-   handled only visually but is not reflected in the PDF's TOC.
-
-### Considering different PDF engine
-
-Would it be better to use something like Typst to build this file? Explore
-options, compare them with current setup, and act on the decision.
-
-### GH Action for PDF build
-
-Once the CV build is clearn, add a Github Action that rebuilds and commits the PDF
-everytime there's a new commit to the repository.
-
 ### GH Pages rendering
 
 Once the PDF build is stable, add a HTML build that creates a web version of
