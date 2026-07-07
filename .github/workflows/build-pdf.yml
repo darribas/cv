@@ -1,0 +1,64 @@
+name: Build CV PDF
+
+# Rebuilds docs/cv.pdf whenever the data or renderer change, and commits the
+# result back on pushes to main. On pull requests it only builds (no commit)
+# so a broken source is caught before merge. See ARCHITECTURE.md for why this
+# needs nothing beyond the Typst binary itself — no TeXLive, no system fonts
+# (TeX Gyre Pagella is bundled in fonts/).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "fonts/**"
+      - "Makefile"
+      - ".github/workflows/build-pdf.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "fonts/**"
+      - "Makefile"
+      - ".github/workflows/build-pdf.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  TYPST_VERSION: 0.15.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Typst
+        run: |
+          curl -fsSL "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" \
+            | tar xJ
+          sudo mv "typst-x86_64-unknown-linux-musl/typst" /usr/local/bin/typst
+          typst --version
+
+      - name: Validate JSON
+        run: make validate
+
+      - name: Build PDF
+        # A fresh checkout's file mtimes don't reflect commit history, so
+        # make's timestamp check can't be trusted to detect "source changed" —
+        # force the rebuild rather than risk silently reusing a stale PDF.
+        run: rm -f docs/cv.pdf && make pdf
+
+      - name: Commit rebuilt PDF
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/cv.pdf
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Rebuild CV PDF [skip ci]"
+          git push
