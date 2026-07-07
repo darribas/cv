@@ -8,6 +8,7 @@ SRC     := src/cv.typ
 PDF     := docs/cv.pdf
 JSON    := $(wildcard src/*.json)
 PREVIEW := build/preview
+FONTS   := fonts
 
 .PHONY: pdf watch preview validate parse clean
 
@@ -15,19 +16,19 @@ PREVIEW := build/preview
 pdf: $(PDF)
 
 $(PDF): $(SRC) $(JSON) | docs
-	$(TYPST) compile $(SRC) $(PDF)
+	$(TYPST) compile --font-path $(FONTS) $(SRC) $(PDF)
 
 docs:
 	mkdir -p docs
 
 ## watch: rebuild on save while editing
 watch: | docs
-	$(TYPST) watch $(SRC) $(PDF)
+	$(TYPST) watch --font-path $(FONTS) $(SRC) $(PDF)
 
 ## preview: render one PNG per page into build/ for visual review
 preview: | docs
 	mkdir -p $(PREVIEW)
-	$(TYPST) compile --format png --ppi 120 $(SRC) "$(PREVIEW)/cv-{p}.png"
+	$(TYPST) compile --font-path $(FONTS) --format png --ppi 120 $(SRC) "$(PREVIEW)/cv-{p}.png"
 
 ## validate: check every src/*.json parses
 validate:

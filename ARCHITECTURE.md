@@ -191,8 +191,10 @@ and CSL-JSON keeps the "everything is JSON" principle intact:
   - Website feed ← the CSL-JSON publications.
   - Subset CVs ← filter the data before rendering.
 - **CI:** a GitHub Action installs the Typst binary (seconds, no TeXLive),
-  rebuilds, and commits the PDF. (Detail to settle: ensure a Palatino-alike font
-  — e.g. TeX Gyre Pagella — is present on the runner, since Typst ships no fonts.)
+  rebuilds, and commits the PDF. Fonts are solved by bundling TeX Gyre Pagella
+  in `fonts/` and passing `--font-path fonts` (wired into the Makefile), so
+  the runner needs nothing beyond the Typst binary itself — no system font
+  install step.
 
 ### Why this satisfies the criteria
 
@@ -212,7 +214,6 @@ and CSL-JSON keeps the "everything is JSON" principle intact:
 - **Elegant HTML from Typst** is the least-settled downstream: Typst's HTML export
   is experimental. Fallbacks: a small script over the data, or pandoc via a
   Markdown rendering. Does not block the PDF work.
-- **Fonts in CI** must be provisioned explicitly (Typst ships none).
 - **Does hand-editing JSON actually feel good?** The remaining subjective
   question, to be settled by a small proof-of-concept before the full migration.
 

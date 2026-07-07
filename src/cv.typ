@@ -218,6 +218,11 @@
 // Page + typography
 // ===========================================================================
 
+// The original .tex set its body font via \usepackage{mathpazo} (Palatino).
+// TeX Gyre Pagella is bundled in fonts/ (see fonts/texgyrepagella/README.md);
+// pass --font-path fonts when compiling (the Makefile targets already do) or
+// this falls back to a real Palatino if the machine has one, else a
+// Computer-Modern look — same layout, different letterforms.
 #set page(paper: "us-letter", margin: (x: 1in, y: 1in))
 #set text(
   font: ("TeX Gyre Pagella", "Palatino", "Palatino Linotype", "New Computer Modern"),
