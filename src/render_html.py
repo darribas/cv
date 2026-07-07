@@ -337,6 +337,7 @@ def render_header():
     lines = "".join(f'{esc(l)}<br>' for l in basics["affiliation"])
     title = basics.get("title", "Curriculum Vitae")
     return f'''<header>
+  <a class="btn-pdf" href="cv.pdf" download>PDF</a>
   <p class="doctitle">{esc(title.upper())}</p>
   <h1>{esc(basics["name"])}</h1>
   <p class="affiliation">{lines}</p>
@@ -344,7 +345,6 @@ def render_header():
     <a href="mailto:{esc(basics["email"])}">{esc(basics["email"])}</a>
     &emsp;{weblink(basics["url"])}
   </p>
-  <p class="pdf-link"><a class="btn-pdf" href="cv.pdf" download>Download PDF</a></p>
 </header>'''
 
 
