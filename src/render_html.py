@@ -322,14 +322,15 @@ def render_section(section):
     return "".join(out)
 
 
-def render_nav():
-    """A <details> disclosure — collapsible on mobile, forced open into a
-    sidebar on wide viewports via CSS alone; no JS needed either way."""
+def render_toc_popover():
+    """A floating panel via the native Popover API (see the "Sections" button
+    in render_header) — no JS: the popovertarget attribute wires up show/hide,
+    outside-click and Escape dismissal for free."""
     items = "".join(
         f'<li><a href="#{slug(s["title"])}">{esc(s["title"])}</a></li>'
         for s in cv["sections"]
     )
-    return f'<nav><details id="toc" open><summary>Sections</summary><ul>{items}</ul></details></nav>'
+    return f'<nav id="toc-pop" popover><ul>{items}</ul></nav>'
 
 
 def render_header():
@@ -337,7 +338,10 @@ def render_header():
     lines = "".join(f'{esc(l)}<br>' for l in basics["affiliation"])
     title = basics.get("title", "Curriculum Vitae")
     return f'''<header>
-  <a class="btn-pdf" href="cv.pdf" download>PDF</a>
+  <div class="header-actions">
+    <button popovertarget="toc-pop" class="btn-pdf btn-toc">Sections</button>
+    <a class="btn-pdf" href="cv.pdf" download>PDF</a>
+  </div>
   <p class="doctitle">{esc(title.upper())}</p>
   <h1>{esc(basics["name"])}</h1>
   <p class="affiliation">{lines}</p>
@@ -362,7 +366,7 @@ PAGE = """<!doctype html>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-{nav}
+{toc_popover}
 <main>
 {header}
 {sections}
@@ -378,7 +382,7 @@ def main():
     html = PAGE.format(
         name=esc(cv["basics"]["name"]),
         doctitle=esc(cv["basics"].get("title", "Curriculum Vitae")),
-        nav=render_nav(),
+        toc_popover=render_toc_popover(),
         header=render_header(),
         sections=sections_html,
         footer=render_footer(),
