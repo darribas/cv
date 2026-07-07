@@ -237,3 +237,10 @@ docs and the template file were enough; a scratchpad proof-of-concept validated
 this early on and has since been removed as redundant with `src/`. The
 original `.tex` and its one-shot migration parser have likewise been retired
 (`notes/MIGRATION-REVIEW.md` has the commit).
+
+TODO items 1–4 are now done: the GitHub Action (`.github/workflows/
+build-site.yml`) rebuilds and commits both the PDF and the HTML page on every
+push, and `src/render_html.py` is the second renderer HTML needed — Typst's
+own HTML export was tested and confirmed unusable for this document (see
+above). GitHub Pages itself (the repo setting that actually serves `docs/`
+publicly) is not yet switched on — the last step before item 4 is fully live.
