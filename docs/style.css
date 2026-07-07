@@ -57,6 +57,9 @@
 
 html {
   background: var(--bg);
+  /* base for every rem measurement below, incl. body's own inherited size --
+     bumped up from the 16px default since the page read smaller than the PDF */
+  font-size: 19px;
 }
 
 body {
@@ -64,7 +67,6 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--serif);
-  font-size: 17px;
   line-height: 1.5;
 }
 
