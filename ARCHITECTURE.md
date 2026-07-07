@@ -208,18 +208,17 @@ and CSL-JSON keeps the "everything is JSON" principle intact:
 
 ## Known costs & open questions
 
-- **One-time migration** of ~1,760 lines of LaTeX into JSON/CSL-JSON. Mechanical
-  (the structure is regular) but the place errors hide — wants spot-checking the
-  new PDF against the current one.
 - **Elegant HTML from Typst** is the least-settled downstream: Typst's HTML export
   is experimental. Fallbacks: a small script over the data, or pandoc via a
   Markdown rendering. Does not block the PDF work.
-- **Does hand-editing JSON actually feel good?** The remaining subjective
-  question, to be settled by a small proof-of-concept before the full migration.
 
 ## Status
 
-Decisions 1–3 are agreed. Next step: a scratchpad proof-of-concept — `cv.json`
-(a few real sections with `//` annotations), `cv.template.json`, `cv.schema.json`,
-`publications.json` (CSL), and a minimal Typst renderer producing an actual PDF —
-to validate the authoring experience before migrating the full CV.
+Decisions 1–3 validated and the full migration is complete: every section of
+the original `.tex` now lives in `src/cv.json`/`src/publications.json`, spot-
+checked verbatim against the source (see `notes/MIGRATION-REVIEW.md`).
+Hand-editing JSON did feel good in practice — the schema's autocomplete/hover
+docs and the template file were enough; a scratchpad proof-of-concept validated
+this early on and has since been removed as redundant with `src/`. The
+original `.tex` and its one-shot migration parser have likewise been retired
+(`notes/MIGRATION-REVIEW.md` has the commit).

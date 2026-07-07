@@ -14,7 +14,7 @@ for the overall plan.
 | Research Income (Awards + Projects) | ✅ migrated |
 | Research Visits | ✅ migrated |
 | Scientific Software · Language Skills | ✅ migrated |
-| **Publications** | ✅ migrated (`src/publications.json`, via `tools/tex2cv.py`) |
+| **Publications** | ✅ migrated (`src/publications.json`, via the now-retired `tools/tex2cv.py`) |
 | Invited Lectures (Keynotes, Seminars) | ✅ migrated |
 | Conferences and Events | ✅ migrated |
 | Teaching | ✅ migrated |
@@ -22,8 +22,10 @@ for the overall plan.
 | Service to University and Community | ✅ migrated |
 
 All sections of `cv-darribas.tex` are now migrated to `src/cv.json` /
-`src/publications.json`. The `.tex` file and `tools/tex2cv.py` become
-disposable once this is confirmed correct.
+`src/publications.json`. The `.tex` file and `tools/tex2cv.py` were retired
+in commit [`19784b5`](https://github.com/darribas/cv/commit/19784b564725a720e88faedd2214987f0dd1b756)
+("Retire original LaTeX source and one-shot migration parser") — both remain
+recoverable from git history if ever needed.
 
 ## Light-cleanup edits applied (Stage 0)
 

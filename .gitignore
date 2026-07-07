@@ -6,3 +6,6 @@ build/
 
 # Migration reference — the old LaTeX-built PDF, kept locally for comparison only
 notes/cv-current.pdf
+
+# Local Claude Code settings
+.claude/

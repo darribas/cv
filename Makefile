@@ -10,7 +10,7 @@ JSON    := $(wildcard src/*.json)
 PREVIEW := build/preview
 FONTS   := fonts
 
-.PHONY: pdf watch preview validate parse clean
+.PHONY: pdf watch preview validate clean
 
 ## pdf: build the CV PDF into docs/  (default target)
 pdf: $(PDF)
@@ -33,10 +33,6 @@ preview: | docs
 ## validate: check every src/*.json parses
 validate:
 	@for f in $(JSON); do python3 -m json.tool "$$f" > /dev/null && echo "OK  $$f"; done
-
-## parse: one-shot migration bootstrap (.tex -> draft JSON); not part of the normal build
-parse:
-	python3 tools/tex2cv.py
 
 ## clean: remove build/preview artifacts (the committed PDF stays)
 clean:
