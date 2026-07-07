@@ -112,6 +112,25 @@ header .contact {
   font-size: 0.85rem;
   margin: 0;
 }
+header .pdf-link {
+  margin: 1.1rem 0 0;
+}
+.btn-pdf {
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--link);
+  border: 1px solid var(--link);
+  border-radius: 3px;
+  padding: 0.35rem 0.9rem;
+  text-decoration: none;
+}
+.btn-pdf:hover {
+  color: var(--bg);
+  background: var(--link);
+}
 
 /* ---------------------------------------------------------------------- */
 /* Section / sub-section headings                                         */

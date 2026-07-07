@@ -344,6 +344,7 @@ def render_header():
     <a href="mailto:{esc(basics["email"])}">{esc(basics["email"])}</a>
     &emsp;{weblink(basics["url"])}
   </p>
+  <p class="pdf-link"><a class="btn-pdf" href="cv.pdf" download>Download PDF</a></p>
 </header>'''
 
 
