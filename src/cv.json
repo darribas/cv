@@ -169,6 +169,22 @@
     },
 
     {
+      "title": "Publications",
+      "type": "publications",
+      "source": "publications.json",
+      "//note": "Publications are CSL-JSON (tools/tex2cv.py parsed them from the .tex; see notes/MIGRATION-REVIEW.md). Groups mirror the original .tex sub-headers; 'category' filters publications.json entries.",
+      "groups": [
+        { "title": "Books", "category": "book" },
+        { "title": "Peer-reviewed journal articles", "category": "journal-article" },
+        { "title": "Conference Proceedings", "category": "conference" },
+        { "title": "Other academic articles", "category": "other-article" },
+        { "title": "Book chapters", "category": "book-chapter" },
+        { "title": "Other", "category": "other" },
+        { "title": "Working Papers", "category": "working-paper" }
+      ]
+    },
+
+    {
       "title": "Research Visits",
       "type": "visits",
       "entries": [

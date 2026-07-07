@@ -54,9 +54,11 @@
     .map(p => if p.len() > 0 { p.slice(0, 1) + "." } else { "" })
     .join(" ")
 )
+// Most authors are {family, given}; a corporate author (e.g. "The Alan Turing
+// Institute") is CSL's {literal} form instead — print it as-is, no initials.
 #let fmt-authors(authors) = (
   authors
-    .map(a => a.family + ", " + initials(a.given))
+    .map(a => if "literal" in a { a.literal } else { a.family + ", " + initials(a.given) })
     .join("; ")
 )
 
