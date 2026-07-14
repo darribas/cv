@@ -49,3 +49,9 @@ rather than just the PDF. See PR #3.
 GitHub Pages itself (Settings → Pages → Deploy from branch → `main` /
 `/docs`) is not yet switched on — that's a deliberate separate decision for
 the author to make, not part of this build work.
+
+## GitHub Pages switched on
+
+The repo setting (Settings → Pages → Deploy from branch → `main` / `/docs`)
+was flipped and the CV site is now publicly live. State at `382a755`
+("Rebuild CV site [skip ci]"), 2026-07-14.

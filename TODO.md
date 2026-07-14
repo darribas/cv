@@ -6,16 +6,6 @@ removed as they are checked-off and moved to `LOG.md`.
 **NOTE** - Both this file and `LOG.md` is mostly edited by AI agents, use it
 as given if useful!
 
-## Important
-
-### Turn on GitHub Pages
-
-The HTML build itself is done (`src/render_html.py`, see `LOG.md`) and the
-GitHub Action already commits it to `docs/` on every push. The one remaining
-step is flipping the actual repo setting — Settings → Pages → Deploy from
-branch → `main` / `/docs` — so it's publicly served. Left for the author to
-decide when to go live, not a build task.
-
 ## Further extensions
 
 ### Deployment of other formats
