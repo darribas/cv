@@ -8,6 +8,37 @@ as given if useful!
 
 ## Further extensions
 
+### AI skill(s) for adding CV records
+
+Author a Claude Code skill (or small set of skills) that lets an agent add a
+new entry to the CV — a publication, job, grant, talk, etc. — consistently and
+correctly, without re-deriving the data model from scratch each time.
+
+Concretely, this means the skill should encode:
+
+- **Where things live**: `src/cv.json` for CV-body entries, `src/publications.json`
+  (CSL-JSON) for publications.
+- **How to validate**: entries must conform to `src/cv.schema.json`; the skill
+  should check/validate rather than guess at field names.
+- **How to author**: use `src/cv.template.json`'s worked examples as the
+  copy-paste starting point per section type, following the existing `"//"`/
+  `note` comment convention.
+- **What not to touch**: the renderers (`src/cv.typ`, `src/render_html.py`) —
+  adding a record is a data-only change; it should never require editing
+  either renderer.
+- **How it lands**: every contribution is drafted on a branch and opened as a
+  PR against the repo, never committed straight to `main` — so the change
+  history stays clean and each addition is reviewable before it merges.
+
+Open questions to settle before/while building it:
+
+- One general "add a CV record" skill with section-type as an argument, vs.
+  separate skills per section (publication vs. job vs. grant)?
+- Should it also handle *editing* an existing record, or only appending new ones?
+- Does it run any validation/build step itself (e.g. schema check, or a
+  local `typst compile`/`render_html.py` dry run) to catch mistakes before
+  they're committed, or leave that to the existing CI?
+
 ### Deployment of other formats
 
 Consider whether it is possible to have other formats (e.g., Word)
