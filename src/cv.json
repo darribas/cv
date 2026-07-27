@@ -130,6 +130,7 @@
           "title": "Awards",
           "type": "grant",
           "entries": [
+            { "date": "2025", "funder": "Smart Data Research UK", "title": "Embedding embeddings across social research and policy (EMBED2Social).", "scheme": "Opportunity Fund (additional funding to the Imago Data Service for Imagery).", "role": "PI", "period": "2025/26", "amount": { "value": 54761, "currency": "GBP" } },
             { "date": "2024", "funder": "Economic and Social Research Council, UK Research and Innovation", "title": "The SDR UK Imagery Data Service for Sustainability, Prosperity and Wellbeing (Imago).", "scheme": "Smart Data Research UK Data Services.", "role": "PI", "period": "2024/29", "amount": { "value": 6788641, "currency": "GBP" } },
             { "date": "2024", "funder": "The Royal Society", "title": "Learning from UK-France cross border railway transportation: border effect modelling and operational modes for the China-Laos Railway.", "scheme": "International Exchanges.", "role": "CoI", "amount": { "value": 12000, "currency": "GBP" } },
             { "date": "2024", "funder": "European Space Agency", "title": "EuroFab: European Urban Fabric Classification Using Artificial Intelligence.", "scheme": "Tender.", "role": "CoI", "amount": { "value": 250000, "currency": "EUR" } },
