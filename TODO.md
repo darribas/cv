@@ -38,7 +38,7 @@ standard academic CV, which is the main need this repo addresses.
 `src/publications.json` carries a `links` array of typed web-only URLs (official
 version, code, data, visualisation, …), rendered on the web page behind a "Links"
 switch and never in the PDF, and the research page's links are now transcribed in
-(140 links, 87 publications). See `LOG.md` and `ARCHITECTURE.md` Decision 4. That
+(140 links, 88 publications). See `LOG.md` and `ARCHITECTURE.md` Decision 4. That
 answers the key question above — merging this kind of information does *not*
 compromise the clean academic PDF, because the PDF renderer simply never reads
 the field.
@@ -54,6 +54,16 @@ What remains:
   blog posts, the `materials/` page). These are a different question from
   extra URLs on an existing entry: they need either new CV sections, a
   web-only section type, or to stay on the website. Undecided.
+
+  Note for whoever picks this up: `links` currently only works in
+  `publications.json`, which has no schema. The moment a **`cv.json`** entry
+  needs one — a talk with its video, a teaching artifact with its repository —
+  `cv.schema.json` will reject it, because `$defs/entry` sets
+  `"additionalProperties": false`. Verified: adding `links` to a `talks` or
+  `named` entry fails validation with *"unexpected key 'links'"*. So that work
+  starts by adding `links` to `$defs/entry` (and to `$defs/group`/`section` if a
+  whole section ever carries them). Deliberately not done here, since no
+  `cv.json` entry uses the field yet and the renderers don't read it there.
 - **One missing link** — tracked as issue #10. "Improving the Multi-Dimensional
   Comparison of Simulation Results" has no `official` link, because the
   website's published-version URL for it actually points at a different paper
@@ -61,6 +71,13 @@ What remains:
   build sandbox to look up the real one. Needs the correct DOI adding by hand.
 - Possibly **access status** (Open Access / paywalled), which the website marks
   on every link and this model does not carry. Would be a new optional key.
+- Possibly **a schema for `publications.json`**. `cv.json` gets editor
+  autocomplete, hover docs and live validation from `cv.schema.json`
+  (`ARCHITECTURE.md` Decision 3); `publications.json` has never had a schema,
+  because CSL-JSON is a standard the file simply conforms to. That asymmetry
+  mattered less when every field was standard CSL. Now the file also carries a
+  hand-authored, vocabulary-constrained `links` array, where a mistyped kind is
+  caught only by running `validate_cv.py` — not by the editor, as you type.
 
 ### Tooling for building subsets of the CV
 
