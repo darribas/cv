@@ -56,7 +56,7 @@ The repo setting (Settings → Pages → Deploy from branch → `main` / `/docs`
 was flipped and the CV site is now publicly live. State at `382a755`
 ("Rebuild CV site [skip ci]"), 2026-07-14.
 
-## Web-only publication links (partial: mechanism, not yet the data)
+## Web-only publication links
 
 First slice of the "Merging with online list of work" TODO item — the part that
 covers extra URLs on outputs that are *already* in the CV. A publication in
@@ -81,10 +81,30 @@ there are three controls), `src/cv.typ` (comment only), plus
 `src/cv.template.json` and the `add-cv-record` skill — whose `validate_cv.py`
 now checks link shape and rejects an unknown kind that has no `label` override.
 
-**Not done here:** the links themselves. `me.darribas.org` was blocked by the
-build sandbox's egress policy, so no entry carries a `links` array yet; the
-feature is invisible on the live site until the data is added. Populating it
-stays on `TODO.md`.
+**The data**: 140 links across 87 of the 110 publications, transcribed from
+`me.darribas.org/research`. The 23 without links are the entries that page does
+not list (book reviews, the "other" outputs, the SDG conference papers, the 2026
+pieces). URLs are verbatim apart from stripped social-share fragments
+(`…#.U9qo10gg7VE`). Vocabulary shaped by what the page actually distinguishes:
+`accepted` (institutional-repository postprints) and `docs` were added on
+contact with the data, and `project` became `site`.
+
+Two source discrepancies found while cross-checking, both reported to the
+author:
+
+- `calafiore2023inequalities` carried a truncated DOI
+  (`10.1177/23998083231208`, missing `507`) — **fixed here**, since the CV's own
+  DOI did not resolve.
+- The page gives "Improving the Multi-Dimensional Comparison of Simulation
+  Results" the same published-version URL as "High Performers in Complex Spatial
+  Systems" (an Annals of Regional Science link). Looks like a copy-paste slip on
+  the *page*, so that entry deliberately carries no `official` link here —
+  needs a decision on the website side.
+
+Also noted, not acted on: Liu, Singleton & Arribas-Bel (2020), "Considering
+Context and Dynamics: A Classification of Transit-Oriented Development for New
+York City" (*Journal of Transport Geography*, 85) is on the research page but
+absent from `publications.json` altogether.
 
 ## AI skill for adding CV records
 

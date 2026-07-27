@@ -159,8 +159,8 @@ a row of small pills under the entry, behind the header's "Links" switch.
 
 - `type` is the link's **kind**, not its wording — the renderer owns the wording
   (`LINK_LABELS` in `src/render_html.py`) so it stays consistent everywhere.
-  Known kinds: `official`, `pdf`, `preprint`, `code`, `data`, `notebook`, `viz`,
-  `slides`, `video`, `poster`, `blog`, `project`.
+  Known kinds: `official`, `accepted`, `preprint`, `pdf`, `code`, `data`,
+  `notebook`, `viz`, `site`, `docs`, `slides`, `video`, `poster`, `blog`.
 - Order doesn't matter — the renderer sorts links into a fixed sequence.
 - For a one-off wording no kind captures, add `"label": "Interactive map"`. A
   `type` outside the known set is only accepted **with** a `label`; the

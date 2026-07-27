@@ -75,18 +75,23 @@ def weblink(url):
 # in the same sequence regardless of how they were typed in. cv.typ never reads
 # `links`, which is exactly why they stay out of the PDF.
 LINK_LABELS = {
+    # the version of record, and the versions that stand in for it
     "official": "Official version",
+    "accepted": "Accepted version",
+    "preprint": "Working paper",
     "pdf": "PDF",
-    "preprint": "Preprint",
+    # what the work is made of
     "code": "Code",
     "data": "Data",
     "notebook": "Notebook",
+    # where it can be seen or read about
     "viz": "Visualisation",
+    "site": "Website",
+    "docs": "Documentation",
     "slides": "Slides",
     "video": "Video",
     "poster": "Poster",
     "blog": "Blog post",
-    "project": "Project site",
 }
 
 

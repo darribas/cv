@@ -34,23 +34,31 @@ In this item, we will explore whether it is worth merging all of them, and
 how. The key thing is whether doing so will become an issue to generate a clean,
 standard academic CV, which is the main need this repo addresses.
 
-**Progress.** The "less URLs" half is solved and shipped for publications: a
-publication in `src/publications.json` can now carry a `links` array of typed
-web-only URLs (official version, code, data, visualisation, …), rendered on the
-web page behind a "Links" switch and never in the PDF. See `LOG.md` and
-`ARCHITECTURE.md` Decision 4. That answers the key question above — merging this
-kind of information does *not* compromise the clean academic PDF, because the
-PDF renderer simply never reads the field.
+**Progress.** The "less URLs" half is done for publications: a publication in
+`src/publications.json` carries a `links` array of typed web-only URLs (official
+version, code, data, visualisation, …), rendered on the web page behind a "Links"
+switch and never in the PDF, and the research page's links are now transcribed in
+(140 links, 87 publications). See `LOG.md` and `ARCHITECTURE.md` Decision 4. That
+answers the key question above — merging this kind of information does *not*
+compromise the clean academic PDF, because the PDF renderer simply never reads
+the field.
 
 What remains:
 
-- **Populate the links** for the existing publications from the research page.
-  (The page was not reachable from the build sandbox when the mechanism was
-  written, so it landed with the plumbing only.)
 - **Decide about outputs that don't fit a CV at all** (podcast appearances,
   blog posts, the `materials/` page). These are a different question from
   extra URLs on an existing entry: they need either new CV sections, a
   web-only section type, or to stay on the website. Undecided.
+- **Which way the sync runs.** The links were transcribed *from* the website
+  into this repo, so the two now duplicate each other. Either the website
+  starts generating its research page from `publications.json` (this repo
+  becoming the single source of truth, as the item intends), or the duplication
+  has to be maintained by hand. Not yet decided.
+- **Two source discrepancies** found during the transcription and recorded in
+  `LOG.md` — a bad published-version URL on the website, and a paper listed
+  there but missing from this CV.
+- Possibly **access status** (Open Access / paywalled), which the website marks
+  on every link and this model does not carry. Would be a new optional key.
 
 ### Tooling for building subsets of the CV
 

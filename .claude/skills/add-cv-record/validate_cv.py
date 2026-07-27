@@ -159,8 +159,8 @@ def validate_cv(repo_root):
 # instead of silently rendering as itself. Any kind may still be overridden with
 # an explicit "label" for a one-off (e.g. "Interactive map").
 LINK_TYPES = {
-    "official", "pdf", "preprint", "code", "data", "notebook", "viz",
-    "slides", "video", "poster", "blog", "project",
+    "official", "accepted", "preprint", "pdf", "code", "data", "notebook",
+    "viz", "site", "docs", "slides", "video", "poster", "blog",
 }
 
 

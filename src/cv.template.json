@@ -108,7 +108,7 @@
     },
     {
       "//": "Publications are read from a CSL-JSON file, grouped by a custom 'category' key. Point 'source' at publications.json and list the groups in render order.",
-      "//links": "A publications.json entry may also carry a web-only 'links' array, mirroring the extra material listed at me.darribas.org/research: \"links\": [{\"type\": \"code\", \"url\": \"https://github.com/...\"}]. Known types: official, pdf, preprint, code, data, notebook, viz, slides, video, poster, blog, project — add \"label\" to any of them for a one-off wording. The web page shows these behind its 'Links' switch; the PDF never reads the field.",
+      "//links": "A publications.json entry may also carry a web-only 'links' array, mirroring the extra material listed at me.darribas.org/research: \"links\": [{\"type\": \"code\", \"url\": \"https://github.com/...\"}]. Known types: official, accepted, preprint, pdf, code, data, notebook, viz, site, docs, slides, video, poster, blog — add \"label\" to any of them for a one-off wording (e.g. \"GeoDa Center working paper\"). The web page shows these behind its 'Links' switch; the PDF never reads the field.",
       "title": "Publications",
       "type": "publications",
       "source": "publications.json",
