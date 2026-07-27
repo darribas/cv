@@ -226,7 +226,7 @@
           "title": "Seminars",
           "type": "talks",
           "entries": [
-            {"date": "2026", "title": "Beyond the Thesis: Helping your research find its way into the world", "venue": "Smart Data Research UK. Knowledge Basecamp masterclass. Online. June"},
+            {"date": "2026", "title": "Beyond the Thesis: Helping your research find its way into the world", "venue": "Smart Data Research UK. Knowledge Basecamp masterclass. Online. June", "note": "https://www.eventbrite.co.uk/e/beyond-the-thesis-helping-your-research-find-its-way-into-the-world-tickets-1991476536931"},
             {"date": "2026", "title": "Embeddings for the rest of us", "venue": "Universidad de Zaragoza. June"},
             {"date": "2026", "title": "Making satellites more useful, usable and used in social research and policy", "venue": "Universidad de Zaragoza. June"},
             {"date": "2026", "title": "Making satellites more useful, usable and used in social research and policy", "venue": "University of Leeds. June"},
