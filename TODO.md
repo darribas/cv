@@ -54,11 +54,11 @@ What remains:
   blog posts, the `materials/` page). These are a different question from
   extra URLs on an existing entry: they need either new CV sections, a
   web-only section type, or to stay on the website. Undecided.
-- **One missing link.** "Improving the Multi-Dimensional Comparison of
-  Simulation Results" has no `official` link, because the website's published-
-  version URL for it actually points at a different paper (see `LOG.md`) and
-  `doi.org`/`api.crossref.org` were unreachable from the build sandbox to look
-  up the real one. Needs the correct DOI adding by hand.
+- **One missing link** — tracked as issue #10. "Improving the Multi-Dimensional
+  Comparison of Simulation Results" has no `official` link, because the
+  website's published-version URL for it actually points at a different paper
+  (see `LOG.md`) and `doi.org`/`api.crossref.org` were unreachable from the
+  build sandbox to look up the real one. Needs the correct DOI adding by hand.
 - Possibly **access status** (Open Access / paywalled), which the website marks
   on every link and this model does not carry. Would be a new optional key.
 
