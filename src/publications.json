@@ -4254,11 +4254,6 @@
     "URL": "https://geodacenter.asu.edu/drupal_files/sperrorgmm_wp2.pdf",
     "links": [
       {
-        "type": "official",
-        "url": "https://geodacenter.asu.edu/drupal_files/sperrorgmm_wp2.pdf",
-        "label": "Technical report"
-      },
-      {
         "type": "code",
         "url": "https://geodacenter.asu.edu/drupal_files/Code.zip"
       }
