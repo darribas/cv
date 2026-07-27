@@ -397,18 +397,25 @@ def render_links_switch():
     return '<input type="checkbox" id="show-links" class="visually-hidden" checked>'
 
 
+def render_actions():
+    """The control bar. It is a sibling of <header> rather than a child so that
+    its containing block is <main> — which spans the whole document — letting
+    `position: sticky` keep it pinned all the way down the page. Inside
+    <header> it would unstick as soon as the header scrolled away."""
+    return '''<div class="header-actions">
+  <div class="btn-group">
+    <button popovertarget="toc-pop" class="btn-pdf btn-toc">Sections</button>
+    <label class="btn-pdf btn-links" for="show-links">Links</label>
+  </div>
+  <a class="btn-pdf" href="cv.pdf" download>PDF</a>
+</div>'''
+
+
 def render_header():
     basics = cv["basics"]
     lines = "".join(f'{esc(l)}<br>' for l in basics["affiliation"])
     title = basics.get("title", "Curriculum Vitae")
     return f'''<header>
-  <div class="header-actions">
-    <div class="btn-group">
-      <button popovertarget="toc-pop" class="btn-pdf btn-toc">Sections</button>
-      <label class="btn-pdf btn-links" for="show-links">Links</label>
-    </div>
-    <a class="btn-pdf" href="cv.pdf" download>PDF</a>
-  </div>
   <p class="doctitle">{esc(title.upper())}</p>
   <h1>{esc(basics["name"])}</h1>
   <p class="affiliation">{lines}</p>
@@ -436,6 +443,7 @@ PAGE = """<!doctype html>
 {links_switch}
 {toc_popover}
 <main>
+{actions}
 {header}
 {sections}
 {footer}
@@ -452,6 +460,7 @@ def main():
         doctitle=esc(cv["basics"].get("title", "Curriculum Vitae")),
         links_switch=render_links_switch(),
         toc_popover=render_toc_popover(),
+        actions=render_actions(),
         header=render_header(),
         sections=sections_html,
         footer=render_footer(),

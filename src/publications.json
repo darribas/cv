@@ -1458,6 +1458,42 @@
     ]
   },
   {
+    "id": "liu2020considering",
+    "type": "article-journal",
+    "title": "Considering Context and Dynamics: A Classification of Transit-Oriented Development for New York City",
+    "author": [
+      {
+        "family": "Liu",
+        "given": "Y"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Transport Geography",
+    "volume": "85, 102711",
+    "DOI": "10.1016/j.jtrangeo.2020.102711",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0966692319306210"
+      }
+    ]
+  },
+  {
     "id": "chen2020quantifying",
     "type": "article-journal",
     "title": "Quantifying characteristics of the local urban environment through geotagged Flickr photographs and image recognition",

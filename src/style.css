@@ -87,7 +87,6 @@ code, .mono {
 /* ---------------------------------------------------------------------- */
 
 header {
-  position: relative;
   text-align: center;
   margin-bottom: 2rem;
 }
@@ -111,19 +110,28 @@ header .contact {
   font-size: 0.85rem;
   margin: 0;
 }
-/* The header's control row spans the top of the header and pushes its two
-   ends apart: the "Sections" + "Links" pair on the left, "PDF" on the right.
+/* The control row: "Sections" + "Links" on the left, "PDF" on the right.
    Positioning lives here rather than on the buttons themselves, so a button is
-   just a button and the row decides where the group sits. */
+   just a button and the row decides where the group sits.
+
+   It STICKS to the top of the viewport for the whole page. That works because
+   the element sits in <main> (not in <header>) — sticky only holds while its
+   containing block is on screen, and <main> spans the entire document. The
+   opaque background and the negative top margin that cancels <main>'s own top
+   padding are what make content scroll cleanly underneath rather than beside
+   it. */
 .header-actions {
-  position: absolute;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.4rem;
+  margin: -2.5rem -1.25rem 1.5rem;
+  padding: 0.9rem 1.25rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
 }
 .btn-group {
   display: flex;
@@ -157,8 +165,10 @@ header .contact {
 /* Section / sub-section headings                                         */
 /* ---------------------------------------------------------------------- */
 
-section { scroll-margin-top: 1rem; }
-h3 { scroll-margin-top: 1rem; }
+/* Clear the sticky control bar when jumping to an anchor, so the heading
+   lands below it rather than under it. */
+section { scroll-margin-top: 4.5rem; }
+h3 { scroll-margin-top: 4.5rem; }
 
 section h2 {
   font-variant: small-caps;
@@ -301,17 +311,6 @@ footer {
 #toc-pop li { margin: 0.45rem 0; break-inside: avoid; }
 #toc-pop a { text-decoration: none; font-size: 0.92rem; }
 #toc-pop a:hover { text-decoration: underline; }
-
-/* Below ~40rem, the two corner-absolute header buttons collide with the
-   centered doctitle/name text. Un-absolute them into a plain flex row
-   above the title instead, via the shared wrapper (inert at wider widths,
-   where each button still corner-positions itself independently). */
-@media (max-width: 40rem) {
-  .header-actions {
-    position: static;
-    margin-bottom: 1.5rem;
-  }
-}
 
 /* Printing the web page is a fallback for the real PDF, so drop the things
    that only make sense on screen: the controls, and the web-only extras the

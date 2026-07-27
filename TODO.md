@@ -43,20 +43,22 @@ answers the key question above — merging this kind of information does *not*
 compromise the clean academic PDF, because the PDF renderer simply never reads
 the field.
 
+**Direction settled.** This repo is intended to *replace* the website's research
+page, not to sync with it. So the transcription above is a one-way import, and
+there is no ongoing reconciliation to build: once the website points at (or is
+generated from) this data, `publications.json` is the only copy.
+
 What remains:
 
 - **Decide about outputs that don't fit a CV at all** (podcast appearances,
   blog posts, the `materials/` page). These are a different question from
   extra URLs on an existing entry: they need either new CV sections, a
   web-only section type, or to stay on the website. Undecided.
-- **Which way the sync runs.** The links were transcribed *from* the website
-  into this repo, so the two now duplicate each other. Either the website
-  starts generating its research page from `publications.json` (this repo
-  becoming the single source of truth, as the item intends), or the duplication
-  has to be maintained by hand. Not yet decided.
-- **Two source discrepancies** found during the transcription and recorded in
-  `LOG.md` — a bad published-version URL on the website, and a paper listed
-  there but missing from this CV.
+- **One missing link.** "Improving the Multi-Dimensional Comparison of
+  Simulation Results" has no `official` link, because the website's published-
+  version URL for it actually points at a different paper (see `LOG.md`) and
+  `doi.org`/`api.crossref.org` were unreachable from the build sandbox to look
+  up the real one. Needs the correct DOI adding by hand.
 - Possibly **access status** (Open Access / paywalled), which the website marks
   on every link and this model does not carry. Would be a new optional key.
 

@@ -89,22 +89,34 @@ pieces). URLs are verbatim apart from stripped social-share fragments
 `accepted` (institutional-repository postprints) and `docs` were added on
 contact with the data, and `project` became `site`.
 
-Two source discrepancies found while cross-checking, both reported to the
-author:
+Three discrepancies surfaced by cross-checking the transcription against the
+data (every DOI in `publications.json` was compared with the page's `doi.org`
+links, and every link URL checked for duplicates across entries):
 
 - `calafiore2023inequalities` carried a truncated DOI
-  (`10.1177/23998083231208`, missing `507`) — **fixed here**, since the CV's own
-  DOI did not resolve.
+  (`10.1177/23998083231208`, missing `507`) — **fixed**, since the CV's own DOI
+  did not resolve.
+- Liu, Singleton & Arribas-Bel (2020), "Considering Context and Dynamics: A
+  Classification of Transit-Oriented Development for New York City" (*Journal of
+  Transport Geography*, 85, 102711) was on the research page but missing from
+  `publications.json` entirely — **added** (`liu2020considering`), hand-built
+  from the page's own metadata because `doi.org` is blocked by the build
+  sandbox's egress policy.
 - The page gives "Improving the Multi-Dimensional Comparison of Simulation
   Results" the same published-version URL as "High Performers in Complex Spatial
-  Systems" (an Annals of Regional Science link). Looks like a copy-paste slip on
-  the *page*, so that entry deliberately carries no `official` link here —
-  needs a decision on the website side.
+  Systems" (an Annals of Regional Science link) — a copy-paste slip on the page.
+  That entry therefore carries no `official` link: the correct one could not be
+  looked up either, since `api.crossref.org` is blocked as well. Left on
+  `TODO.md` as the one outstanding gap.
 
-Also noted, not acted on: Liu, Singleton & Arribas-Bel (2020), "Considering
-Context and Dynamics: A Classification of Transit-Oriented Development for New
-York City" (*Journal of Transport Geography*, 85) is on the research page but
-absent from `publications.json` altogether.
+**Sticky controls.** With links adding a row to most publications, the header's
+buttons were worth keeping reachable, so the control bar (Sections / Links /
+PDF) now `position: sticky`s to the top of the viewport for the whole page. That
+required moving it out of `<header>` and into `<main>`: sticky only holds while
+its containing block is on screen, and `<header>` scrolls away almost
+immediately, whereas `<main>` spans the document. Anchor targets gained
+`scroll-margin-top` so a jump from the Sections menu lands below the bar rather
+than under it.
 
 ## AI skill for adding CV records
 
