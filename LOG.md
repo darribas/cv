@@ -55,3 +55,43 @@ the author to make, not part of this build work.
 The repo setting (Settings → Pages → Deploy from branch → `main` / `/docs`)
 was flipped and the CV site is now publicly live. State at `382a755`
 ("Rebuild CV site [skip ci]"), 2026-07-14.
+
+## AI skill for adding CV records
+
+Added `.claude/skills/add-cv-record/` — a Claude Code skill that lets an agent
+append a new CV entry (publication, job, grant, award, talk, course, software,
+etc.) without re-deriving the data model each time. It encodes where records
+live (`src/cv.json` vs. `src/publications.json`), authors from
+`src/cv.template.json`'s per-type examples, validates against
+`src/cv.schema.json`, keeps the change data-only (never the renderers), and
+lands it as a PR off `main`.
+
+Bundled with it is `validate_cv.py`, a stdlib-only validator (no pip installs,
+matching the pipeline's ethos): it runs the subset of JSON Schema that
+`cv.schema.json` uses against `cv.json`, and structurally checks
+`publications.json` — including that every entry's `category` maps to a group
+the publications section actually renders. This is stricter than CI's `make
+validate`, which only checks that the JSON parses; the schema is otherwise only
+enforced by editor tooling, so the skill closes that gap at author time. The
+full Typst/HTML build stays CI's job on the PR.
+
+Settled the three open questions the TODO raised: **one** general skill
+(section-type chosen from the record, not separate skills per type);
+**append-only** (editing an existing record is left to hand-editing); and
+**schema-validation only** locally (no local Typst/HTML dry-run — that needs the
+Typst binary + fonts and belongs in CI). Developed on branch
+`claude/architecture-logs-todos-review-505c4r`.
+
+Follow-up, same branch — two usage paths made first-class:
+
+- **Add from a URL/DOI.** The skill now documents fetching a publication as
+  CSL-JSON directly via DOI content negotiation (`Accept:
+  application/vnd.citationstyles.csl+json` against `doi.org`) — the exact format
+  `publications.json` uses — with a CSL-`type` → `category` mapping and a
+  non-DOI/arXiv fallback. So "Add this paper: <url>" mostly needs no hand-typed
+  fields.
+- **Cross-agent / local LLM.** It's a standard Agent Skills `SKILL.md`, and
+  OpenCode discovers `.claude/skills/` natively (Agent Skills open standard),
+  so the skill runs unmodified there, including with a local model — the DOI
+  fetch + `validate_cv.py` gate keep it reliable even on weaker models. `README.md`
+  now carries brief install/use guidance for both Claude Code and OpenCode.
