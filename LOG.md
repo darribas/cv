@@ -56,6 +56,68 @@ The repo setting (Settings → Pages → Deploy from branch → `main` / `/docs`
 was flipped and the CV site is now publicly live. State at `382a755`
 ("Rebuild CV site [skip ci]"), 2026-07-14.
 
+## Web-only publication links
+
+First slice of the "Merging with online list of work" TODO item — the part that
+covers extra URLs on outputs that are *already* in the CV. A publication in
+`src/publications.json` may now carry an optional `links` array:
+
+```json
+"links": [{ "type": "code", "url": "https://github.com/…" }]
+```
+
+Design rationale is `ARCHITECTURE.md` Decision 4; in short: links carry a
+**kind**, not a display string (the renderer owns wording and ordering, and a
+kind is filterable — which is what the subset-CV TODO item will need); the PDF
+excludes them by never naming the field, so `cv.typ` gained only a comment; and
+the web page's show/hide switch is a hidden checkbox + `:checked` sibling
+selector, keeping the page JavaScript-free like the Sections popover. The switch
+defaults to on and resets on reload, which is the accepted price of no JS.
+
+Touched: `src/render_html.py` (`LINK_LABELS`, `render_links`, the switch),
+`src/style.css` (`.weblinks` pills, the switch, a `@media print` rule, and the
+header button row refactored from corner-absolute buttons to a flex row now that
+there are three controls), `src/cv.typ` (comment only), plus
+`src/cv.template.json` and the `add-cv-record` skill — whose `validate_cv.py`
+now checks link shape and rejects an unknown kind that has no `label` override.
+
+**The data**: 140 links across 87 of the 110 publications, transcribed from
+`me.darribas.org/research`. The 23 without links are the entries that page does
+not list (book reviews, the "other" outputs, the SDG conference papers, the 2026
+pieces). URLs are verbatim apart from stripped social-share fragments
+(`…#.U9qo10gg7VE`). Vocabulary shaped by what the page actually distinguishes:
+`accepted` (institutional-repository postprints) and `docs` were added on
+contact with the data, and `project` became `site`.
+
+Three discrepancies surfaced by cross-checking the transcription against the
+data (every DOI in `publications.json` was compared with the page's `doi.org`
+links, and every link URL checked for duplicates across entries):
+
+- `calafiore2023inequalities` carried a truncated DOI
+  (`10.1177/23998083231208`, missing `507`) — **fixed**, since the CV's own DOI
+  did not resolve.
+- Liu, Singleton & Arribas-Bel (2020), "Considering Context and Dynamics: A
+  Classification of Transit-Oriented Development for New York City" (*Journal of
+  Transport Geography*, 85, 102711) was on the research page but missing from
+  `publications.json` entirely — **added** (`liu2020considering`), hand-built
+  from the page's own metadata because `doi.org` is blocked by the build
+  sandbox's egress policy.
+- The page gives "Improving the Multi-Dimensional Comparison of Simulation
+  Results" the same published-version URL as "High Performers in Complex Spatial
+  Systems" (an Annals of Regional Science link) — a copy-paste slip on the page.
+  That entry therefore carries no `official` link: the correct one could not be
+  looked up either, since `api.crossref.org` is blocked as well. Left on
+  `TODO.md` as the one outstanding gap.
+
+**Sticky controls.** With links adding a row to most publications, the header's
+buttons were worth keeping reachable, so the control bar (Sections / Links /
+PDF) now `position: sticky`s to the top of the viewport for the whole page. That
+required moving it out of `<header>` and into `<main>`: sticky only holds while
+its containing block is on screen, and `<header>` scrolls away almost
+immediately, whereas `<main>` spans the document. Anchor targets gained
+`scroll-margin-top` so a jump from the Sections menu lands below the bar rather
+than under it.
+
 ## AI skill for adding CV records
 
 Added `.claude/skills/add-cv-record/` — a Claude Code skill that lets an agent

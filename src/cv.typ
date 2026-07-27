@@ -162,6 +162,13 @@
 
 // CSL-JSON reference, segments joined by ". " so neither an author initial nor a
 // closing quote can produce a doubled period.
+//
+// An entry's optional `links` array (official version, code, data, …, mirrored
+// from me.darribas.org) is deliberately NOT read here: those extras belong on
+// the web page, not in a standard academic PDF. Omission IS the mechanism —
+// a renderer shows a field only if its template names one (ARCHITECTURE.md,
+// "Web-only / PDF-extended fields"). An extended PDF variant would opt in via
+// a `sys.inputs` flag; nothing to gate until such a variant exists.
 #let render-pub(label, p) = {
   let parts = ([#fmt-authors(p.author) “#p.title”],)
   if "container-title" in p {

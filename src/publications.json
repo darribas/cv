@@ -59,7 +59,13 @@
     "category": "journal-article",
     "container-title": "Global Challenges & Regional Science",
     "volume": "3, 100019",
-    "DOI": "10.1016/j.gcrs.2025.100019"
+    "DOI": "10.1016/j.gcrs.2025.100019",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S3050502X25000166"
+      }
+    ]
   },
   {
     "id": "fleischmann2024decoding",
@@ -85,7 +91,13 @@
     "category": "journal-article",
     "container-title": "Computers, Environment and Urban Systems",
     "volume": "112, 102147",
-    "DOI": "10.1016/j.compenvurbsys.2024.102147"
+    "DOI": "10.1016/j.compenvurbsys.2024.102147",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.compenvurbsys.2024.102147"
+      }
+    ]
   },
   {
     "id": "kenyon2024extracting",
@@ -115,7 +127,13 @@
     "category": "journal-article",
     "container-title": "Land",
     "volume": "13, 575",
-    "DOI": "10.3390/land13050575"
+    "DOI": "10.3390/land13050575",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.3390/land13050575"
+      }
+    ]
   },
   {
     "id": "kenyon2024intraurban",
@@ -145,7 +163,13 @@
     "category": "journal-article",
     "container-title": "npj Urban Sustain",
     "volume": "4, 26",
-    "DOI": "10.1038/s42949-024-00161-0"
+    "DOI": "10.1038/s42949-024-00161-0",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1038/s42949-024-00161-0"
+      }
+    ]
   },
   {
     "id": "calafiore2023inequalities",
@@ -182,7 +206,13 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning B - Urban Analytics and City Science",
-    "DOI": "10.1177/23998083231208"
+    "DOI": "10.1177/23998083231208507",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1177/23998083231208507"
+      }
+    ]
   },
   {
     "id": "salat2023synthetic",
@@ -223,7 +253,13 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning B - Urban Analytics and City Science",
-    "DOI": "10.1177/23998083231203066"
+    "DOI": "10.1177/23998083231203066",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1177/23998083231203066"
+      }
+    ]
   },
   {
     "id": "murphy2023spatialtemporal",
@@ -257,7 +293,13 @@
     "category": "journal-article",
     "container-title": "Frontiers in Marine Science",
     "volume": "10",
-    "DOI": "10.3389/fmars.2023.1142077"
+    "DOI": "10.3389/fmars.2023.1142077",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.3389/fmars.2023.1142077"
+      }
+    ]
   },
   {
     "id": "owen2023tracking",
@@ -287,7 +329,13 @@
     "category": "journal-article",
     "container-title": "Sustainability",
     "volume": "15(11)",
-    "DOI": "10.3390/su15118821"
+    "DOI": "10.3390/su15118821",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.3390/su15118821"
+      }
+    ]
   },
   {
     "id": "arribasbel2022spatial",
@@ -313,7 +361,17 @@
     "category": "journal-article",
     "container-title": "Habitat International",
     "volume": "128",
-    "DOI": "10.1016/j.habitatint.2022.102641"
+    "DOI": "10.1016/j.habitatint.2022.102641",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0197397522001382"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/urbangrammarai/spatial_signatures_concept"
+      }
+    ]
   },
   {
     "id": "fleischmann2022geographical",
@@ -339,7 +397,32 @@
     "category": "journal-article",
     "container-title": "Scientific Data",
     "volume": "9, 546",
-    "DOI": "10.1038/s41597-022-01640-8"
+    "DOI": "10.1038/s41597-022-01640-8",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.nature.com/articles/s41597-022-01640-8"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/urbangrammarai/scientific_data",
+        "label": "Paper repository"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/urbangrammarai/spatial_signatures",
+        "label": "Code repository"
+      },
+      {
+        "type": "data",
+        "url": "https://data.cdrc.ac.uk/dataset/spatial-signatures-great-britain"
+      },
+      {
+        "type": "viz",
+        "url": "https://urbangrammarai.xyz/great-britain/",
+        "label": "Web map"
+      }
+    ]
   },
   {
     "id": "rowe2022urban",
@@ -377,7 +460,13 @@
     "category": "journal-article",
     "container-title": "Population, Space and Place",
     "volume": "29, e2637",
-    "DOI": "10.1002/psp.2637"
+    "DOI": "10.1002/psp.2637",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1002/psp.2637"
+      }
+    ]
   },
   {
     "id": "patias2022local",
@@ -407,7 +496,13 @@
     "category": "journal-article",
     "container-title": "Cities",
     "volume": "132",
-    "DOI": "10.1016/j.cities.2022.103967"
+    "DOI": "10.1016/j.cities.2022.103967",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.cities.2022.103967"
+      }
+    ]
   },
   {
     "id": "samardzhiev2022functional",
@@ -445,7 +540,26 @@
     "category": "journal-article",
     "container-title": "Data in Brief",
     "volume": "43",
-    "DOI": "10.1016/j.dib.2022.108335"
+    "DOI": "10.1016/j.dib.2022.108335",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.dib.2022.108335"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/gdsl-itinerant/functional_areas"
+      },
+      {
+        "type": "data",
+        "url": "https://doi.org/10.6084/m9.figshare.c.5906981.v1"
+      },
+      {
+        "type": "viz",
+        "url": "https://gdsl-itinerant.github.io/functional_signatures_map/",
+        "label": "Web map"
+      }
+    ]
   },
   {
     "id": "comber2022dynamicimd",
@@ -475,7 +589,13 @@
     "category": "journal-article",
     "container-title": "Cities",
     "volume": "127",
-    "DOI": "10.1016/j.cities.2022.103733"
+    "DOI": "10.1016/j.cities.2022.103733",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.cities.2022.103733"
+      }
+    ]
   },
   {
     "id": "chen2022assessing",
@@ -509,7 +629,13 @@
     "category": "journal-article",
     "container-title": "Landscape and Urban Planning",
     "volume": "226",
-    "DOI": "10.1016/j.landurbplan.2022.104486"
+    "DOI": "10.1016/j.landurbplan.2022.104486",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.landurbplan.2022.104486"
+      }
+    ]
   },
   {
     "id": "singleton2022estimating",
@@ -543,7 +669,26 @@
     "category": "journal-article",
     "container-title": "Computers, Environment and Urban Systems",
     "volume": "95",
-    "DOI": "10.1016/j.compenvurbsys.2022.101802"
+    "DOI": "10.1016/j.compenvurbsys.2022.101802",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0198971522000461"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/GDSL-UL/sat_cnn"
+      },
+      {
+        "type": "data",
+        "url": "https://dataverse.harvard.edu/dataverse/sat_cnn"
+      },
+      {
+        "type": "viz",
+        "url": "https://studio.unfolded.ai/public/c40f0a5b-a1f8-48af-8b7d-7c258942cf0d",
+        "label": "Interactive map"
+      }
+    ]
   },
   {
     "id": "patias2021trajectories",
@@ -572,7 +717,13 @@
     },
     "category": "journal-article",
     "container-title": "The Geographical Journal",
-    "DOI": "10.1111/geoj.12420"
+    "DOI": "10.1111/geoj.12420",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://rgs-ibg.onlinelibrary.wiley.com/doi/10.1111/geoj.12420"
+      }
+    ]
   },
   {
     "id": "rey2021the",
@@ -641,7 +792,13 @@
     },
     "category": "journal-article",
     "container-title": "Geographical Analysis",
-    "DOI": "10.1111/gean.12276"
+    "DOI": "10.1111/gean.12276",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://onlinelibrary.wiley.com/doi/10.1111/gean.12276"
+      }
+    ]
   },
   {
     "id": "arribasbel2021open",
@@ -674,7 +831,13 @@
     },
     "category": "journal-article",
     "container-title": "Journal of Geographical Systems",
-    "DOI": "10.1007/s10109-021-00363-5"
+    "DOI": "10.1007/s10109-021-00363-5",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://link.springer.com/article/10.1007%2Fs10109-021-00363-5"
+      }
+    ]
   },
   {
     "id": "wolf2021on",
@@ -707,7 +870,18 @@
     },
     "category": "journal-article",
     "container-title": "Annals of the American Association of Geographers",
-    "DOI": "10.1080/24694452.2020.1841602"
+    "DOI": "10.1080/24694452.2020.1841602",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1080/24694452.2020.1841602"
+      },
+      {
+        "type": "preprint",
+        "url": "https://osf.io/ks6t3/",
+        "label": "OSF working paper"
+      }
+    ]
   },
   {
     "id": "alharbi2021sustainable",
@@ -768,7 +942,13 @@
     "category": "journal-article",
     "container-title": "Landscape and Urban Planning",
     "volume": "214, 104148",
-    "DOI": "10.1016/j.landurbplan.2021.104148"
+    "DOI": "10.1016/j.landurbplan.2021.104148",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.landurbplan.2021.104148"
+      }
+    ]
   },
   {
     "id": "liu2021identifying",
@@ -802,7 +982,13 @@
     "category": "journal-article",
     "container-title": "Computers, Environment and Urban Systems",
     "volume": "86",
-    "DOI": "10.1016/j.compenvurbsys.2020.101592"
+    "DOI": "10.1016/j.compenvurbsys.2020.101592",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.compenvurbsys.2020.101592"
+      }
+    ]
   },
   {
     "id": "calafiore2021a",
@@ -840,7 +1026,13 @@
     "category": "journal-article",
     "container-title": "Computers, Environment and Urban Systems",
     "volume": "85",
-    "DOI": "10.1016/j.compenvurbsys.2020.101539"
+    "DOI": "10.1016/j.compenvurbsys.2020.101539",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.compenvurbsys.2020.101539"
+      }
+    ]
   },
   {
     "id": "comber2020using",
@@ -873,7 +1065,13 @@
     },
     "category": "journal-article",
     "container-title": "Landscape and Urban Planning",
-    "volume": "202"
+    "volume": "202",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.landurbplan.2020.103887"
+      }
+    ]
   },
   {
     "id": "thompson2020key",
@@ -1063,7 +1261,13 @@
     "category": "journal-article",
     "container-title": "Proceedings of the Royal Society B: Biological Sciences",
     "volume": "287(1932), 20201405",
-    "DOI": "10.1098/rspb.2020.1405"
+    "DOI": "10.1098/rspb.2020.1405",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1098/rspb.2020.1405"
+      }
+    ]
   },
   {
     "id": "puenteajovn2020how",
@@ -1097,7 +1301,13 @@
     "category": "journal-article",
     "container-title": "Economics Letters",
     "volume": "197",
-    "DOI": "10.1016/j.econlet.2020.109643"
+    "DOI": "10.1016/j.econlet.2020.109643",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1016/j.econlet.2020.109643"
+      }
+    ]
   },
   {
     "id": "franklin2020who",
@@ -1145,7 +1355,17 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "The Professional Geographer"
+    "container-title": "The Professional Geographer",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.tandfonline.com/doi/abs/10.1080/00330124.2020.1828944"
+      },
+      {
+        "type": "preprint",
+        "url": "https://osf.io/preprints/socarxiv/ucfyd/"
+      }
+    ]
   },
   {
     "id": "chen2020a",
@@ -1179,7 +1399,13 @@
     "category": "journal-article",
     "container-title": "REGION",
     "volume": "7(2), R15-R46",
-    "DOI": "10.18335/region.v7i2.295"
+    "DOI": "10.18335/region.v7i2.295",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://openjournals.wu.ac.at/ojs/index.php/region/article/view/295"
+      }
+    ]
   },
   {
     "id": "olson2020classification",
@@ -1223,7 +1449,49 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "Geographical Analysis"
+    "container-title": "Geographical Analysis",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1111/gean.12252"
+      }
+    ]
+  },
+  {
+    "id": "liu2020considering",
+    "type": "article-journal",
+    "title": "Considering Context and Dynamics: A Classification of Transit-Oriented Development for New York City",
+    "author": [
+      {
+        "family": "Liu",
+        "given": "Y"
+      },
+      {
+        "family": "Singleton",
+        "given": "A"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "Journal of Transport Geography",
+    "volume": "85, 102711",
+    "DOI": "10.1016/j.jtrangeo.2020.102711",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0966692319306210"
+      }
+    ]
   },
   {
     "id": "chen2020quantifying",
@@ -1253,7 +1521,13 @@
     "category": "journal-article",
     "container-title": "International Journal of Geo-Information",
     "volume": "9, 264",
-    "DOI": "10.3390/ijgi9040264"
+    "DOI": "10.3390/ijgi9040264",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.mdpi.com/2220-9964/9/4/264"
+      }
+    ]
   },
   {
     "id": "lumnitz2020splot",
@@ -1307,7 +1581,22 @@
     "category": "journal-article",
     "container-title": "Journal of Open Source Software",
     "volume": "5(47), 1882",
-    "DOI": "10.21105/joss.01882"
+    "DOI": "10.21105/joss.01882",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://joss.theoj.org/papers/10.21105/joss.01882"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/pysal/splot",
+        "label": "Package repository"
+      },
+      {
+        "type": "docs",
+        "url": "https://splot.readthedocs.io/en/latest/"
+      }
+    ]
   },
   {
     "id": "arribasbel2019buildings",
@@ -1336,7 +1625,30 @@
     },
     "category": "journal-article",
     "container-title": "Journal of Urban Economics",
-    "DOI": "10.1016/j.jue.2019.103217"
+    "DOI": "10.1016/j.jue.2019.103217",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0094119019300944"
+      },
+      {
+        "type": "preprint",
+        "url": "https://ieb.ub.edu/en/publication/2019-10-buildings-and-cities-delineating-urban-areas-with-a-machine-learning-algorithm/"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/adbscan_buildings"
+      },
+      {
+        "type": "data",
+        "url": "https://figshare.com/articles/Building_s_and_cities_Delineating_urban_areas_with_a_machine_learning_algorithm_-_City_Employment_Centre_Boundaries_v1_/11384136"
+      },
+      {
+        "type": "viz",
+        "url": "https://gdsl.carto.com/u/danigdsl/builder/fe01a0ff-f0ee-4df2-ba4a-a46815b87aab/embed",
+        "label": "Interactive map"
+      }
+    ]
   },
   {
     "id": "comber2019building",
@@ -1373,7 +1685,13 @@
     },
     "category": "journal-article",
     "container-title": "Annals of the American Association of Geographers",
-    "DOI": "10.1080/24694452.2019.1667219"
+    "DOI": "10.1080/24694452.2019.1667219",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.tandfonline.com/doi/full/10.1080/24694452.2019.1667219"
+      }
+    ]
   },
   {
     "id": "singleton2019geographic",
@@ -1398,7 +1716,13 @@
     },
     "category": "journal-article",
     "container-title": "Geographic Analysis",
-    "DOI": "10.1111/gean.12194"
+    "DOI": "10.1111/gean.12194",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://onlinelibrary.wiley.com/doi/full/10.1111/gean.12194"
+      }
+    ]
   },
   {
     "id": "stubbings2019a",
@@ -1432,7 +1756,13 @@
     "category": "journal-article",
     "container-title": "Remote Sensing",
     "volume": "11(12)",
-    "DOI": "10.3390/rs11121395"
+    "DOI": "10.3390/rs11121395",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.mdpi.com/2072-4292/11/12/1395"
+      }
+    ]
   },
   {
     "id": "arribasbel2019a",
@@ -1454,7 +1784,13 @@
     "category": "journal-article",
     "container-title": "The Journal of Open Source Education",
     "volume": "2(14), 42",
-    "DOI": "10.21105/jose.00042"
+    "DOI": "10.21105/jose.00042",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://jose.theoj.org/papers/ab5b87ff724fbdb2fda35a7301eecce9"
+      }
+    ]
   },
   {
     "id": "comber2019machine",
@@ -1479,7 +1815,13 @@
     },
     "category": "journal-article",
     "container-title": "Transactions in GIS",
-    "volume": "23(2), 334-348"
+    "volume": "23(2), 334-348",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://onlinelibrary.wiley.com/doi/full/10.1111/tgis.12522"
+      }
+    ]
   },
   {
     "id": "liu2019a",
@@ -1508,7 +1850,13 @@
     },
     "category": "journal-article",
     "container-title": "Geo-spatial Information Science",
-    "DOI": "10.1080/10095020.2019.1621549"
+    "DOI": "10.1080/10095020.2019.1621549",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.tandfonline.com/doi/full/10.1080/10095020.2019.1621549"
+      }
+    ]
   },
   {
     "id": "davies2019buy",
@@ -1536,7 +1884,13 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "International Journal of Retail and Distribution Management"
+    "container-title": "International Journal of Retail and Distribution Management",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.emeraldinsight.com/doi/full/10.1108/IJRDM-01-2018-0025"
+      }
+    ]
   },
   {
     "id": "chen2019understanding",
@@ -1564,7 +1918,13 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "Journal of Geographical Systems"
+    "container-title": "Journal of Geographical Systems",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://link.springer.com/article/10.1007%2Fs10109-018-0284-3"
+      }
+    ]
   },
   {
     "id": "dong2019inferring",
@@ -1596,7 +1956,13 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "Computers, Environment and Urban Systems"
+    "container-title": "Computers, Environment and Urban Systems",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0198971518301042"
+      }
+    ]
   },
   {
     "id": "arribasbel2018geography",
@@ -1620,7 +1986,17 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "Geography Compass"
+    "container-title": "Geography Compass",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://onlinelibrary.wiley.com/doi/10.1111/gec3.12403"
+      },
+      {
+        "type": "blog",
+        "url": "https://www.liverpool.ac.uk/geographic-data-science/news/stories/title,1074742,en.html"
+      }
+    ]
   },
   {
     "id": "arribasbel2018use",
@@ -1645,7 +2021,17 @@
     },
     "category": "journal-article",
     "container-title": "Urban Studies",
-    "volume": "56(5), 868:884"
+    "volume": "56(5), 868:884",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://journals.sagepub.com/doi/full/10.1177/0042098018779554"
+      },
+      {
+        "type": "blog",
+        "url": "https://www.urbanstudiesonline.com/resources/resource/the-potential-of-the-urban-data-revolution-for-research-on-cities/"
+      }
+    ]
   },
   {
     "id": "arribasbel2018spatial",
@@ -1670,7 +2056,13 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning B - Urban Analytics and City Science",
-    "DOI": "10.1177/2399808318783748"
+    "DOI": "10.1177/2399808318783748",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://journals.sagepub.com/doi/abs/10.1177/2399808318783748"
+      }
+    ]
   },
   {
     "id": "arribasbel2017characterizing",
@@ -1696,7 +2088,26 @@
     "category": "journal-article",
     "container-title": "Geographical Analysis",
     "volume": "50(2), 162-181",
-    "DOI": "10.1111/gean.12137"
+    "DOI": "10.1111/gean.12137",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://onlinelibrary.wiley.com/doi/10.1111/gean.12137/abstract"
+      },
+      {
+        "type": "accepted",
+        "url": "http://livrepository.liverpool.ac.uk/id/eprint/3008969"
+      },
+      {
+        "type": "preprint",
+        "url": "http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2817330",
+        "label": "SSRN"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/space-time_calendar"
+      }
+    ]
   },
   {
     "id": "gerritse2017concrete",
@@ -1721,7 +2132,13 @@
     },
     "category": "journal-article",
     "container-title": "Regional Studies",
-    "volume": "52(8), 1134-1149"
+    "volume": "52(8), 1134-1149",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://rsa.tandfonline.com/doi/full/10.1080/00343404.2017.1369023"
+      }
+    ]
   },
   {
     "id": "wolf2017stochastic",
@@ -1751,7 +2168,13 @@
     "category": "journal-article",
     "container-title": "Geographical Analysis",
     "volume": "50, 97-119",
-    "DOI": "10.1111/gean.12135"
+    "DOI": "10.1111/gean.12135",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://onlinelibrary.wiley.com/doi/10.1111/gean.12135/abstract"
+      }
+    ]
   },
   {
     "id": "arribasbel2017remote",
@@ -1780,7 +2203,18 @@
     },
     "category": "journal-article",
     "container-title": "PLOS ONE",
-    "volume": "12(5), e0176684"
+    "volume": "12(5), e0176684",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1371/journal.pone.0176684"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/satellite_led_liverpool",
+        "label": "Data and code"
+      }
+    ]
   },
   {
     "id": "comber2017waiting",
@@ -1805,7 +2239,17 @@
     },
     "category": "journal-article",
     "container-title": "Journal of Transport Geography",
-    "volume": "64, 13-22"
+    "volume": "64, 13-22",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.sciencedirect.com/science/article/pii/S0966692317300820"
+      },
+      {
+        "type": "code",
+        "url": "https://bitbucket.org/darribas/sc_dab_ealing"
+      }
+    ]
   },
   {
     "id": "arribasbel2016how",
@@ -1834,7 +2278,36 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning A",
-    "volume": "48(10), 2046-2066"
+    "volume": "48(10), 2046-2066",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://epn.sagepub.com/content/48/10/2046.abstract"
+      },
+      {
+        "type": "accepted",
+        "url": "https://livrepository.liverpool.ac.uk/3006508/"
+      },
+      {
+        "type": "preprint",
+        "url": "http://cream-migration.org/publ_uploads/CDP_22_14.pdf",
+        "label": "CReAM working paper"
+      },
+      {
+        "type": "preprint",
+        "url": "http://ftp.iza.org/dp8251.pdf",
+        "label": "IZA working paper"
+      },
+      {
+        "type": "preprint",
+        "url": "http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2462417",
+        "label": "SSRN"
+      },
+      {
+        "type": "site",
+        "url": "http://darribas.org/diversity_abm/"
+      }
+    ]
   },
   {
     "id": "folch2016spatial",
@@ -1867,7 +2340,18 @@
     },
     "category": "journal-article",
     "container-title": "Demography",
-    "volume": "53(5), 1535-1554"
+    "volume": "53(5), 1535-1554",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://link.springer.com/article/10.1007/s13524-016-0499-1"
+      },
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/category/public/spatial-variati",
+        "label": "GeoDa Center working paper"
+      }
+    ]
   },
   {
     "id": "arribasbel2015cultural",
@@ -1896,7 +2380,23 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning C -- Government and Policy",
-    "volume": "33, 1-17"
+    "volume": "33, 1-17",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://epc.sagepub.com/content/early/2015/11/26/0263774X15614711.abstract"
+      },
+      {
+        "type": "preprint",
+        "url": "http://www.tinbergen.nl/discussionpaper/?paper=2150",
+        "label": "Tinbergen discussion paper"
+      },
+      {
+        "type": "code",
+        "url": "http://darribas.org/buzz_adam",
+        "label": "Reproducible kit"
+      }
+    ]
   },
   {
     "id": "arribasbel2015from",
@@ -1921,7 +2421,17 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning A",
-    "volume": "47(6), 1241-1253"
+    "volume": "47(6), 1241-1253",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.envplan.com/abstract.cgi?id=a140387p"
+      },
+      {
+        "type": "site",
+        "url": "http://darribas.org/belts/index.html"
+      }
+    ]
   },
   {
     "id": "arribasbel2015the",
@@ -1950,7 +2460,18 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning B: Planning and Design",
-    "volume": "42, 23-39"
+    "volume": "42, 23-39",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.envplan.com/abstract.cgi?id=b39038"
+      },
+      {
+        "type": "preprint",
+        "url": "http://ssrn.com/abstract=2512693",
+        "label": "SSRN working paper"
+      }
+    ]
   },
   {
     "id": "arribasbel2015cyber",
@@ -1983,7 +2504,13 @@
     },
     "category": "journal-article",
     "container-title": "Applied Spatial Analysis and Policy",
-    "volume": "8(3), 231-247"
+    "volume": "8(3), 231-247",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://link.springer.com/article/10.1007/s12061-015-9154-2"
+      }
+    ]
   },
   {
     "id": "arribasbel2014the",
@@ -2008,7 +2535,22 @@
     },
     "category": "journal-article",
     "container-title": "Urban Geography",
-    "volume": "35(7), 980-997"
+    "volume": "35(7), 980-997",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.tandfonline.com/doi/full/10.1080/02723638.2014.940693"
+      },
+      {
+        "type": "preprint",
+        "url": "http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2474858",
+        "label": "SSRN working paper"
+      },
+      {
+        "type": "site",
+        "url": "http://darribas.org/us_employment_centers/"
+      }
+    ]
   },
   {
     "id": "arribasbel2014accidental",
@@ -2029,7 +2571,17 @@
     },
     "category": "journal-article",
     "container-title": "Applied Geography",
-    "volume": "49, 45-53"
+    "volume": "49, 45-53",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.sciencedirect.com/science/article/pii/S0143622813002178"
+      },
+      {
+        "type": "preprint",
+        "url": "http://darribas.org/data_aoe"
+      }
+    ]
   },
   {
     "id": "kourtit2014migrant",
@@ -2057,7 +2609,13 @@
       ]
     },
     "category": "journal-article",
-    "container-title": "International Planning Studies"
+    "container-title": "International Planning Studies",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.tandfonline.com/doi/full/10.1080/13563475.2014.942496"
+      }
+    ]
   },
   {
     "id": "arribasbel2013selforganizing",
@@ -2082,7 +2640,23 @@
     },
     "category": "journal-article",
     "container-title": "Environment and Planning B: Planning and Design",
-    "volume": "2, 362-371"
+    "volume": "2, 362-371",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.envplan.com/abstract.cgi?id=b37014"
+      },
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/%5Btermalias-raw%5D/self-organizing",
+        "label": "GeoDa Center working paper"
+      },
+      {
+        "type": "viz",
+        "url": "http://bit.ly/IH25qJ",
+        "label": "Map of MSAs"
+      }
+    ]
   },
   {
     "id": "arribasbel2013benchmarking",
@@ -2111,7 +2685,13 @@
     },
     "category": "journal-article",
     "container-title": "Cities",
-    "volume": "31, 248-257"
+    "volume": "31, 248-257",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.sciencedirect.com/science/article/pii/S0264275112001151"
+      }
+    ]
   },
   {
     "id": "anselin2013spatial",
@@ -2136,7 +2716,18 @@
     },
     "category": "journal-article",
     "container-title": "Papers in Regional Science",
-    "volume": "92(1), 3-17"
+    "volume": "92(1), 3-17",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://onlinelibrary.wiley.com/doi/10.1111/j.1435-5957.2012.00480.x/abstract"
+      },
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/category/public/spatial-fixed-e",
+        "label": "GeoDa Center working paper"
+      }
+    ]
   },
   {
     "id": "amaral2013testing",
@@ -2165,7 +2756,18 @@
     },
     "category": "journal-article",
     "container-title": "Letters in Spatial Resource and Sciences",
-    "volume": "6(2), 91-101"
+    "volume": "6(2), 91-101",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://link.springer.com/article/10.1007/s12076-012-0089-9"
+      },
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/projects/nij/content/testing-spatial",
+        "label": "GeoDa Center working paper"
+      }
+    ]
   },
   {
     "id": "arribasbel2012improving",
@@ -2194,7 +2796,18 @@
     },
     "category": "journal-article",
     "container-title": "Letters in Spatial and Resource Sciences",
-    "volume": "5(2), 55-63"
+    "volume": "5(2), 55-63",
+    "links": [
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/category/public/improving-multi",
+        "label": "GeoDa Center working paper"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/simVizMap"
+      }
+    ]
   },
   {
     "id": "kourtit2012smart",
@@ -2223,7 +2836,13 @@
     },
     "category": "journal-article",
     "container-title": "Innovation: The European Journal of Social Science Research",
-    "volume": "25(2), 229-246"
+    "volume": "25(2), 229-246",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.ingentaconnect.com/content/routledg/ciej/2012/00000025/00000002/art00009"
+      }
+    ]
   },
   {
     "id": "arribasbel2012kangaroos",
@@ -2250,7 +2869,13 @@
         ]
       ]
     },
-    "category": "journal-article"
+    "category": "journal-article",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://core.ac.uk/download/pdf/18452989.pdf"
+      }
+    ]
   },
   {
     "id": "kourtit2012high",
@@ -2279,7 +2904,13 @@
     },
     "category": "journal-article",
     "container-title": "The Annals of Regional Science",
-    "volume": "48(2), 501-527"
+    "volume": "48(2), 501-527",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://link.springer.com/article/10.1007%2Fs00168-011-0483-z"
+      }
+    ]
   },
   {
     "id": "arribasbel2011multidimensional",
@@ -2308,7 +2939,18 @@
     },
     "category": "journal-article",
     "container-title": "Computers, Environment and Urban Systems",
-    "volume": "35(4), 265-275"
+    "volume": "35(4), 265-275",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.sciencedirect.com/science/article/pii/S0198971510000992"
+      },
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/multidimensiona",
+        "label": "GeoDa Center working paper"
+      }
+    ]
   },
   {
     "id": "rey2011measuring",
@@ -2349,7 +2991,18 @@
     },
     "category": "journal-article",
     "container-title": "Economic Development Quarterly",
-    "volume": "25(1), 54-64"
+    "volume": "25(1), 54-64",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://edq.sagepub.com/content/25/1/54.abstract"
+      },
+      {
+        "type": "preprint",
+        "url": "https://geodacenter.asu.edu/category/public/measuring-spati",
+        "label": "GeoDa Center working paper"
+      }
+    ]
   },
   {
     "id": "wagg2026using",
@@ -2575,7 +3228,13 @@
     "category": "other-article",
     "container-title": "Environment and Planning B: Urban Analytics and City Science",
     "volume": "52(2)",
-    "DOI": "10.1177/23998083251316384"
+    "DOI": "10.1177/23998083251316384",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1177/23998083251316384"
+      }
+    ]
   },
   {
     "id": "malleson2024digital",
@@ -2613,7 +3272,13 @@
     "category": "other-article",
     "container-title": "Environment and Planning B: Urban Analytics and City Science",
     "volume": "51(6), 1181-1186",
-    "DOI": "10.1177/23998083241262893"
+    "DOI": "10.1177/23998083241262893",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1177/23998083241262893"
+      }
+    ]
   },
   {
     "id": "arribasbel2024in",
@@ -2638,7 +3303,13 @@
     },
     "category": "other-article",
     "container-title": "Environment and Planning B: Urban Analytics and City Science",
-    "DOI": "10.1177/23998083231224151"
+    "DOI": "10.1177/23998083231224151",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.1177/23998083231224151"
+      }
+    ]
   },
   {
     "id": "arribasbel2021urban",
@@ -2680,7 +3351,13 @@
     "category": "other-article",
     "container-title": "Environment and Planning B - Urban Analytics and City Science",
     "volume": "48(9), 2517-2519",
-    "DOI": "10.1177/23998083211059670"
+    "DOI": "10.1177/23998083211059670",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://journals.sagepub.com/doi/full/10.1177/23998083211059670"
+      }
+    ]
   },
   {
     "id": "rowe2020the",
@@ -2714,7 +3391,13 @@
     "category": "other-article",
     "container-title": "REGION",
     "volume": "7(3), E1-E5",
-    "DOI": "10.18335/region.v7i3.357"
+    "DOI": "10.18335/region.v7i3.357",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://openjournals.wu.ac.at/ojs/index.php/region/article/view/357"
+      }
+    ]
   },
   {
     "id": "arribasbel2018big",
@@ -2739,7 +3422,13 @@
     },
     "category": "other-article",
     "container-title": "Geographical Analysis",
-    "DOI": "10.1111/gean.12157"
+    "DOI": "10.1111/gean.12157",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://onlinelibrary.wiley.com/doi/full/10.1111/gean.12157"
+      }
+    ]
   },
   {
     "id": "harris2017more",
@@ -2804,7 +3493,13 @@
     },
     "category": "other-article",
     "container-title": "Environment and Planning B: Urban Analytics and City Science",
-    "volume": "44(4), 598-617"
+    "volume": "44(4), 598-617",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://journals.sagepub.com/eprint/w8cyKwmUSwrQ9KDrJABu/full"
+      }
+    ]
   },
   {
     "id": "arribasbel2016london",
@@ -2888,7 +3583,18 @@
     },
     "category": "other-article",
     "container-title": "Regional Studies, Regional Science",
-    "volume": "2(1), 457-460"
+    "volume": "2(1), 457-460",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.tandfonline.com/doi/figure/10.1080/21681376.2015.1067151"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/spoken_postcodes_rsrs",
+        "label": "Additional material"
+      }
+    ]
   },
   {
     "id": "arribasbel2015woowii",
@@ -2913,7 +3619,18 @@
     },
     "category": "other-article",
     "container-title": "REGION",
-    "volume": "2(2), R1-R2"
+    "volume": "2(2), R1-R2",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://openjournals.wu.ac.at/ojs/index.php/region/article/view/85"
+      },
+      {
+        "type": "site",
+        "url": "http://darribas.org/WooWii/",
+        "label": "Course website"
+      }
+    ]
   },
   {
     "id": "arribasbel2014spatial",
@@ -2934,7 +3651,22 @@
     },
     "category": "other-article",
     "container-title": "REGION",
-    "volume": "1(1), R1"
+    "volume": "1(1), R1",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://openjournals.wu.ac.at/ojs/index.php/region/article/view/42",
+        "label": "Abstract"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/sdar_mini"
+      },
+      {
+        "type": "site",
+        "url": "http://darribas.org/sdar_mini/"
+      }
+    ]
   },
   {
     "id": "arribasbel2012monocentricity",
@@ -2959,7 +3691,17 @@
     },
     "category": "other-article",
     "container-title": "Featured Graphic, Environment and Planning A",
-    "volume": "44(9), 2041-2042"
+    "volume": "44(9), 2041-2042",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.envplan.com/abstract.cgi?id=a44561"
+      },
+      {
+        "type": "code",
+        "url": "https://github.com/darribas/comFlowViz"
+      }
+    ]
   },
   {
     "id": "arribasbel2024geographic",
@@ -2983,7 +3725,14 @@
       ]
     },
     "category": "book-chapter",
-    "ISBN": "978 1 80220 322 6"
+    "ISBN": "978 1 80220 322 6",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://www.e-elgar.com/shop/gbp/a-research-agenda-for-spatial-analysis-9781802203226.html",
+        "label": "Book"
+      }
+    ]
   },
   {
     "id": "arribasbel2023an",
@@ -3015,7 +3764,14 @@
       ]
     },
     "category": "book-chapter",
-    "DOI": "10.4337/9781789903942"
+    "DOI": "10.4337/9781789903942",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://doi.org/10.4337/9781789903942",
+        "label": "Book"
+      }
+    ]
   },
   {
     "id": "boeing2020gis",
@@ -3045,7 +3801,13 @@
     },
     "category": "book-chapter",
     "container-title": "The Geographic Information Science & Technology Body of Knowledge (1st Quarter 2021 Edition)",
-    "DOI": "10.22224/gistbok/2021.1.2"
+    "DOI": "10.22224/gistbok/2021.1.2",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://gistbok.ucgis.org/bok-topics/2021-quarter-01/gis-and-computational-notebooks"
+      }
+    ]
   },
   {
     "id": "arribasbel2018statistics",
@@ -3081,7 +3843,14 @@
     "category": "book-chapter",
     "container-title": "Digital Geographies",
     "page": "129-140",
-    "publisher": "SAGE"
+    "publisher": "SAGE",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://in.sagepub.com/en-in/sas/digital-geographies/book258271",
+        "label": "Book"
+      }
+    ]
   },
   {
     "id": "degraaff2018demographic",
@@ -3111,7 +3880,14 @@
     "category": "book-chapter",
     "container-title": "Modelling Aging and Migration Effects on Spatial Labor Markets",
     "page": "211-231",
-    "publisher": "Springer, Cham"
+    "publisher": "Springer, Cham",
+    "links": [
+      {
+        "type": "preprint",
+        "url": "http://legacy.iza.org/en/webcontent/publications/papers/viewAbstract?dp_id=10734",
+        "label": "IZA working paper"
+      }
+    ]
   },
   {
     "id": "arribasbel2017looking",
@@ -3139,7 +3915,18 @@
       ]
     },
     "category": "book-chapter",
-    "container-title": "Regional Research Fontiers"
+    "container-title": "Regional Research Fontiers",
+    "links": [
+      {
+        "type": "official",
+        "url": "https://link.springer.com/chapter/10.1007/978-3-319-50590-9_17",
+        "label": "Book chapter"
+      },
+      {
+        "type": "code",
+        "url": "https://bitbucket.org/darribas/reproducible_john_snow"
+      }
+    ]
   },
   {
     "id": "kourtit2013the",
@@ -3181,7 +3968,13 @@
       ]
     },
     "category": "book-chapter",
-    "container-title": "Handbook of Research Methods and Applications in Urban Economies"
+    "container-title": "Handbook of Research Methods and Applications in Urban Economies",
+    "links": [
+      {
+        "type": "official",
+        "url": "http://www.elgaronline.com/abstract/9780857934611.00029.xml"
+      }
+    ]
   },
   {
     "id": "arribasbel2025el",
@@ -3458,6 +4251,12 @@
       ]
     },
     "category": "working-paper",
-    "URL": "https://geodacenter.asu.edu/drupal_files/sperrorgmm_wp2.pdf"
+    "URL": "https://geodacenter.asu.edu/drupal_files/sperrorgmm_wp2.pdf",
+    "links": [
+      {
+        "type": "code",
+        "url": "https://geodacenter.asu.edu/drupal_files/Code.zip"
+      }
+    ]
   }
 ]

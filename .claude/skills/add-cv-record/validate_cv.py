@@ -13,7 +13,8 @@ no-extra-dependencies ethos; see ARCHITECTURE.md):
   2. src/publications.json  (CSL-JSON, no schema) — structural sanity plus a
      cross-check that every entry's `category` matches a group declared in
      the `publications` section of cv.json, so a new publication actually
-     lands in a rendered group instead of vanishing.
+     lands in a rendered group instead of vanishing. Also checks the shape of
+     the optional web-only `links` array (see LINK_TYPES below).
 
 CI's `make validate` only checks that the JSON *parses*; this goes further.
 It never touches the renderers or builds anything.
@@ -152,6 +153,45 @@ def validate_cv(repo_root):
 # CSL-JSON (publications.json) checks.
 # --------------------------------------------------------------------------
 
+# Web-only extras: the curated set of link kinds a publication may carry. The
+# display wording lives in src/render_html.py (LINK_LABELS) — the renderer owns
+# formatting; this list owns the vocabulary, so a typo'd kind is caught here
+# instead of silently rendering as itself. Any kind may still be overridden with
+# an explicit "label" for a one-off (e.g. "Interactive map").
+LINK_TYPES = {
+    "official", "accepted", "preprint", "pdf", "code", "data", "notebook",
+    "viz", "site", "docs", "slides", "video", "poster", "blog",
+}
+
+
+def validate_links(links, where):
+    errors = []
+    if not isinstance(links, list):
+        return [f"{where}: 'links' must be an array of {{type, url}} objects"]
+    for j, l in enumerate(links):
+        at = f"{where}.links[{j}]"
+        if not isinstance(l, dict):
+            errors.append(f"{at}: link is not an object")
+            continue
+        for req in ("type", "url"):
+            if req not in l:
+                errors.append(f"{at}: missing required key {req!r}")
+        extra = set(l) - {"type", "url", "label"}
+        if extra:
+            errors.append(f"{at}: unexpected key(s) {sorted(extra)} "
+                          "(allowed: type, url, label)")
+        url = l.get("url")
+        if url is not None and not str(url).startswith(("http://", "https://")):
+            errors.append(f"{at}: url {url!r} must be an http(s) URL")
+        t = l.get("type")
+        if t is not None and t not in LINK_TYPES and "label" not in l:
+            errors.append(
+                f"{at}: link type {t!r} is not a known kind and has no 'label' "
+                f"to render instead. Known kinds: {sorted(LINK_TYPES)}"
+            )
+    return errors
+
+
 def validate_publications(repo_root, cv_data):
     errors = []
     pubs_path = repo_root / "src" / "publications.json"
@@ -193,6 +233,8 @@ def validate_publications(repo_root, cv_data):
                     f"{where} ({pid}): 'issued' must be "
                     "{{'date-parts': [[YEAR]]}}"
                 )
+        if "links" in p:
+            errors.extend(validate_links(p["links"], f"{where} ({pid})"))
         cat = p.get("category")
         if cat is not None and rendered and cat not in rendered:
             errors.append(
