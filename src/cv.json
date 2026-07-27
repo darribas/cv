@@ -359,6 +359,7 @@
           "type": "talks",
           "entries": [
             {"date": "2026", "title": "Embeddings for the rest of us", "venue": "SPACERAISE summer school, Grand Sasso Science Institute. L'Aquila (Italy)"},
+            {"date": "2026", "title": "Embeddings for the rest of us", "venue": "4h workshop, jointly taught with Elisabetta Pietrostefani and Fang Chen. University of Birmingham (UK). GISRUK 2026. April"},
             {"date": "2023", "title": "Geographic Data Science for Applied Economists", "venue": "(remote). 15h course. CEMFI. Madrid (Spain). November"},
             {"date": "2023", "title": "Urban Analytics", "venue": "(remote). 4h session at the MSc Engineers for Smart Cities. Université Côte D'Azur. November"},
             {"date": "2023", "title": "Spatial autocorrelation", "venue": "Spatial Data Science Bootcamp (with Levi Wolf). CARTO. London. February"},
