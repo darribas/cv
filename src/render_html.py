@@ -67,6 +67,55 @@ def weblink(url):
     return f'<a class="mono" href="{esc(url)}">{esc(url)}</a>'
 
 
+# Web-only extras (ARCHITECTURE.md, "Web-only / PDF-extended fields"): a record
+# may carry a `links` array of {type, url} — the material listed alongside the
+# same output on me.darribas.org (official version, code, data, a live map…).
+# The data stores only the link's *kind*; the renderer owns the wording, and
+# this dict's ORDER is also the display order, so every record lists its extras
+# in the same sequence regardless of how they were typed in. cv.typ never reads
+# `links`, which is exactly why they stay out of the PDF.
+LINK_LABELS = {
+    "official": "Official version",
+    "pdf": "PDF",
+    "preprint": "Preprint",
+    "code": "Code",
+    "data": "Data",
+    "notebook": "Notebook",
+    "viz": "Visualisation",
+    "slides": "Slides",
+    "video": "Video",
+    "poster": "Poster",
+    "blog": "Blog post",
+    "project": "Project site",
+}
+
+
+def link_label(l):
+    """Renderer-owned wording. An explicit `label` wins (one-offs like
+    'Interactive map'); an unknown type degrades to its own name rather than
+    disappearing, so new kinds render before this dict learns about them."""
+    if "label" in l:
+        return l["label"]
+    return LINK_LABELS.get(l["type"], l["type"].replace("-", " ").capitalize())
+
+
+def link_rank(l):
+    keys = list(LINK_LABELS)
+    return keys.index(l["type"]) if l["type"] in keys else len(keys)
+
+
+def render_links(links):
+    """The web-only extras row. Hidden/shown wholesale by the header's "Links"
+    switch — a checkbox in style.css, no JS (see render_links_switch)."""
+    if not links:
+        return ""
+    pills = "".join(
+        f'<a class="weblink" href="{esc(l["url"])}">{esc(link_label(l))}</a>'
+        for l in sorted(links, key=link_rank)
+    )
+    return f'<div class="weblinks">{pills}</div>'
+
+
 def initials(given):
     return " ".join(p[0] + "." for p in given.split(" ") if p)
 
@@ -246,7 +295,7 @@ def render_pub(label, p):
         parts.append(f'<code>{esc(p["DOI"])}</code>')
     if "URL" in p:
         parts.append(weblink(p["URL"]))
-    return entry(label, ". ".join(parts))
+    return entry(label, ". ".join(parts) + render_links(p.get("links")))
 
 
 # ===========================================================================
@@ -333,13 +382,26 @@ def render_toc_popover():
     return f'<nav id="toc-pop" popover><ul>{items}</ul></nav>'
 
 
+def render_links_switch():
+    """The state half of the "Links" toggle: a visually-hidden checkbox placed
+    before <main>, so style.css can drive the whole page from `#show-links:checked
+    ~ main …`. Its visible half is the <label> button in render_header(). No JS —
+    same spirit as the Sections popover. The trade-off is that the choice resets
+    on reload (there is nowhere to persist it without script); `checked` here is
+    what the page opens with."""
+    return '<input type="checkbox" id="show-links" class="visually-hidden" checked>'
+
+
 def render_header():
     basics = cv["basics"]
     lines = "".join(f'{esc(l)}<br>' for l in basics["affiliation"])
     title = basics.get("title", "Curriculum Vitae")
     return f'''<header>
   <div class="header-actions">
-    <button popovertarget="toc-pop" class="btn-pdf btn-toc">Sections</button>
+    <div class="btn-group">
+      <button popovertarget="toc-pop" class="btn-pdf btn-toc">Sections</button>
+      <label class="btn-pdf btn-links" for="show-links">Links</label>
+    </div>
     <a class="btn-pdf" href="cv.pdf" download>PDF</a>
   </div>
   <p class="doctitle">{esc(title.upper())}</p>
@@ -366,6 +428,7 @@ PAGE = """<!doctype html>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+{links_switch}
 {toc_popover}
 <main>
 {header}
@@ -382,6 +445,7 @@ def main():
     html = PAGE.format(
         name=esc(cv["basics"]["name"]),
         doctitle=esc(cv["basics"].get("title", "Curriculum Vitae")),
+        links_switch=render_links_switch(),
         toc_popover=render_toc_popover(),
         header=render_header(),
         sections=sections_html,

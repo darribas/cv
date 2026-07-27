@@ -176,6 +176,53 @@ and CSL-JSON keeps the "everything is JSON" principle intact:
   publication list" goal, and it unlocks sort-by-year, dedup, and per-format link
   inclusion for free.
 
+## Decision 4 — Web-only extras: typed `links`, shown behind a CSS-only switch
+
+The website at `me.darribas.org/research` lists, next to each output, material a
+standard academic CV has no room for: the official version, a code repository, a
+dataset, a live visualisation. Merging that in (a `TODO.md` goal) raised two
+questions — how to model it, and how to keep it off the PDF.
+
+### Keeping it out of the PDF: omission, not configuration
+
+No flag, no variant, no conditional. `cv.typ` simply never names the field, and a
+renderer shows only what its template names — the property already noted under
+"Web-only / PDF-extended fields" below. The PDF stays a clean academic CV by
+construction, and the cost of the whole feature on the PDF side is zero lines.
+
+### Modelling: `{type, url}`, not `{label, url}`
+
+Links carry a **kind** (`code`, `data`, `viz`, …) and the renderer maps kinds to
+wording (`LINK_LABELS` in `render_html.py`), rather than the data carrying the
+display string. This is Decision 2 applied one level down — data holds facts,
+renderers hold formatting — and it buys two concrete things:
+
+- consistent wording and a **fixed display order** across ~110 publications, no
+  matter how each entry was typed in;
+- **filterability**, which is exactly what the subset-CV goal needs: "a shorter
+  CV with no code links" is a predicate over `type`, impossible if the kind is
+  buried in free text.
+
+The escape hatch is a per-link `label` override for a one-off ("Interactive
+map"); the validator accepts an unknown `type` only when a `label` is present, so
+typos are caught but genuinely new kinds are never blocked.
+
+`links` also sits fine inside CSL-JSON: it is a non-standard key, but so is the
+`category` the grouping already depends on, and CSL-JSON is open — consumers
+ignore what they don't know.
+
+### The toggle: a checkbox, not JavaScript
+
+The page is JS-free (the Sections popover is the native Popover API), and the
+toggle keeps it that way: a visually-hidden checkbox before `<main>`, the header
+button is its `<label>`, and `#show-links:checked ~ main .weblinks` does the
+rest. The honest cost is that the choice **resets on reload** — persisting it
+needs `localStorage`, i.e. the first script on the page. Not worth it for a
+preference that costs one click, and the trade is reversible.
+
+Default is **on**: the extras are the reason the web version exists; someone who
+wants the austere version has the PDF button right there.
+
 ## Chosen architecture (summary)
 
 - **Source of truth:** structured data.
@@ -220,12 +267,12 @@ and CSL-JSON keeps the "everything is JSON" principle intact:
   and possibly in an alternate PDF variant): no data-model change needed for
   the web-only case — a renderer only shows a field if its template
   references it, so a new field just stays invisible to whichever renderer
-  doesn't mention it. For an *extended PDF variant* that opts into such
-  fields, the plan is a `sys.inputs` flag in `cv.typ` (e.g. `variant`,
-  read via `--input variant=extended`), gating the one or two spots that
-  read extra fields — deferred until the website-merge TODO item actually
-  introduces the first such field, since it costs nothing to add then and
-  there's nothing to scaffold against yet.
+  doesn't mention it. **Now exercised for real** by publications' `links`
+  field (Decision 4), which confirmed the prediction: the PDF side needed no
+  change at all. For an *extended PDF variant* that opts into such fields,
+  the plan remains a `sys.inputs` flag in `cv.typ` (e.g. `variant`, read via
+  `--input variant=extended`), gating the one or two spots that read extra
+  fields — still deferred, since no such variant is wanted yet.
 
 ## Status
 

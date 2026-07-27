@@ -136,10 +136,37 @@ blindly; the validator confirms the shape and that `category` will render.
    | `publisher` | optional |
    | `DOI` | optional, monospace |
    | `URL` | optional, monospace + clickable |
+   | `links` | optional, **web page only** — see below |
 
    Editors, `ISBN`, etc. are allowed (CSL-JSON is open) but only the fields above
    surface in the CV. Keep initials in `given` consistent with the file's style
    (e.g. `"given": "D"`).
+
+#### Web-only extras: `links`
+
+A publication may carry the extra material listed alongside it at
+<https://me.darribas.org/research/> — official version, code repository, data,
+a live visualisation. These are **deliberately absent from the PDF** (`cv.typ`
+never reads the field, which is the whole mechanism); the web page shows them as
+a row of small pills under the entry, behind the header's "Links" switch.
+
+```json
+"links": [
+  { "type": "official", "url": "https://doi.org/10.1111/gean.12205" },
+  { "type": "code",     "url": "https://github.com/darribas/some-paper" }
+]
+```
+
+- `type` is the link's **kind**, not its wording — the renderer owns the wording
+  (`LINK_LABELS` in `src/render_html.py`) so it stays consistent everywhere.
+  Known kinds: `official`, `pdf`, `preprint`, `code`, `data`, `notebook`, `viz`,
+  `slides`, `video`, `poster`, `blog`, `project`.
+- Order doesn't matter — the renderer sorts links into a fixed sequence.
+- For a one-off wording no kind captures, add `"label": "Interactive map"`. A
+  `type` outside the known set is only accepted **with** a `label`; the
+  validator flags it otherwise, which is what catches typos.
+- Only add links the user gives you or that are listed on the page above. **Never
+  guess a repository URL** from a paper's title or authors.
 
 ### 3b. Add a CV-body record (`src/cv.json`)
 

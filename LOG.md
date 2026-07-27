@@ -56,6 +56,36 @@ The repo setting (Settings → Pages → Deploy from branch → `main` / `/docs`
 was flipped and the CV site is now publicly live. State at `382a755`
 ("Rebuild CV site [skip ci]"), 2026-07-14.
 
+## Web-only publication links (partial: mechanism, not yet the data)
+
+First slice of the "Merging with online list of work" TODO item — the part that
+covers extra URLs on outputs that are *already* in the CV. A publication in
+`src/publications.json` may now carry an optional `links` array:
+
+```json
+"links": [{ "type": "code", "url": "https://github.com/…" }]
+```
+
+Design rationale is `ARCHITECTURE.md` Decision 4; in short: links carry a
+**kind**, not a display string (the renderer owns wording and ordering, and a
+kind is filterable — which is what the subset-CV TODO item will need); the PDF
+excludes them by never naming the field, so `cv.typ` gained only a comment; and
+the web page's show/hide switch is a hidden checkbox + `:checked` sibling
+selector, keeping the page JavaScript-free like the Sections popover. The switch
+defaults to on and resets on reload, which is the accepted price of no JS.
+
+Touched: `src/render_html.py` (`LINK_LABELS`, `render_links`, the switch),
+`src/style.css` (`.weblinks` pills, the switch, a `@media print` rule, and the
+header button row refactored from corner-absolute buttons to a flex row now that
+there are three controls), `src/cv.typ` (comment only), plus
+`src/cv.template.json` and the `add-cv-record` skill — whose `validate_cv.py`
+now checks link shape and rejects an unknown kind that has no `label` override.
+
+**Not done here:** the links themselves. `me.darribas.org` was blocked by the
+build sandbox's egress policy, so no entry carries a `links` array yet; the
+feature is invisible on the live site until the data is added. Populating it
+stays on `TODO.md`.
+
 ## AI skill for adding CV records
 
 Added `.claude/skills/add-cv-record/` — a Claude Code skill that lets an agent

@@ -34,6 +34,24 @@ In this item, we will explore whether it is worth merging all of them, and
 how. The key thing is whether doing so will become an issue to generate a clean,
 standard academic CV, which is the main need this repo addresses.
 
+**Progress.** The "less URLs" half is solved and shipped for publications: a
+publication in `src/publications.json` can now carry a `links` array of typed
+web-only URLs (official version, code, data, visualisation, …), rendered on the
+web page behind a "Links" switch and never in the PDF. See `LOG.md` and
+`ARCHITECTURE.md` Decision 4. That answers the key question above — merging this
+kind of information does *not* compromise the clean academic PDF, because the
+PDF renderer simply never reads the field.
+
+What remains:
+
+- **Populate the links** for the existing publications from the research page.
+  (The page was not reachable from the build sandbox when the mechanism was
+  written, so it landed with the plumbing only.)
+- **Decide about outputs that don't fit a CV at all** (podcast appearances,
+  blog posts, the `materials/` page). These are a different question from
+  extra URLs on an existing entry: they need either new CV sections, a
+  web-only section type, or to stay on the website. Undecided.
+
 ### Tooling for building subsets of the CV
 
 In many contexts, organisations require a shorter version of the full CV. It'd

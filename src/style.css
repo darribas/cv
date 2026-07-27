@@ -111,10 +111,26 @@ header .contact {
   font-size: 0.85rem;
   margin: 0;
 }
-.btn-pdf {
+/* The header's control row spans the top of the header and pushes its two
+   ends apart: the "Sections" + "Links" pair on the left, "PDF" on the right.
+   Positioning lives here rather than on the buttons themselves, so a button is
+   just a button and the row decides where the group sits. */
+.header-actions {
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+.btn-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-pdf {
   display: inline-block;
   box-sizing: border-box;
   appearance: none;
@@ -135,10 +151,6 @@ header .contact {
 .btn-pdf:hover {
   color: var(--bg);
   background: var(--link);
-}
-.btn-toc {
-  right: auto;
-  left: 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -185,6 +197,68 @@ section h3 {
 
 .named {
   margin: 0.85em 0;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Web-only extras + the "Links" switch                                    */
+/*                                                                         */
+/* Publications can carry a row of extra material (official version, code, */
+/* data, a live map…) that belongs on the web but not in a standard        */
+/* academic PDF — the PDF renderer simply never reads the field.           */
+/*                                                                         */
+/* The show/hide switch is CSS-only, like the Sections popover: a          */
+/* visually-hidden checkbox sits just before <main>, the header's "Links"  */
+/* button is its <label>, and everything below keys off `:checked`. Hidden */
+/* is the default state so a browser with no CSS at all still shows them.  */
+/* ---------------------------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.weblinks {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.4rem;
+  margin-top: 0.4rem;
+}
+#show-links:checked ~ main .weblinks { display: flex; }
+
+/* Small caps pills, deliberately quieter than the entry text they hang off. */
+.weblink {
+  font-size: 0.72rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0 0.4rem;
+  text-decoration: none;
+}
+.weblink:hover {
+  color: var(--bg);
+  background: var(--link);
+  border-color: var(--link);
+}
+
+/* The switch's own affordance: filled while on, and — since the real control
+   is hidden — the label has to carry the checkbox's focus ring itself. */
+#show-links:checked ~ main .btn-links {
+  color: var(--bg);
+  background: var(--link);
+}
+#show-links:focus-visible ~ main .btn-links {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
 }
 
 footer {
@@ -235,12 +309,14 @@ footer {
 @media (max-width: 40rem) {
   .header-actions {
     position: static;
-    display: flex;
-    justify-content: space-between;
     margin-bottom: 1.5rem;
   }
-  .header-actions .btn-pdf,
-  .header-actions .btn-toc {
-    position: static;
-  }
+}
+
+/* Printing the web page is a fallback for the real PDF, so drop the things
+   that only make sense on screen: the controls, and the web-only extras the
+   PDF deliberately omits (the :checked rule above needs out-voting). */
+@media print {
+  .header-actions { display: none; }
+  .weblinks { display: none !important; }
 }
