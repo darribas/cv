@@ -54,6 +54,47 @@ git checkout -B add-cv-<short-slug> origin/main   # e.g. add-cv-neurips-paper
 custom **`category`** key and sorts each group by year, descending — so you only
 append; you do not place the entry in any particular position.
 
+#### From a URL or DOI (the fast, reliable path)
+
+Most "add this paper" requests come with a link. **If the link is or contains a
+DOI, do not transcribe fields by hand** — fetch the record as CSL-JSON directly,
+which is the exact format this file uses. DOI content negotiation returns it:
+
+```bash
+# <DOI> e.g. 10.1111/gean.12205  (strip any https://doi.org/ prefix)
+curl -sSL -H "Accept: application/vnd.citationstyles.csl+json" "https://doi.org/<DOI>"
+```
+
+(If `curl` is unavailable, use the agent's own fetch tool against the same URL
+with that `Accept` header.) Then:
+
+1. **Keep only the fields the renderer uses** (the table below) plus `id` and
+   `category`. The response carries extras (`abstract`, `reference`, `license`,
+   …) — drop them so the file stays consistent with existing entries.
+2. **Set `id`** yourself (author+year+word, e.g. `smith2026spatial`) — the raw
+   response has no citation key in that style.
+3. **Set `category`** from the returned CSL `type`:
+
+   | CSL `type` returned | `category` to set |
+   |---|---|
+   | `article-journal` | `journal-article` |
+   | `book` | `book` |
+   | `chapter` | `book-chapter` |
+   | `paper-conference`, `article-proceedings` | `conference` |
+   | `posted-content` (preprint) | `working-paper` |
+   | anything else | judge: `other-article` or `other` |
+
+For a **non-DOI URL** (a publisher/arXiv landing page with no usable DOI):
+extract author/title/venue/year (and a DOI if one is on the page) from the page
+content, then hand-build the entry using the table below. arXiv also exposes
+metadata at `https://arxiv.org/abs/<id>` and its API. Always prefer a real DOI
+when the page offers one.
+
+After either path, continue to validation (step 4) — never trust the fetch
+blindly; the validator confirms the shape and that `category` will render.
+
+#### Fields the renderer uses
+
 1. Pick the `category` from the groups declared in the `publications` section of
    `cv.json` (currently: `book`, `journal-article`, `conference`,
    `other-article`, `book-chapter`, `other`, `working-paper`). A category that
@@ -146,3 +187,17 @@ build on the PR as the final check before a human merges.
 `talks`, `events`, `courses`, `people`, `text-list`, `named`, `publications`.
 Each has a worked example in `src/cv.template.json`; each field's applicable
 types are documented in `src/cv.schema.json`.
+
+## Compatibility
+
+This is a standard Agent Skills `SKILL.md`, so it works unmodified in any agent
+that discovers `.claude/skills/` — **Claude Code** and **OpenCode** both do (see
+`README.md` for how to run it in each). Nothing here is Claude-specific: the
+steps use `curl`, `git`, and stdlib `python3`, all of which OpenCode's built-in
+bash tool provides too.
+
+When driven by a **smaller local model** (e.g. via OpenCode + Ollama), lean on
+the DOI → CSL-JSON path above rather than asking the model to transcribe
+bibliographic fields — fetching structured data and trimming it is far more
+reliable than free-form extraction, and `validate_cv.py` is the safety net that
+catches a malformed entry before it becomes a PR.

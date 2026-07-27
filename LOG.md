@@ -81,3 +81,17 @@ Settled the three open questions the TODO raised: **one** general skill
 **schema-validation only** locally (no local Typst/HTML dry-run — that needs the
 Typst binary + fonts and belongs in CI). Developed on branch
 `claude/architecture-logs-todos-review-505c4r`.
+
+Follow-up, same branch — two usage paths made first-class:
+
+- **Add from a URL/DOI.** The skill now documents fetching a publication as
+  CSL-JSON directly via DOI content negotiation (`Accept:
+  application/vnd.citationstyles.csl+json` against `doi.org`) — the exact format
+  `publications.json` uses — with a CSL-`type` → `category` mapping and a
+  non-DOI/arXiv fallback. So "Add this paper: <url>" mostly needs no hand-typed
+  fields.
+- **Cross-agent / local LLM.** It's a standard Agent Skills `SKILL.md`, and
+  OpenCode discovers `.claude/skills/` natively (Agent Skills open standard),
+  so the skill runs unmodified there, including with a local model — the DOI
+  fetch + `validate_cv.py` gate keep it reliable even on weaker models. `README.md`
+  now carries brief install/use guidance for both Claude Code and OpenCode.
