@@ -7,5 +7,8 @@ build/
 # Migration reference — the old LaTeX-built PDF, kept locally for comparison only
 notes/cv-current.pdf
 
-# Local Claude Code settings
-.claude/
+# Local Claude Code settings (settings.json, settings.local.json, …).
+# Shared project skills under .claude/skills/ ARE tracked — they are part of
+# the repo's tooling, not local machine state.
+.claude/*
+!.claude/skills/
