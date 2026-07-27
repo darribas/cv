@@ -29,9 +29,31 @@ Two supporting files, both of which you should lean on rather than reinventing:
 - `src/cv.template.json` — one fully-worked, annotated example **per section
   type**. This is your copy-paste source. It is never rendered.
 
+## Working interactively
+
+This is a conversation, not a one-shot form. Gather the record's details by
+talking to the user, and **only write files once the details are settled**:
+
+- **Ask, don't invent.** If a field the record type needs is missing or
+  ambiguous, ask the user rather than guessing. Use the section's `type` to know
+  what to ask for — e.g. a `grant` needs funder, scheme, role, period, and
+  amount+currency; a `talk` needs the title, venue, place, and date. The schema
+  and `cv.template.json` tell you which fields apply.
+- **A DOI collapses the conversation.** For a publication with a DOI, fetch the
+  metadata (step 3a) and just confirm it back — usually no questions needed.
+  Non-publication records are where the back-and-forth matters most.
+- **Confirm before you write.** When the details are ready, show the user the
+  exact JSON entry you're about to add and get a yes before touching any file.
+- **The PR is the last step, on the user's go-ahead.** Draft → confirm →
+  validate → commit → open PR. Don't open the PR until validation passes and the
+  user is happy with the entry.
+
+The steps below are that flow in order — they assume the details are settled by
+the time you edit files.
+
 ## Workflow
 
-Follow these steps in order. Do not skip validation, and do not commit to `main`.
+Do not skip validation, and do not commit to `main`.
 
 ### 1. Start a branch
 
@@ -160,6 +182,9 @@ check.
 > is the local gate we rely on.
 
 ### 5. Commit and open a PR
+
+Only reach this step once the user has approved the entry (see *Working
+interactively*) and validation passes.
 
 ```bash
 git add src/cv.json src/publications.json      # only the file(s) you changed
