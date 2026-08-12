@@ -142,6 +142,16 @@ blindly; the validator confirms the shape and that `category` will render.
    surface in the CV. Keep initials in `given` consistent with the file's style
    (e.g. `"given": "D"`).
 
+   **`DOI` vs `URL`: set one, not both.** Both fields print unconditionally when
+   present (`cv.typ` and `render_html.py` each render `DOI` then `URL` as
+   separate items), so setting both prints the same link twice. Prefer `DOI`
+   whenever one exists; fall back to `URL` only when there is no DOI. Don't set
+   `URL` to a page that just resolves the same DOI (e.g. the publisher landing
+   page) — that redundant link belongs in `links` (as an `official` entry)
+   instead, where it renders as a web-only pill rather than a second inline
+   link. Only set both `DOI` and `URL` if `URL` points somewhere the DOI does
+   not resolve to.
+
 #### Web-only extras: `links`
 
 A publication may carry the extra material listed alongside it at
