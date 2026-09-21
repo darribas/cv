@@ -157,3 +157,46 @@ Follow-up, same branch — two usage paths made first-class:
   so the skill runs unmodified there, including with a local model — the DOI
   fetch + `validate_cv.py` gate keep it reliable even on weaker models. `README.md`
   now carries brief install/use guidance for both Claude Code and OpenCode.
+
+## Web-only links on any record, not just publications
+
+`links` (the web-only extras array added with the publications import above) now
+works on **every** `cv.json` entry as well as on a `publications.json` record —
+a talk with its recording, a course with its repository, a piece of software
+with its docs. This was the "Known blocker — start here" of the Materials item
+in `TODO.md`: `cv.schema.json` rejected the key outright, since `$defs/entry`
+sets `"additionalProperties": false`.
+
+What changed:
+
+- `src/cv.schema.json` — a new `$defs/link` (`{type, url, label?}`, nothing
+  else) and an optional `links` array on `$defs/entry`, so the editor
+  autocompletes and validates a link as you type it. Not added to
+  `$defs/section`/`$defs/group`: no use case, and an entry-level field covers
+  the ones the Materials item names.
+- `src/render_html.py` — the extras row is now appended in `entry()`, the
+  shared row helper every entry type already routes through, instead of inside
+  `render_pub`. So all twelve types (and any future one) get `links` from a
+  single line; `render_named`, which builds its own full-width block rather
+  than a row, appends it explicitly.
+- `.claude/skills/add-cv-record/validate_cv.py` — a `validate_cv_links()` pass
+  walks `cv.json`'s sections and groups and checks their entries' links against
+  the same `LINK_TYPES` vocabulary publications use. The schema pins the shape;
+  the rule that an unknown kind needs a `label` stays here, because it is an
+  `anyOf` the stdlib-only mini-validator does not implement.
+- `src/cv.template.json` — one `//links` note at the top of the file (the
+  vocabulary, stated once) plus worked examples on the `talks` and `named`
+  blocks; the publications note now points at it rather than repeating it.
+- `src/cv.typ`, `src/style.css`, `.claude/skills/add-cv-record/SKILL.md` and
+  `ARCHITECTURE.md` — comment/documentation only. The PDF cost of the whole
+  feature is still zero lines: `cv.typ` names the field nowhere.
+
+Verified by rendering `cv.json` with temporary links on a `talks` entry (grouped
+section) and a `named` entry (flat section) — both produce the pill row under
+the entry, behind the existing "Links" switch — and by checking that a bad kind
+(`zenodo`, no `label`) and a bad shape (`href` instead of `url`) are both caught.
+With no entry carrying links yet, `docs/index.html` rebuilds byte-identical.
+
+No CV content changed: this is the plumbing the Materials item needs. What
+remains there is editorial — which talks get videos, where the podcasts go, and
+which of the 30 artefacts belong on a standard academic CV.

@@ -8,7 +8,9 @@ no-extra-dependencies ethos; see ARCHITECTURE.md):
      validator covering exactly the draft-2020-12 keywords the schema uses
      (type, required, properties, additionalProperties, patternProperties,
      enum, items, $ref/$defs, format). It reads the schema, so it keeps
-     working if the schema grows.
+     working if the schema grows. Plus the one rule the schema cannot state
+     in those keywords: an entry's optional web-only `links` array may only
+     use a known kind unless it carries a `label` (see LINK_TYPES below).
 
   2. src/publications.json  (CSL-JSON, no schema) — structural sanity plus a
      cross-check that every entry's `category` matches a group declared in
@@ -150,14 +152,16 @@ def validate_cv(repo_root):
 
 
 # --------------------------------------------------------------------------
-# CSL-JSON (publications.json) checks.
+# Web-only `links` (both data files) and CSL-JSON (publications.json) checks.
 # --------------------------------------------------------------------------
 
-# Web-only extras: the curated set of link kinds a publication may carry. The
-# display wording lives in src/render_html.py (LINK_LABELS) — the renderer owns
-# formatting; this list owns the vocabulary, so a typo'd kind is caught here
-# instead of silently rendering as itself. Any kind may still be overridden with
-# an explicit "label" for a one-off (e.g. "Interactive map").
+# Web-only extras: the curated set of link kinds a record may carry — a
+# publication in publications.json, or any cv.json entry (a talk's video, an
+# artefact's repository). The display wording lives in src/render_html.py
+# (LINK_LABELS) — the renderer owns formatting; this list owns the vocabulary,
+# so a typo'd kind is caught here instead of silently rendering as itself. Any
+# kind may still be overridden with an explicit "label" for a one-off (e.g.
+# "Interactive map").
 LINK_TYPES = {
     "official", "accepted", "preprint", "pdf", "code", "data", "notebook",
     "viz", "site", "docs", "slides", "video", "poster", "blog",
@@ -189,6 +193,26 @@ def validate_links(links, where):
                 f"{at}: link type {t!r} is not a known kind and has no 'label' "
                 f"to render instead. Known kinds: {sorted(LINK_TYPES)}"
             )
+    return errors
+
+
+def validate_cv_links(cv_data):
+    """Vocabulary check for `links` on cv.json entries.
+
+    cv.schema.json already fixes their *shape* ($defs/link), but the rule that
+    an unknown kind needs a `label` is an anyOf the mini-validator above does
+    not implement — and the kind list lives here anyway, so both data files are
+    checked against exactly the same vocabulary."""
+    errors = []
+    for i, section in enumerate(cv_data.get("sections", [])):
+        containers = [(f"sections[{i}]", section)]
+        containers += [(f"sections[{i}].groups[{j}]", g)
+                       for j, g in enumerate(section.get("groups", []))]
+        for where, container in containers:
+            for k, e in enumerate(container.get("entries", [])):
+                if isinstance(e, dict) and "links" in e:
+                    errors.extend(validate_links(e["links"],
+                                                 f"cv.json {where}.entries[{k}]"))
     return errors
 
 
@@ -272,7 +296,7 @@ def main():
               file=sys.stderr)
         return 1
 
-    errors = cv_errors + pub_errors
+    errors = cv_errors + validate_cv_links(cv_data) + pub_errors
     if errors:
         print(f"✗ {len(errors)} problem(s) found:\n", file=sys.stderr)
         for err in errors:

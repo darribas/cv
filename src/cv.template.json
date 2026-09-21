@@ -1,6 +1,8 @@
 {
   "//": "COPY-PASTE LIBRARY (never rendered). To add an entry: find the section 'type' below, copy one entry block into the matching section in cv.json, edit the values, delete the '//' hint keys. The schema autocompletes and validates as you type. Publications are NOT here — add them to publications.json in CSL-JSON.",
 
+  "//links": "ANY entry below (and any publications.json entry) may carry an optional web-only 'links' array: \"links\": [{\"type\": \"video\", \"url\": \"https://…\"}]. Known types: official, accepted, preprint, pdf, code, data, notebook, viz, site, docs, slides, video, poster, blog — add \"label\" to any of them for a one-off wording (e.g. \"Interactive map\"), which is also the only way to use a type outside that list. The web page shows them behind its 'Links' switch; the PDF never reads the field. Worked examples on the 'talks' and 'named' entries below.",
+
   "sections": [
     {
       "title": "Education",
@@ -63,7 +65,7 @@
       "title": "Invited Lectures",
       "type": "talks",
       "entries": [
-        { "date": "2026", "//title": "rendered in quotes", "title": "Talk title", "//venue": "venue, place, month", "venue": "Some University. City (Country). June." }
+        { "date": "2026", "//title": "rendered in quotes", "title": "Talk title", "//venue": "venue, place, month", "venue": "Some University. City (Country). June.", "//links": "optional, web-only (see the note at the top of this file)", "links": [{ "type": "video", "url": "https://www.youtube.com/watch?v=…" }, { "type": "slides", "url": "https://…" }] }
       ]
     },
     {
@@ -103,12 +105,12 @@
       "title": "Scientific Software",
       "type": "named",
       "entries": [
-        { "name": "PySAL", "//detail": "optional", "detail": "Python library of spatial analysis. Core development team.", "//url": "optional", "url": "https://pysal.org" }
+        { "name": "PySAL", "//detail": "optional", "detail": "Python library of spatial analysis. Core development team.", "//url": "optional", "url": "https://pysal.org", "//links": "optional, web-only (see the note at the top of this file)", "links": [{ "type": "code", "url": "https://github.com/pysal/pysal" }, { "type": "docs", "url": "https://pysal.org/docs" }] }
       ]
     },
     {
       "//": "Publications are read from a CSL-JSON file, grouped by a custom 'category' key. Point 'source' at publications.json and list the groups in render order.",
-      "//links": "A publications.json entry may also carry a web-only 'links' array, mirroring the extra material listed at me.darribas.org/research: \"links\": [{\"type\": \"code\", \"url\": \"https://github.com/...\"}]. Known types: official, accepted, preprint, pdf, code, data, notebook, viz, site, docs, slides, video, poster, blog — add \"label\" to any of them for a one-off wording (e.g. \"GeoDa Center working paper\"). The web page shows these behind its 'Links' switch; the PDF never reads the field.",
+      "//links": "A publications.json entry may also carry a web-only 'links' array, mirroring the extra material listed at me.darribas.org/research: \"links\": [{\"type\": \"code\", \"url\": \"https://github.com/...\"}]. Same field, same vocabulary as the cv.json entries — see the '//links' note at the top of this file.",
       "title": "Publications",
       "type": "publications",
       "source": "publications.json",

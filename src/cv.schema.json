@@ -89,6 +89,18 @@
       "additionalProperties": false
     },
 
+    "link": {
+      "type": "object",
+      "description": "One web-only extra for this record (official version, code repository, dataset, video, …). Rendered on the web page behind the 'Links' switch; the PDF renderer never reads the field. The data carries the link's KIND, not its wording — render_html.py's LINK_LABELS owns the label and the display order.",
+      "required": ["type", "url"],
+      "properties": {
+        "type": { "type": "string", "description": "Link kind. Known kinds: official, accepted, preprint, pdf, code, data, notebook, viz, site, docs, slides, video, poster, blog. An unknown kind is allowed only together with a 'label'." },
+        "url": { "type": "string", "format": "uri" },
+        "label": { "type": "string", "description": "One-off wording override, e.g. 'Interactive map'. Also what makes a kind outside the known vocabulary acceptable." }
+      },
+      "additionalProperties": false
+    },
+
     "entry": {
       "type": "object",
       "description": "One CV item. Which fields apply depends on the section/group 'type' (see cv.template.json for a worked example per type). All fields are optional here so the editor offers them everywhere; the renderer uses only the ones its type knows.",
@@ -126,6 +138,13 @@
         "url": { "type": "string", "description": "courses/named: project or course URL." },
 
         "text": { "type": "string", "description": "text-list: free-text line." },
+
+        "links": {
+          "type": "array",
+          "description": "Web-only extras for this record (a talk's video, an artefact's repository, …). Shown on the web page behind the 'Links' switch and never in the PDF. Same field, same vocabulary as a publication's 'links' in publications.json.",
+          "items": { "$ref": "#/$defs/link" }
+        },
+
         "note": { "$ref": "#/$defs/comment" }
       },
       "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },

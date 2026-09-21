@@ -67,9 +67,11 @@ def weblink(url):
     return f'<a class="mono" href="{esc(url)}">{esc(url)}</a>'
 
 
-# Web-only extras (ARCHITECTURE.md, "Web-only / PDF-extended fields"): a record
-# may carry a `links` array of {type, url} — the material listed alongside the
-# same output on me.darribas.org (official version, code, data, a live map…).
+# Web-only extras (ARCHITECTURE.md, "Web-only / PDF-extended fields"): any
+# record may carry a `links` array of {type, url} — the material listed
+# alongside the same output on me.darribas.org (official version, code, data,
+# a live map…). Publications carry them in publications.json; every other
+# record type carries them in cv.json, same field and same vocabulary.
 # The data stores only the link's *kind*; the renderer owns the wording, and
 # this dict's ORDER is also the display order, so every record lists its extras
 # in the same sequence regardless of how they were typed in. cv.typ never reads
@@ -137,10 +139,14 @@ def pub_year(p):
     return p["issued"]["date-parts"][0][0]
 
 
-def entry(label, body):
-    """A CV row: label column + body, mirroring cv.typ's entry() grid."""
+def entry(label, body, links=None):
+    """A CV row: label column + body, mirroring cv.typ's entry() grid.
+
+    `links` is the optional web-only extras row (see render_links). Any record
+    may carry one, so it is appended here rather than in each per-type
+    renderer."""
     return (f'<div class="entry"><div class="date">{esc(label)}</div>'
-            f'<div class="body">{body}</div></div>')
+            f'<div class="body">{body}{render_links(links)}</div></div>')
 
 
 def with_labels(items, label_fn):
@@ -177,25 +183,26 @@ def render_education(label, e):
         body += f'<br><span class="small">Supervisor: {esc(e["supervisor"])}</span>'
     if "committee" in e:
         body += f'<br><span class="small">Committee: {esc(e["committee"])}</span>'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_positions(label, e):
     body = esc(e["role"])
     if "organisation" in e:
         body += f', {esc(e["organisation"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_editorial(label, e):
-    return entry(label, f'{esc(e["role"])}, <em>{esc(e["journal"])}</em>')
+    return entry(label, f'{esc(e["role"])}, <em>{esc(e["journal"])}</em>',
+                 e.get("links"))
 
 
 def render_awards(label, e):
     body = f'<em>{esc(e["title"])}</em>'
     if "detail" in e:
         body += f' {esc(e["detail"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_grant(label, e):
@@ -210,7 +217,7 @@ def render_grant(label, e):
         body += f' {esc(e["period"])}.'
     if "amount" in e:
         body += f' {esc(fmt_amount(e["amount"]))}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_project(label, e):
@@ -226,7 +233,7 @@ def render_project(label, e):
         parts.append(f'Sponsor: {esc(e["sponsor"])}')
     if "funding" in e:
         parts.append(esc(e["funding"]))
-    return entry(label, ". ".join(parts) + ".")
+    return entry(label, ". ".join(parts) + ".", e.get("links"))
 
 
 def render_visits(label, e):
@@ -235,21 +242,21 @@ def render_visits(label, e):
         parts.append(esc(e["location"]))
     if "role" in e:
         parts.append(esc(e["role"]))
-    return entry(label, ". ".join(parts) + ".")
+    return entry(label, ". ".join(parts) + ".", e.get("links"))
 
 
 def render_talks(label, e):
     body = f'“{esc(e["title"])}”'
     if "venue" in e:
         body += f'. {esc(e["venue"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_events(label, e):
     body = f'<em>{esc(e["title"])}</em>'
     if "detail" in e:
         body += f'. {esc(e["detail"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_courses(label, e):
@@ -258,21 +265,21 @@ def render_courses(label, e):
         body += f' ({esc(e["years"])})'
     if "url" in e:
         body += f'. {weblink(e["url"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_people(label, e):
     body = esc(e["name"])
     if "detail" in e:
         body += f'. {esc(e["detail"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_textlist(label, e):
     body = esc(e["text"])
     if "url" in e:
         body += f'. {weblink(e["url"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("links"))
 
 
 def render_named(e):
@@ -282,7 +289,7 @@ def render_named(e):
         body += f' — {esc(e["detail"])}'
     if "url" in e:
         body += f' {weblink(e["url"])}'
-    return f'<div class="named">{body}</div>'
+    return f'<div class="named">{body}{render_links(e.get("links"))}</div>'
 
 
 def render_pub(label, p):
@@ -300,7 +307,7 @@ def render_pub(label, p):
         parts.append(f'<code>{esc(p["DOI"])}</code>')
     if "URL" in p:
         parts.append(weblink(p["URL"]))
-    return entry(label, ". ".join(parts) + render_links(p.get("links")))
+    return entry(label, ". ".join(parts), p.get("links"))
 
 
 # ===========================================================================
@@ -327,7 +334,7 @@ def render_entry(kind, label, e):
     fn = RENDERERS.get(kind)
     if fn:
         return fn(label, e)
-    return entry(label, esc(e.get("text", "")))
+    return entry(label, esc(e.get("text", "")), e.get("links"))
 
 
 def render_list(kind, entries):

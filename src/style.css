@@ -212,9 +212,10 @@ section h3 {
 /* ---------------------------------------------------------------------- */
 /* Web-only extras + the "Links" switch                                    */
 /*                                                                         */
-/* Publications can carry a row of extra material (official version, code, */
-/* data, a live map…) that belongs on the web but not in a standard        */
-/* academic PDF — the PDF renderer simply never reads the field.           */
+/* Any record — a publication, a talk, a piece of software — can carry a   */
+/* row of extra material (official version, code, data, a video, a live    */
+/* map…) that belongs on the web but not in a standard academic PDF: the   */
+/* PDF renderer simply never reads the field.                              */
 /*                                                                         */
 /* The show/hide switch is CSS-only, like the Sections popover: a          */
 /* visually-hidden checkbox sits just before <main>, the header's "Links"  */

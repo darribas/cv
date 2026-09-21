@@ -75,7 +75,8 @@ The second website page the item above names:
 
 It holds **13 talk videos**, **4 audio appearances** (podcasts), and **30
 artefacts** (courses, workshops, teaching materials, tools). This is a synthesis
-of the design discussion; nothing here is built yet, and it is deliberately a
+of the design discussion; none of its content is imported yet (the plumbing it
+needs is done — see "The blocker is cleared" below), and it is deliberately a
 separate PR from the publications links.
 
 **It is three problems, not one.** The page looks homogeneous but each third
@@ -111,19 +112,19 @@ launchers), `site`, `code`, `docs`, and `data`/`official` for the Zenodo and
 figshare DOI badges. The kinds left unused by the publications import turn out
 to be precisely the ones this page needs — which is why they were kept.
 
-**Known blocker — start here.** `links` currently only works in
-`publications.json`. The moment a **`cv.json`** entry needs one — a talk with
-its video, an artefact with its repository — `cv.schema.json` rejects it,
-because `$defs/entry` sets `"additionalProperties": false`. Verified: adding
-`links` to a `talks` or a `named` entry fails validation with *"unexpected key
-'links'"*. So step one is adding `links` to `$defs/entry` (and to
-`$defs/group`/`section` if a whole section should ever carry them). Not done as
-part of the publications work, since no `cv.json` entry used the field yet.
+**The blocker is cleared.** `links` used to work only in `publications.json`:
+a `cv.json` entry carrying one failed validation with *"unexpected key
+'links'"*, because `$defs/entry` sets `"additionalProperties": false`. The
+field is now defined once (`cv.schema.json`'s `$defs/link`) and accepted on
+**any** `cv.json` entry, rendered on the web page and still absent from the
+PDF. See `LOG.md` and `ARCHITECTURE.md` Decision 4 ("One field, both data
+files"). Left deliberately undone: `links` on a whole *section* or *group* —
+no use case has appeared, and an entry-level field covers both the talk-video
+and the artefact-repository cases.
 
-**Renderer work is small.** `render_links()` in `render_html.py` is already
-generic, and `entry()` is the shared row helper both `render_pub` and the
-`cv.json` renderers use — so `render-talks`/`render-named` each need the same
-one-line append that `render_pub` got. `cv.typ` needs nothing, as before.
+With that in place, what remains on this item is **data and editorial
+judgement, not plumbing**: adding the videos to the talks that already exist,
+deciding what to do with the four audio appearances, and the question below.
 
 **The actual decision is editorial, not technical.** Which of the 30 artefacts
 belong on a standard academic CV's PDF, and which are web-only? The model

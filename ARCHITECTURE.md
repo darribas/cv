@@ -211,6 +211,27 @@ typos are caught but genuinely new kinds are never blocked.
 `category` the grouping already depends on, and CSL-JSON is open — consumers
 ignore what they don't know.
 
+### One field, both data files
+
+The field was introduced for publications, but nothing about it is
+publication-shaped: a talk has a recording, a course has a repository, a piece
+of software has documentation. It is therefore defined once
+(`cv.schema.json`'s `$defs/link`) and allowed on **any** `cv.json` entry as
+well as on a `publications.json` record — same key, same vocabulary, same
+validator. Two consequences worth stating:
+
+- The HTML renderer appends the extras row in `entry()`, the shared row helper
+  every type already routes through, rather than in each per-type renderer. A
+  new section type gets `links` for free.
+- The vocabulary lives in exactly one place per concern: wording and display
+  order in `render_html.py`'s `LINK_LABELS`, the accepted kinds in
+  `validate_cv.py`'s `LINK_TYPES`. The schema pins the *shape* (`{type, url,
+  label?}`) so the editor catches a malformed link as you type, while the rule
+  that an unknown kind needs a `label` stays in the validator — it is an
+  `anyOf`, which the stdlib-only mini-validator deliberately does not implement.
+
+The PDF cost remains zero: `cv.typ` names the field nowhere, in any renderer.
+
 ### The toggle: a checkbox, not JavaScript
 
 The page is JS-free (the Sections popover is the native Popover API), and the
@@ -267,9 +288,9 @@ wants the austere version has the PDF button right there.
   and possibly in an alternate PDF variant): no data-model change needed for
   the web-only case — a renderer only shows a field if its template
   references it, so a new field just stays invisible to whichever renderer
-  doesn't mention it. **Now exercised for real** by publications' `links`
-  field (Decision 4), which confirmed the prediction: the PDF side needed no
-  change at all. For an *extended PDF variant* that opts into such fields,
+  doesn't mention it. **Now exercised for real** by the `links` field
+  (Decision 4), on publications first and since on every `cv.json` entry type,
+  which confirmed the prediction twice: the PDF side needed no change at all. For an *extended PDF variant* that opts into such fields,
   the plan remains a `sys.inputs` flag in `cv.typ` (e.g. `variant`, read via
   `--input variant=extended`), gating the one or two spots that read extra
   fields — still deferred, since no such variant is wanted yet.

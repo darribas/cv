@@ -154,11 +154,16 @@ blindly; the validator confirms the shape and that `category` will render.
 
 #### Web-only extras: `links`
 
-A publication may carry the extra material listed alongside it at
-<https://me.darribas.org/research/> — official version, code repository, data,
-a live visualisation. These are **deliberately absent from the PDF** (`cv.typ`
-never reads the field, which is the whole mechanism); the web page shows them as
-a row of small pills under the entry, behind the header's "Links" switch.
+Any record may carry the extra material listed alongside it at
+<https://me.darribas.org/research/> (or `/materials/`) — official version, code
+repository, data, a live visualisation, a talk's video. These are **deliberately
+absent from the PDF** (`cv.typ` never reads the field, which is the whole
+mechanism); the web page shows them as a row of small pills under the entry,
+behind the header's "Links" switch.
+
+The field works the same way in **both** data files: on a publication in
+`publications.json`, and on any entry in `cv.json` (a talk, a course, a piece of
+software…). Same key, same vocabulary, same validator.
 
 ```json
 "links": [
@@ -177,6 +182,10 @@ a row of small pills under the entry, behind the header's "Links" switch.
   validator flags it otherwise, which is what catches typos.
 - Only add links the user gives you or that are listed on the page above. **Never
   guess a repository URL** from a paper's title or authors.
+- On a `cv.json` entry, `links` sits alongside that entry's normal fields — see
+  the worked `talks` and `named` examples in `src/cv.template.json`. Prefer
+  adding a link to the record that already exists over creating a second record
+  for the same thing.
 
 ### 3b. Add a CV-body record (`src/cv.json`)
 
@@ -198,6 +207,10 @@ a row of small pills under the entry, behind the header's "Links" switch.
 
 Money uses `"amount": { "value": <number>, "currency": "GBP" | "EUR" | "USD" }` —
 never a hard-coded symbol; the renderer prints the symbol.
+
+A CV-body entry may also carry the optional web-only `links` array described
+under [Web-only extras](#web-only-extras-links) above — e.g. a talk's recording
+or an artefact's repository. It is valid on every entry type.
 
 ### 4. Validate
 
