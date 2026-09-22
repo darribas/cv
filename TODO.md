@@ -139,3 +139,32 @@ there's less content (e.g., only  a few recent papers) or because less
 information needs including (e.g., no links to code repositories for papers,
 related to previous point).
 
+**Fully specified — ready to implement.** See `notes/SUBSET-CV-SPEC.md` for the
+implementation brief, and `ARCHITECTURE.md` Decision 5 for the decisions behind
+it. In short: a *profile* (JSON, one per use case) filters the master data into
+a derived, still-schema-valid `cv.json` + `publications.json`, which the
+existing renderers consume unchanged; sections can carry computed summary lines
+("12 of 112 publications", "£1.25M of £4.21M awarded"); output is PDF (Typst,
+today's renderer) and DOCX (a new Markdown renderer + pandoc). Builds land in
+the gitignored `build/` unless a profile sets `"publish": true`.
+
+Work is phased in the spec (§11); each phase is independently shippable:
+
+- **P0 — data prerequisites.** Optional `id` on every `cv.json` entry (added
+  once by an idempotent script, then permanent), uniqueness enforced in
+  `validate_cv.py`, and the `Co-I`/`CoI` role spelling normalised so role
+  predicates can't silently miss an entry. Data-only, no behaviour change.
+- **P1 — filter + PDF.** `profiles/`, `subset.schema.json`,
+  `build_subset.py`, a `sys.inputs` data path in `cv.typ`, `make subset`, and
+  two worked profiles. Usable on its own.
+- **P2 — section summaries.** `summary` key in the schema plus a small lead-line
+  block in each renderer.
+- **P3 — DOCX.** `render_markdown.py` + `reference.docx` + pandoc (a DOCX-only
+  build dependency; `make site` keeps working without it).
+- **P4 — publishing + CI.** `docs/subsets/`, profile validation in `make
+  validate` so a data edit that breaks a profile fails on its own PR.
+
+Three questions are left open in the spec, all deliberately deferred until a
+real profile needs them: whether a profile may add a short header paragraph,
+profile inheritance (`extends`), and published HTML subsets.
+

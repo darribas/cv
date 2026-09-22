@@ -223,6 +223,65 @@ preference that costs one click, and the trade is reversible.
 Default is **on**: the extras are the reason the web version exists; someone who
 wants the austere version has the PDF button right there.
 
+## Decision 5 — Subset CVs: **filter the data, not the renderer**
+
+The `TODO.md` goal of shorter, audience-specific CVs is now fully specified in
+`notes/SUBSET-CV-SPEC.md` (the implementation brief); this entry records the
+decisions, not the mechanics.
+
+### The shape
+
+A **profile** (JSON, one per use case, in `profiles/`) plus the master data
+produces a **derived** `cv.json` + `publications.json` that still validate
+against `cv.schema.json`. The existing renderers then run over the derived data,
+learning nothing about profiles, predicates or selection. This is Decision 2
+paying out exactly as predicted ("subsets ← filter the data before rendering"):
+with three renderers in play (Typst, HTML, and Markdown→pandoc for Word), the
+alternative — per-renderer conditionals — would mean writing the same filter
+three times in three languages.
+
+### Item identity: ids in the data, selection in the profile
+
+Hand-picking items needs stable references. Publications already have CSL `id`s;
+`cv.json` entries gain an optional `id` (generated once by an idempotent,
+additive script, then permanent). Rejected: array indices (silently wrong after
+any insertion) and build-time slugs (a wording fix would silently change what a
+profile selects). Profiles then combine rules with explicit lists — *"the last
+five years, plus these two, minus that one"*. Sections and groups are referenced
+by title instead, so profiles stay readable; a renamed section fails the build
+rather than vanishing from the output.
+
+### The one boundary this moves: `src/` holds facts, `build/` holds a projection
+
+Section summaries ("12 of 112 publications", "£1.25M of £4.21M awarded") are
+computed in the build step and written into the derived data as pre-formatted
+strings; each renderer just prints a section's `summary` lines. That is a real
+departure from "renderers own all formatting" — accepted because the alternative
+is reimplementing currency and thousands formatting in Typst *and* twice in
+Python, and because it lands only in `build/`, never in hand-edited source. The
+escape hatch, if a renderer ever wants different wording, is to emit structured
+metrics alongside the strings.
+
+Two constraints came straight from the data and are now spec'd as rules: amounts
+are **never summed across currencies** (the awards are GBP, EUR and USD), and a
+total **never implies a personal share** (`amount` is the whole award across all
+partners). Where a group has no structured `amount` at all (the *Projects*
+group's free-text `funding`), the metric discloses the gap rather than quietly
+totalling part of it.
+
+### Privacy default: build private, publish on request
+
+Subsets build into the gitignored `build/`. A profile opts into
+`docs/subsets/<id>/` — and therefore a public URL — with `"publish": true`. A CV
+tailored to one employer should not become a public artifact by accident.
+
+### Failure is loud
+
+A subset CV is sent to people who decide things, so the build exits non-zero on
+an unknown section title, an unmatched id, or a retained section that ends up
+empty. `make validate` builds every tracked profile, so deleting a record a
+profile names fails CI on the PR that causes it.
+
 ## Chosen architecture (summary)
 
 - **Source of truth:** structured data.
