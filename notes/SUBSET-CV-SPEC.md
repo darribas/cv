@@ -1,6 +1,6 @@
 # Subset CVs — feature specification
 
-Status: **specified, not built** (revision 2). This is the implementation brief
+Status: **specified, not built** (revision 3). This is the implementation brief
 for the `TODO.md` item "Tooling for building subsets of the CV", written to be
 handed to an implementer (human or agent) without further design work. Every
 decision below is made; the ones deliberately left open are marked **OPEN**.
@@ -13,6 +13,10 @@ untracked TOML config; reduces selection to one rule (list what you want,
 omitted means everything); converts money to one currency at live rates; adds
 per-subset typography (font, size, paper, margins); and bakes validation into
 every build.
+
+*Revision 3* makes "subsets never enter the repo and are never published" a hard
+rule with guards (§4.2, §11), moves the template to `src/`, and lets the config
+supply exchange rates for when they cannot be fetched (§8.3).
 
 ---
 
@@ -32,7 +36,11 @@ The workflow:
 3. The config also says how to render: format (PDF, DOCX), font, size, paper,
    margins, currency.
 4. One command builds the subset. Keeping the config means it can be rebuilt
-   later — but the config is **not** committed to this repo.
+   later.
+
+**Subsets are private.** Neither configs nor built subsets are ever committed to
+this repo or published — not on the GitHub Pages site, not by CI, not by
+accident (§4.2, §11).
 
 ## 2. Design in one line
 
@@ -44,8 +52,8 @@ are generic knobs (read data from a given path; accept a font/size/paper) and
 the ability to print a section's summary line.
 
 ```
-subsets/erc-2027.toml ─┐
-src/cv.json ───────────┼─► build_subset.py ─► build/subsets/erc-2027/
+~/cv-subsets/erc-2027.toml ┐
+src/cv.json ───────────────┼─► build_subset.py ─► ~/cv-subsets/erc-2027/
 src/publications.json ─┘    (validate → select        cv.json, publications.json  (derived)
                              → summarise → FX)        config.toml, manifest.json  (snapshot)
                                                               │
@@ -108,41 +116,54 @@ low noise, easy hand-editing — without the two costs YAML carries here:
 `[[section]]` tables preserve order, which is exactly what an ordered section
 list needs.
 
-### 4.2 Where it lives, and what "recreate later" means
+### 4.2 Where it lives: outside the repo
 
-| Path | Tracked? | What |
+**Rule: no subset config and no subset output is ever part of this repository
+or published from it.** The repository carries only the code and one template.
+
+| What | Where | In the repo? |
 |---|---|---|
-| `subsets/template.toml` | **yes** | Annotated template documenting every key. Copy it to start |
-| `subsets/*.toml` (all others) | no (`.gitignore`) | Your configs, one per use case |
-| `build/subsets/<name>/` | no (already ignored) | Outputs **plus a snapshot**: `config.toml` (copied verbatim) and `manifest.json` |
+| Template documenting every key | `src/subset.template.toml` (beside `cv.template.json`, same convention) | **yes** — the only subset file tracked |
+| Your configs | **anywhere outside the repo**, e.g. `~/cv-subsets/erc-2027.toml` | no |
+| Built subsets | next to the config by default: `~/cv-subsets/erc-2027/` (override with `--out`) | no |
+| Intermediate derived data | `build/.subset-work/` (already gitignored; wiped each build) | no |
 
-The editable config sits in `subsets/`, not inside `build/`: `build/` is
-disposable output, and the only copy of something hand-written should not live
-in a directory whose contract is "safe to delete". What `build/` does get is a
-**snapshot** of the config used, so every built CV is self-describing. The build
-takes any path, so `make subset CONFIG=build/subsets/erc-2027/config.toml`
+Outputs default to living **beside their config**, so a config outside the repo
+yields outputs outside the repo with no extra flags, and a config and the CVs
+built from it stay together. The intermediate derived JSON has to sit inside
+the repo's working tree — Typst refuses to read files outside its `--root` — so
+it goes to a gitignored, disposable work directory, and only the finished
+artifacts are copied out.
+
+Each output directory holds the deliverables plus a **snapshot**:
+`config.toml` (the config, copied verbatim) and `manifest.json`. The build
+takes any config path, so `make subset CONFIG=~/cv-subsets/erc-2027/config.toml`
 rebuilds from a snapshot directly.
 
 `manifest.json` records what is needed to reproduce the output: the data's git
 commit (`git rev-parse HEAD`, plus a `dirty` flag), the build timestamp, the
-exchange rates used and their date, the resolved font file, and item counts per
-section.
+exchange rates used, their date and source (§8.3), the resolved font file, and
+item counts per section.
+
+The guards that make the rule hold are in §11.
 
 "Recreate later" therefore has two meanings, and the config serves both:
 
 - **Refresh** — rerun the config on today's data. Sections without an `ids`
   list pick up new records automatically; FX rates are today's.
-- **Reproduce exactly** — check out the manifest's commit and pin the
-  manifest's rates in the config (§8.2). Same data, same rates, same output.
+- **Reproduce exactly** — check out the manifest's commit and set the
+  manifest's rates in the config with `source = "config"` (§8.3). Same data,
+  same rates, same output.
 
-Because configs are untracked, they exist only where you create them. A cloud
-agent session is an ephemeral container: a config written there is gone when it
-ends unless copied out.
+Because configs are never in the repo, they exist only where you keep them —
+back up that directory like any other private document. A cloud agent session
+is an ephemeral container: a config written there is gone when it ends unless
+copied out.
 
 ### 4.3 Worked example
 
 ```toml
-# subsets/erc-2027.toml — copy of subsets/template.toml, edited
+# ~/cv-subsets/erc-2027.toml — copy of src/subset.template.toml, edited
 name    = "erc-2027"                 # output dir + file names; defaults to the file stem
 title   = "Curriculum Vitae"         # overrides basics.title for this subset
 formats = ["pdf", "docx"]
@@ -154,8 +175,12 @@ paper   = "a4"                       # "a4" | "us-letter"
 margins = 20                         # mm, all sides
 
 [money]
-currency = "GBP"                     # default "GBP"
-# rates = { EUR = 0.84, USD = 0.74 } # pin rates instead of fetching (§8.2)
+currency   = "GBP"                   # default "GBP"
+source     = "live"                  # fetch ECB rates; use [money.rates] only if that fails (§8.3)
+rates_date = 2026-09-24              # required when [money.rates] is given
+[money.rates]                        # 1 unit of each currency = this many GBP
+EUR = 0.87
+USD = 0.74
 
 [summary]
 default = []                         # summary metrics applied to every section
@@ -203,7 +228,7 @@ Top level:
 | `title` | string | `basics.title` | Document heading for this subset |
 | `formats` | array | `["pdf"]` | Any of `"pdf"`, `"docx"` (`"md"` to keep the intermediate) |
 | `style` | table | full CV's look | §9 |
-| `money` | table | `currency = "GBP"` | §8.2 |
+| `money` | table | `currency = "GBP"`, `source = "live"` | §8.3 |
 | `summary.default` | array | `[]` | Metrics applied to every section without its own `summary` |
 | `section` | array of tables | — | Included sections, in render order (§5) |
 | `drop` | array of titles | — | Alternative to `section`: everything **except** these, source order |
@@ -295,7 +320,7 @@ everything, section by section.
 ### 6.3 Starting a config: `--scaffold`
 
 ```
-$ python3 src/build_subset.py --scaffold > subsets/erc-2027.toml
+$ python3 src/build_subset.py --scaffold > ~/cv-subsets/erc-2027.toml
 ```
 
 Writes a complete, valid config from the **current** data: every section in
@@ -304,7 +329,7 @@ a trailing comment. Building a subset is then *deleting* what you don't want —
 easier than typing ids. Deleting a section's whole `ids` key flips it back to
 "whole section".
 
-The tracked `subsets/template.toml` stays small and static — it documents keys,
+The tracked `src/subset.template.toml` stays small and static — it documents keys,
 it does not list records, so it never goes stale as the data grows. The
 scaffold is the data-aware counterpart.
 
@@ -313,10 +338,10 @@ scaffold is the data-aware counterpart.
 Stdlib-only Python.
 
 ```
-python3 src/build_subset.py subsets/erc-2027.toml   # build
+python3 src/build_subset.py ~/cv-subsets/erc-2027.toml [--out DIR]   # build
 python3 src/build_subset.py --list [SECTION]        # find ids
 python3 src/build_subset.py --scaffold              # new config on stdout
-make subset CONFIG=subsets/erc-2027.toml
+make subset CONFIG=~/cv-subsets/erc-2027.toml
 ```
 
 ### 7.1 Pipeline
@@ -324,7 +349,7 @@ make subset CONFIG=subsets/erc-2027.toml
 1. **Validate the master data** (§10) — refuse to build from broken data.
 2. **Validate the config** — keys, types, references.
 3. **Select** (§5) → derived `cv.json` + `publications.json`.
-4. **Summarise** (§8), fetching FX rates if a `total` needs them.
+4. **Summarise** (§8), obtaining FX rates if a `total` needs them (§8.3).
 5. **Validate the derived data** against `cv.schema.json`.
 6. **Resolve the style** (§9), including the font availability check.
 7. **Render** each requested format.
@@ -336,7 +361,7 @@ first, so one run shows the full list.
 ### 7.2 Outputs
 
 ```
-build/subsets/erc-2027/
+~/cv-subsets/erc-2027/            # beside the config, outside the repo
   darribas-cv-erc-2027.pdf
   darribas-cv-erc-2027.docx
   cv.json, publications.json    # derived data — the debugging surface
@@ -356,7 +381,7 @@ The derived `cv.json` must:
   rewrites. Wrong wording for an audience is a data fix in `src/`;
 - carry the publications section's `source` rewritten to the derived
   publications file **relative to `src/`**
-  (`"../build/subsets/erc-2027/publications.json"`), because Typst resolves
+  (`"../build/.subset-work/publications.json"`), because Typst resolves
   `json()` relative to `cv.typ`.
 
 ### 7.4 Renderer changes — generic knobs only
@@ -405,29 +430,18 @@ they only print strings. Sections whose entries are not countable things (the
 *Journal Referee* blob) should not be given `count`; the build warns if they
 are.
 
-**`total` — money.** Rules, in order:
+**`total` — money.** Rules:
 
 1. **One currency.** Every structured `amount` is converted to
    `money.currency` (default `GBP`) and summed. The output is a single figure.
-2. **Rates fetched at build time, never committed.** Source: the European
-   Central Bank's daily reference rates
-   (`https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`) — official,
-   free, no API key, published since 1999, parseable with `urllib` +
-   `xml.etree`. They are EUR-based; cross rates are derived via EUR. The rates
-   and their date go into `manifest.json` (in `build/`), never into `src/`.
-3. **No network, no guessing.** If the fetch fails and a conversion is needed,
-   the build **fails** and says so, unless `money.rates` pins rates in the
-   config. This is a real case, not a theoretical one: the proxy of the cloud
-   sandbox this spec was written in refused `ecb.europa.eu` (HTTP 403). Pinned
-   rates are also how to reproduce an old build exactly (copy them from its
-   manifest). No silent fallback to stale or zero rates.
-4. **Say it was converted.** A converted total is prefixed `≈`, and the
-   document carries one small note at the end of the section:
-   *"Converted to GBP at ECB reference rates of 24 September 2026."* An exact
-   single-currency total (no conversion needed) carries neither.
-5. **Never imply a personal share.** `amount` is the whole award across all
+2. **Say it was converted.** A converted total is prefixed `≈`, and the section
+   carries one small note: *"Converted to GBP at ECB reference rates of
+   24 September 2026."* (or *"…at exchange rates of 24 September 2026"* when
+   the rates came from the config). A single-currency total with no conversion
+   carries neither.
+3. **Never imply a personal share.** `amount` is the whole award across all
    partners; the label says *"total award value"*, not "income".
-6. **Disclose what can't be counted.** `total` sums only entries with a
+4. **Disclose what can't be counted.** `total` sums only entries with a
    structured `amount` and only groups of type `grant` — so the *Projects*
    group (free-text `funding`, and awards where the author was a researcher
    rather than an investigator) is not folded in. If entries in scope lack an
@@ -435,6 +449,61 @@ are.
 
 Converting a 2012 award at 2026 rates is a presentational choice, not a
 historical valuation — see **OPEN** in §14.
+
+### 8.3 Exchange rates: fetched live, or supplied in the config
+
+Rates are never committed to the repo. They come from one of two places.
+
+**Live (default).** The European Central Bank's daily reference rates
+(`https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`) — official,
+free, no API key, published since 1999, parseable with `urllib` + `xml.etree`.
+They are EUR-based; cross rates (e.g. USD→GBP) are derived via EUR.
+
+**From the config**, for when the ECB cannot be reached. This is a real case,
+not a theoretical one: the proxy of the cloud sandbox this spec was written in
+refused `ecb.europa.eu` (HTTP 403).
+
+```toml
+[money]
+currency   = "GBP"
+source     = "live"        # "live"   (default): fetch; fall back to [money.rates] if the fetch fails
+                           # "config": always use [money.rates]; never touch the network
+rates_date = 2026-09-24    # the date the rates are from — required whenever [money.rates] is given
+
+[money.rates]              # 1 unit of each currency = this many units of `currency`
+EUR = 0.87                 # i.e. €1 = £0.87
+USD = 0.74                 # i.e. $1 = £0.74
+```
+
+Behaviour:
+
+| `source` | ECB reachable | ECB unreachable |
+|---|---|---|
+| `"live"`, no `[money.rates]` | live rates | **build fails**, naming the error and suggesting `[money.rates]` |
+| `"live"`, with `[money.rates]` | live rates (config rates ignored) | config rates, with a **warning** that the fallback was used |
+| `"config"` | config rates; no fetch attempted | config rates |
+
+Rules for supplied rates:
+
+- **Direction is fixed and stated:** each value is how many units of the target
+  `currency` one unit of that currency buys (`EUR = 0.87` ⇒ €1 = £0.87). A
+  value that is inverted by mistake would be off by roughly 1.3× for EUR — so
+  the template spells the direction out in a comment beside every rate.
+- **Validated:** keys must be three-letter currency codes, values positive
+  numbers; the target currency itself may not be listed.
+- **Complete:** every currency that actually occurs among the amounts being
+  totalled must have a rate. A missing one fails the build, naming it — never
+  a partial total.
+- **Dated:** `rates_date` (a native TOML date) is required, because it is
+  printed in the conversion note; undated rates would make the note
+  unverifiable. If `rates_date` is more than 90 days before the build date, the
+  build **warns** that the rates are stale (it does not fail — old rates are
+  exactly what reproducing an old build needs).
+- **Recorded:** `manifest.json` records the rates actually used, their date, and
+  their source (`"ecb"`, `"config"`, or `"config (fallback: ECB unreachable)"`),
+  written in a form that can be pasted straight back into `[money.rates]`.
+
+No path ever falls back silently to stale, guessed or zero rates.
 
 ## 9. Styles (typography per subset)
 
@@ -497,11 +566,16 @@ The build exits non-zero, naming file, key and value, on:
   under;
 - `ids = []`; both `section` and `drop`; neither;
 - a requested font that is not available (§9);
-- a `total` needing conversion with no reachable rates and none pinned (§8.2);
+- a `total` needing conversion with no rates available — ECB unreachable and
+  no `[money.rates]` — or a rate missing for a currency in scope; malformed
+  `[money.rates]`, or rates given without `rates_date` (§8.3);
+- an output path inside the repository other than the gitignored work
+  directory (§11);
 - derived data that fails the schema.
 
 Warnings: a `count` on an uncountable section; a `total` with partial coverage;
-`fallback` font used.
+`fallback` font used; config exchange rates used as a fallback; config rates
+more than 90 days old.
 
 Because configs are untracked, CI cannot check them against data changes: if a
 record a config names is later deleted, the next build of that config fails
@@ -521,9 +595,29 @@ and the loud failure is what makes it acceptable.
   - Web-only `links` stay out by the same omission mechanism the PDF uses — the
     Markdown renderer never names the field.
 
-**No publishing.** Subsets never land in `docs/`, and CI never builds them:
-configs are not in the repo, so there is nothing for CI to build from. (Revision
-1's `publish` flag is withdrawn — see **OPEN** in §14.)
+### Never in the repo, never published — the guards
+
+A rule that relies on remembering is not a rule. Four mechanisms enforce it:
+
+1. **The build refuses repo paths.** `build_subset.py` resolves `--out` (and
+   the default beside-the-config location) and exits with an error if it falls
+   anywhere inside the repository — above all `docs/`, which is the GitHub
+   Pages site. The only place inside the repo it writes is the gitignored
+   `build/.subset-work/`, wiped at the start of each build.
+2. **`.gitignore` safety net.** `subsets/`, `build/` and `*.toml` are ignored,
+   with a single exception for `!src/subset.template.toml` (the repo has no
+   other TOML files), so a config or output dropped into the working tree by
+   mistake cannot be picked up by `git add .`.
+3. **A CI tripwire.** A step in `build-site.yml` fails the run if any tracked
+   file is a subset artifact — anything under `subsets/` or `build/`, any
+   `*.toml` other than `src/subset.template.toml`, or any `docs/` file that
+   `make site` does not produce. That catches a `git add -f`.
+4. **CI never runs the subset build**, and `make site` never calls it. There is
+   no code path from a push to a published subset.
+
+Agents follow the same rule: the `add-cv-record` skill, and any future
+subset-drafting skill (§16), write configs outside the repo and never stage
+them. Revision 1's `publish` flag is withdrawn permanently.
 
 ## 12. Acceptance criteria
 
@@ -539,21 +633,27 @@ configs are not in the repo, so there is nothing for CI to build from. (Revision
 4. **Loud failure.** Every §10 condition exits non-zero with a message naming
    file, key and value.
 5. **Reproducibility.** Rebuilding from a `build/…/config.toml` snapshot, at the
-   manifest's commit, with the manifest's rates pinned, gives identical derived
+   manifest's commit, with the manifest's rates set and `source = "config"`, gives identical derived
    JSON.
 6. **Style.** An `Arial, 11, a4, 20` build produces an A4 PDF whose embedded
    text fonts are Arial (checked with the PDF's font list; the monospace face
    used for DOIs and grant codes is separate — see §14), or fails if Arial is
    unavailable and no fallback is set.
-7. **Template.** `subsets/template.toml` builds as-is.
+7. **Template.** `src/subset.template.toml` builds as-is.
+8. **Never in the repo.** `--out docs/x` and `--out src/` both fail; a default
+   build of a config outside the repo leaves `git status` clean; the CI tripwire
+   fails on a force-added config.
+9. **Rates fallback.** With the network blocked: `source = "live"` plus
+   `[money.rates]` builds and warns; without `[money.rates]` it fails naming the
+   currency; `source = "config"` makes no network request at all.
 
 ## 13. Phasing
 
 | Phase | Content | Ships |
 |---|---|---|
 | **P0** | `id` on every `cv.json` entry via `src/assign_ids.py`, then required by the schema; uniqueness across both files; validator moved to `src/validate_cv.py`; `add-cv-record` assigns ids going forward; `Co-I` → `CoI` | Data + validator; no output change |
-| **P1** | `build_subset.py` (validate → select → render PDF → snapshot), `--list`, `--scaffold`, `subsets/template.toml`, `.gitignore` rule, `cv.typ` data input, `make subset`, identity + scaffold tests | PDF subsets |
-| **P2** | `summary` in schema + renderer lead line; `count`, `total`; ECB fetch, pinned rates, manifest | Summary lines, one-currency totals |
+| **P1** | `build_subset.py` (validate → select → render PDF → snapshot), `--list`, `--scaffold`, `src/subset.template.toml`, repo-path guard + `.gitignore` + CI tripwire, `cv.typ` data input, `make subset`, identity + scaffold tests | PDF subsets |
+| **P2** | `summary` in schema + renderer lead line; `count`, `total`; ECB fetch, `[money.rates]` fallback/`config` source, manifest | Summary lines, one-currency totals |
 | **P3** | `[style]`: `cv.typ` style inputs + relative heading sizes; font check; `fallback` | Funder typography |
 | **P4** | `render_markdown.py`, `src/reference.docx`, per-build style patching, pandoc | DOCX |
 
@@ -571,9 +671,6 @@ Each phase is shippable on its own; P1 is already useful.
   belong in a "total award value" — they are projects the author worked on, not
   awards they held — is an editorial call, which is why `total` is limited to
   `grant` groups meanwhile.
-- **OPEN — publishing a subset.** If a subset is ever wanted at a public URL, it
-  needs a *tracked* config (e.g. `subsets/public/*.toml`, un-ignored) and a CI
-  step. Deferred until one is wanted.
 - **OPEN — header paragraph.** Shorter CVs often open with a short statement. It
   would be the first prose living in a config rather than in `src/`, against the
   "a subset never rewrites" rule.
@@ -593,6 +690,8 @@ Each phase is shippable on its own; P1 is already useful.
 - **No page-count optimisation.** The build does not iterate to fit 2 pages;
   `manifest.json` reports the page count so the author can adjust.
 - **No formats beyond PDF/DOCX** here. Browser-side export stays its own item.
+- **No publishing, ever.** Subsets are private documents. They are not
+  committed, not built by CI, and not served from the Pages site (§11).
 
 ## 16. Natural follow-on
 

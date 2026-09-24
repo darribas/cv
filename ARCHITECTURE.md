@@ -226,7 +226,7 @@ wants the austere version has the PDF button right there.
 ## Decision 5 — Subset CVs: **filter the data, not the renderer**
 
 The `TODO.md` goal of shorter, audience-specific CVs is fully specified in
-`notes/SUBSET-CV-SPEC.md` (the implementation brief, revision 2); this entry
+`notes/SUBSET-CV-SPEC.md` (the implementation brief, revision 3); this entry
 records the decisions, not the mechanics.
 
 ### The shape
@@ -239,12 +239,16 @@ This is Decision 2 paying out as predicted ("subsets ← filter the data before
 rendering"): with three renderers in play, per-renderer filtering would mean
 writing the same logic three times in two languages.
 
-### The config: local TOML, not tracked
+### The config: local TOML, never in the repo, never published
 
-One config per use case, in `subsets/` — gitignored apart from an annotated
-`template.toml`. Every build snapshots the config it used, plus a manifest
-(data commit, FX rates, resolved font), into `build/`, so any output can be
-rebuilt. **TOML rather than YAML**: comments and low noise as wanted, but read
+One config per use case, kept **outside the repository**; the repo carries only
+`src/subset.template.toml`. Outputs land beside the config, so they are outside
+the repo too, together with a snapshot of the config and a manifest (data
+commit, FX rates and their source, resolved font) from which any output can be
+rebuilt. Subsets are private documents: the build refuses to write into the
+repo (above all `docs/`, the Pages site), `.gitignore` ignores every TOML file
+but the template, a CI step fails if a subset artifact is ever tracked, and no
+CI or `make site` path builds one. **TOML rather than YAML**: comments and low noise as wanted, but read
 by Python's standard library (`tomllib`), where YAML would be the pipeline's
 first pip dependency — and without the whitespace/type-coercion footguns
 Decision 3 already rejected YAML for.
@@ -272,8 +276,10 @@ is reimplementing metrics and currency conversion in Typst *and* twice in
 Python, and because it lands only in `build/`.
 
 Money is converted to one currency (default GBP) at **live ECB reference
-rates, fetched at build time and never committed**. No network means a failed
-build unless rates are pinned in the config — never a silent fallback. A
+rates, fetched at build time and never committed**. The config may supply dated
+rates, used as a fallback when the ECB is unreachable (or always, with
+`source = "config"`, to reproduce an old build). With neither, the build fails —
+never a silent fallback. A
 converted figure is marked `≈` with the rate date noted, and is labelled as
 total award value, not personal income.
 

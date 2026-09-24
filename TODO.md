@@ -140,17 +140,19 @@ information needs including (e.g., no links to code repositories for papers,
 related to previous point).
 
 **Fully specified — ready to implement.** See `notes/SUBSET-CV-SPEC.md`
-(revision 2) for the implementation brief, and `ARCHITECTURE.md` Decision 5 for
-the decisions behind it. In short: a local, untracked **TOML config** (template
-in `subsets/template.toml`) lists the sections to include and, optionally, the
+(revision 3) for the implementation brief, and `ARCHITECTURE.md` Decision 5 for
+the decisions behind it. In short: a **TOML config**, kept outside the repo
+(template in `src/subset.template.toml`), lists the sections to include and, optionally, the
 ids of the items wanted in each; the build filters the master data into a
 derived, still-schema-valid `cv.json` + `publications.json` that the existing
 renderers consume. Sections can carry summary lines ("12 of 112 publications",
-totals converted to one currency at live ECB rates); the config also sets
+totals converted to one currency at live ECB rates, or rates supplied in the
+config when those can't be fetched); the config also sets
 typography (font, size, paper, margins). Output is PDF (Typst) and DOCX (a new
-Markdown renderer + pandoc), into the gitignored `build/`, alongside a snapshot
-of the config and a manifest so any subset can be rebuilt. Validation runs as
-part of every build.
+Markdown renderer + pandoc), written beside the config — outside the repo —
+alongside a snapshot of the config and a manifest so any subset can be rebuilt.
+Validation runs as part of every build. Subsets are never committed and never
+published; the build, `.gitignore` and a CI tripwire all enforce it.
 
 Work is phased in the spec (§13); each phase is independently shippable:
 
@@ -158,11 +160,13 @@ Work is phased in the spec (§13); each phase is independently shippable:
   required by the schema and assigned by the add-record skill going forward);
   validator moved to `src/`; `Co-I`/`CoI` normalised.
 - **P1 — config + PDF.** `build_subset.py` with `--list` and `--scaffold`,
-  the template, a data-path input in `cv.typ`, `make subset`.
-- **P2 — summaries + currency.** `count` and `total`, ECB rates or pinned rates.
+  the template, the never-in-repo guards, a data-path input in `cv.typ`,
+  `make subset`.
+- **P2 — summaries + currency.** `count` and `total`; ECB rates, with dated
+  rates from the config as fallback (or fixed, for reproducing a build).
 - **P3 — typography.** Font/size/paper/margins, with a hard font-availability
   check.
 - **P4 — DOCX.** `render_markdown.py` + `reference.docx` + pandoc.
 
 Open questions are listed in the spec (§14) — notably current vs award-year
-exchange rates, and whether a subset should ever be published.
+exchange rates.
