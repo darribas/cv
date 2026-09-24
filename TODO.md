@@ -139,32 +139,30 @@ there's less content (e.g., only  a few recent papers) or because less
 information needs including (e.g., no links to code repositories for papers,
 related to previous point).
 
-**Fully specified — ready to implement.** See `notes/SUBSET-CV-SPEC.md` for the
-implementation brief, and `ARCHITECTURE.md` Decision 5 for the decisions behind
-it. In short: a *profile* (JSON, one per use case) filters the master data into
-a derived, still-schema-valid `cv.json` + `publications.json`, which the
-existing renderers consume unchanged; sections can carry computed summary lines
-("12 of 112 publications", "£1.25M of £4.21M awarded"); output is PDF (Typst,
-today's renderer) and DOCX (a new Markdown renderer + pandoc). Builds land in
-the gitignored `build/` unless a profile sets `"publish": true`.
+**Fully specified — ready to implement.** See `notes/SUBSET-CV-SPEC.md`
+(revision 2) for the implementation brief, and `ARCHITECTURE.md` Decision 5 for
+the decisions behind it. In short: a local, untracked **TOML config** (template
+in `subsets/template.toml`) lists the sections to include and, optionally, the
+ids of the items wanted in each; the build filters the master data into a
+derived, still-schema-valid `cv.json` + `publications.json` that the existing
+renderers consume. Sections can carry summary lines ("12 of 112 publications",
+totals converted to one currency at live ECB rates); the config also sets
+typography (font, size, paper, margins). Output is PDF (Typst) and DOCX (a new
+Markdown renderer + pandoc), into the gitignored `build/`, alongside a snapshot
+of the config and a manifest so any subset can be rebuilt. Validation runs as
+part of every build.
 
-Work is phased in the spec (§11); each phase is independently shippable:
+Work is phased in the spec (§13); each phase is independently shippable:
 
-- **P0 — data prerequisites.** Optional `id` on every `cv.json` entry (added
-  once by an idempotent script, then permanent), uniqueness enforced in
-  `validate_cv.py`, and the `Co-I`/`CoI` role spelling normalised so role
-  predicates can't silently miss an entry. Data-only, no behaviour change.
-- **P1 — filter + PDF.** `profiles/`, `subset.schema.json`,
-  `build_subset.py`, a `sys.inputs` data path in `cv.typ`, `make subset`, and
-  two worked profiles. Usable on its own.
-- **P2 — section summaries.** `summary` key in the schema plus a small lead-line
-  block in each renderer.
-- **P3 — DOCX.** `render_markdown.py` + `reference.docx` + pandoc (a DOCX-only
-  build dependency; `make site` keeps working without it).
-- **P4 — publishing + CI.** `docs/subsets/`, profile validation in `make
-  validate` so a data edit that breaks a profile fails on its own PR.
+- **P0 — ids.** A stable id on every `cv.json` entry (additive migration, then
+  required by the schema and assigned by the add-record skill going forward);
+  validator moved to `src/`; `Co-I`/`CoI` normalised.
+- **P1 — config + PDF.** `build_subset.py` with `--list` and `--scaffold`,
+  the template, a data-path input in `cv.typ`, `make subset`.
+- **P2 — summaries + currency.** `count` and `total`, ECB rates or pinned rates.
+- **P3 — typography.** Font/size/paper/margins, with a hard font-availability
+  check.
+- **P4 — DOCX.** `render_markdown.py` + `reference.docx` + pandoc.
 
-Three questions are left open in the spec, all deliberately deferred until a
-real profile needs them: whether a profile may add a short header paragraph,
-profile inheritance (`extends`), and published HTML subsets.
-
+Open questions are listed in the spec (§14) — notably current vs award-year
+exchange rates, and whether a subset should ever be published.

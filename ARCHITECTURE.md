@@ -225,62 +225,72 @@ wants the austere version has the PDF button right there.
 
 ## Decision 5 — Subset CVs: **filter the data, not the renderer**
 
-The `TODO.md` goal of shorter, audience-specific CVs is now fully specified in
-`notes/SUBSET-CV-SPEC.md` (the implementation brief); this entry records the
-decisions, not the mechanics.
+The `TODO.md` goal of shorter, audience-specific CVs is fully specified in
+`notes/SUBSET-CV-SPEC.md` (the implementation brief, revision 2); this entry
+records the decisions, not the mechanics.
 
 ### The shape
 
-A **profile** (JSON, one per use case, in `profiles/`) plus the master data
-produces a **derived** `cv.json` + `publications.json` that still validate
-against `cv.schema.json`. The existing renderers then run over the derived data,
-learning nothing about profiles, predicates or selection. This is Decision 2
-paying out exactly as predicted ("subsets ← filter the data before rendering"):
-with three renderers in play (Typst, HTML, and Markdown→pandoc for Word), the
-alternative — per-renderer conditionals — would mean writing the same filter
-three times in three languages.
+A **config** plus the master data produces a **derived** `cv.json` +
+`publications.json` that still validate against `cv.schema.json`; the existing
+renderers run over it, gaining only generic knobs (a data path, a font/size/
+paper, printing a section's summary line) and learning nothing about selection.
+This is Decision 2 paying out as predicted ("subsets ← filter the data before
+rendering"): with three renderers in play, per-renderer filtering would mean
+writing the same logic three times in two languages.
 
-### Item identity: ids in the data, selection in the profile
+### The config: local TOML, not tracked
 
-Hand-picking items needs stable references. Publications already have CSL `id`s;
-`cv.json` entries gain an optional `id` (generated once by an idempotent,
-additive script, then permanent). Rejected: array indices (silently wrong after
-any insertion) and build-time slugs (a wording fix would silently change what a
-profile selects). Profiles then combine rules with explicit lists — *"the last
-five years, plus these two, minus that one"*. Sections and groups are referenced
-by title instead, so profiles stay readable; a renamed section fails the build
-rather than vanishing from the output.
+One config per use case, in `subsets/` — gitignored apart from an annotated
+`template.toml`. Every build snapshots the config it used, plus a manifest
+(data commit, FX rates, resolved font), into `build/`, so any output can be
+rebuilt. **TOML rather than YAML**: comments and low noise as wanted, but read
+by Python's standard library (`tomllib`), where YAML would be the pipeline's
+first pip dependency — and without the whitespace/type-coercion footguns
+Decision 3 already rejected YAML for.
+
+Keeping configs out of git has one cost: CI cannot check them against data
+changes. The next build of an affected config fails instead, loudly.
+
+### Selection: one rule, and ids for every record
+
+Listed → included; nothing more specified → the whole section; `ids` given →
+only those. Sections render in config order. Every record carries a stable,
+unique id — publications already do; `cv.json` entries get one by an additive
+migration, and the add-record skill assigns them from then on. Rejected: array
+indices (silently wrong after an insertion), build-time slugs (a wording fix
+would change what a config selects), tags (selection would live in the master
+data). Date-based rules are dropped for now; a `--scaffold` command that writes
+a config listing every id makes hand-picking practical.
 
 ### The one boundary this moves: `src/` holds facts, `build/` holds a projection
 
-Section summaries ("12 of 112 publications", "£1.25M of £4.21M awarded") are
-computed in the build step and written into the derived data as pre-formatted
-strings; each renderer just prints a section's `summary` lines. That is a real
-departure from "renderers own all formatting" — accepted because the alternative
-is reimplementing currency and thousands formatting in Typst *and* twice in
-Python, and because it lands only in `build/`, never in hand-edited source. The
-escape hatch, if a renderer ever wants different wording, is to emit structured
-metrics alongside the strings.
+Section summaries ("12 of 112 publications", "≈ £1.3M of ≈ £4.4M") are computed
+in the build and written into the derived data as pre-formatted strings. That
+departs from "renderers own all formatting" — accepted because the alternative
+is reimplementing metrics and currency conversion in Typst *and* twice in
+Python, and because it lands only in `build/`.
 
-Two constraints came straight from the data and are now spec'd as rules: amounts
-are **never summed across currencies** (the awards are GBP, EUR and USD), and a
-total **never implies a personal share** (`amount` is the whole award across all
-partners). Where a group has no structured `amount` at all (the *Projects*
-group's free-text `funding`), the metric discloses the gap rather than quietly
-totalling part of it.
+Money is converted to one currency (default GBP) at **live ECB reference
+rates, fetched at build time and never committed**. No network means a failed
+build unless rates are pinned in the config — never a silent fallback. A
+converted figure is marked `≈` with the rate date noted, and is labelled as
+total award value, not personal income.
 
-### Privacy default: build private, publish on request
+### Typography per subset, and fonts that must exist
 
-Subsets build into the gitignored `build/`. A profile opts into
-`docs/subsets/<id>/` — and therefore a public URL — with `"publish": true`. A CV
-tailored to one employer should not become a public artifact by accident.
+Font, size, paper and margins are config options passed into `cv.typ` (and
+patched into a per-build copy of pandoc's `reference.docx`). Because Typst
+silently substitutes a missing font, the build checks availability and fails
+rather than hand a funder the wrong typeface. Arial cannot be bundled; a
+metric-compatible substitute is allowed only when named explicitly.
 
-### Failure is loud
+### Validation is part of the build
 
-A subset CV is sent to people who decide things, so the build exits non-zero on
-an unknown section title, an unmatched id, or a retained section that ends up
-empty. `make validate` builds every tracked profile, so deleting a record a
-profile names fails CI on the PR that causes it.
+The build validates the master data, the config and the derived data before
+rendering, reporting every problem at once, and fails on any dangling
+reference. The validator moves from the skill's folder to `src/`, shared by
+both.
 
 ## Chosen architecture (summary)
 
