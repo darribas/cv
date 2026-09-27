@@ -12,7 +12,7 @@ JSON     := $(wildcard src/*.json)
 PREVIEW  := build/preview
 FONTS    := fonts
 
-.PHONY: site pdf html watch preview validate clean
+.PHONY: site pdf html watch preview validate test clean
 
 ## site: build both the PDF and the HTML page  (default target)
 site: pdf html
@@ -41,9 +41,14 @@ preview: | docs
 	mkdir -p $(PREVIEW)
 	$(TYPST) compile --font-path $(FONTS) --format png --ppi 120 $(SRC) "$(PREVIEW)/cv-{p}.png"
 
-## validate: check every src/*.json parses
+## validate: check every src/*.json parses, then schema + id checks
 validate:
-	@for f in $(JSON); do python3 -m json.tool "$$f" > /dev/null && echo "OK  $$f"; done
+	@for f in $(JSON); do $(PYTHON) -m json.tool "$$f" > /dev/null && echo "OK  $$f"; done
+	@$(PYTHON) src/validate_cv.py
+
+## test: run the unit tests (tests/test_*.py; Typst-dependent ones skip without it)
+test:
+	$(PYTHON) -m unittest discover -s tests -v
 
 ## clean: remove build/preview artifacts (the committed PDF/HTML stay)
 clean:
