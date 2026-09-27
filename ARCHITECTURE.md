@@ -223,6 +223,81 @@ preference that costs one click, and the trade is reversible.
 Default is **on**: the extras are the reason the web version exists; someone who
 wants the austere version has the PDF button right there.
 
+## Decision 5 — Subset CVs: **filter the data, not the renderer**
+
+The `TODO.md` goal of shorter, audience-specific CVs is fully specified in
+`notes/SUBSET-CV-SPEC.md` (the implementation brief); this entry
+records the decisions, not the mechanics.
+
+### The shape
+
+A **config** plus the master data produces a **derived** `cv.json` +
+`publications.json` that still validate against `cv.schema.json`; the existing
+renderers run over it, gaining only generic knobs (a data path, a font/size/
+paper, printing a section's summary line) and learning nothing about selection.
+This is Decision 2 paying out as predicted ("subsets ← filter the data before
+rendering"): with three renderers in play, per-renderer filtering would mean
+writing the same logic three times in two languages.
+
+### The config: local TOML, never in the repo, never published
+
+One config per use case, kept **outside the repository**; the repo carries only
+`src/subset.template.toml`. Outputs land beside the config, so they are outside
+the repo too, together with a snapshot of the config and a manifest (data
+commit, FX rates and their source, resolved font) from which any output can be
+rebuilt. Subsets are private documents: the build refuses to write into the
+repo (above all `docs/`, the Pages site), `.gitignore` ignores every TOML file
+but the template, a CI step fails if a subset artifact is ever tracked, and no
+CI or `make site` path builds one. **TOML rather than YAML**: comments and low noise as wanted, but read
+by Python's standard library (`tomllib`), where YAML would be the pipeline's
+first pip dependency — and without the whitespace/type-coercion footguns
+Decision 3 already rejected YAML for.
+
+Keeping configs out of git has one cost: CI cannot check them against data
+changes. The next build of an affected config fails instead, loudly.
+
+### Selection: one rule, and ids for every record
+
+Listed → included; nothing more specified → the whole section; `ids` given →
+only those. Sections render in config order. Every record carries a stable,
+unique id — publications already do; `cv.json` entries get one by an additive
+migration, and the add-record skill assigns them from then on. Rejected: array
+indices (silently wrong after an insertion), build-time slugs (a wording fix
+would change what a config selects), tags (selection would live in the master
+data). Date-based rules are dropped for now; a `--scaffold` command that writes
+a config listing every id makes hand-picking practical.
+
+### The one boundary this moves: `src/` holds facts, `build/` holds a projection
+
+Section summaries ("12 of 112 publications", "≈ £1.3M of ≈ £4.4M") are computed
+in the build and written into the derived data as pre-formatted strings. That
+departs from "renderers own all formatting" — accepted because the alternative
+is reimplementing metrics and currency conversion in Typst *and* twice in
+Python, and because it lands only in `build/`.
+
+Money is converted to one currency (default GBP) at **live ECB reference
+rates, fetched at build time and never committed**. The config may supply dated
+rates, used as a fallback when the ECB is unreachable (or always, with
+`source = "config"`, to reproduce an old build). With neither, the build fails —
+never a silent fallback. A
+converted figure is marked `≈` with the rate date noted, and is labelled as
+total award value, not personal income.
+
+### Typography per subset, and fonts that must exist
+
+Font, size, paper, margins and page numbers are config options passed into `cv.typ` (and
+patched into a per-build copy of pandoc's `reference.docx`). Because Typst
+silently substitutes a missing font, the build checks availability and fails
+rather than hand a funder the wrong typeface. Arial cannot be bundled; a
+metric-compatible substitute is allowed only when named explicitly.
+
+### Validation is part of the build
+
+The build validates the master data, the config and the derived data before
+rendering, reporting every problem at once, and fails on any dangling
+reference. The validator moves from the skill's folder to `src/`, shared by
+both.
+
 ## Chosen architecture (summary)
 
 - **Source of truth:** structured data.

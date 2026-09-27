@@ -12,3 +12,6 @@ notes/cv-current.pdf
 # the repo's tooling, not local machine state.
 .claude/*
 !.claude/skills/
+
+# Python bytecode (tests import the src/ scripts as modules)
+__pycache__/

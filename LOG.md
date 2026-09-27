@@ -157,3 +157,31 @@ Follow-up, same branch — two usage paths made first-class:
   so the skill runs unmodified there, including with a local model — the DOI
   fetch + `validate_cv.py` gate keep it reliable even on weaker models. `README.md`
   now carries brief install/use guidance for both Claude Code and OpenCode.
+
+## Subset CVs — P0: record ids, validator, tests
+
+First phase of `notes/SUBSET-CV-SPEC.md` (§15 P0); the rest stays in `TODO.md`.
+
+- **Ids.** All 279 `cv.json` entries now carry a permanent `id`
+  (`<context>-<year>-<keywords>`, e.g. `education-2010-phd-economics`; 10 got a
+  `-2`/`-3` collision suffix), unique across both data files. Publications
+  keep their CSL ids. `src/assign_ids.py` generates them and writes them by
+  text insertion right after each entry's `{`, so the hand formatting is
+  untouched — stripping the inserted text gives the old file back byte for
+  byte (tested). It only adds ids to entries that lack one, so it is the
+  add-record skill's step after pasting an entry (`--check` reports without
+  writing). `cv.schema.json` requires `id` (pattern `^[a-z0-9][a-z0-9-]*$`,
+  ≤ 60 characters).
+- **Validator** moved to `src/validate_cv.py` (importable: `check(root)`), now
+  also enforcing `pattern`/`maxLength` and id uniqueness within `cv.json` and
+  across both files. A shim keeps the old skill path working. `make validate`
+  runs it after the parse check, so CI now enforces the schema.
+- **Data fix:** the one `"role": "Co-I"` is now `CoI` like the other 11 — the
+  only change in the built site.
+- **Tests:** `tests/` (stdlib `unittest`), `make test`, and a CI step. Covers
+  the id rule, the insertion invariant (on awkward fixtures and the real
+  file), idempotence, the validator's id errors, and that ids never reach the
+  output: HTML and PDF are built with and without ids in the same run and
+  compared byte for byte. Typst's `--creation-timestamp` was verified to pin
+  `datetime.today()` too (Typst 0.15), so the PDF comparison needs no
+  text-extraction fallback.
