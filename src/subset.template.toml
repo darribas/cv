@@ -1,17 +1,17 @@
 # Subset CV config — annotated template.
 #
 # A subset CV is a shorter, audience-specific version of the full CV, built
-# from the same data:   make subset CONFIG=~/cv-subsets/erc-2027.toml
+# from the same data:   make subset CONFIG=subsets/erc-2027.toml
 # This file documents every key; it is the only subset file in the
 # repository.
 #
-# Configs can live anywhere, e.g. ~/cv-subsets/erc-2027.toml. Git ignores
-# every *.toml in the repo but this template, so one kept inside it stays
-# untracked. Outputs are written beside the config, in a folder named after
-# it, and must be outside the repo (the build refuses to write into it): for
-# a config inside the repo, add OUT=<dir outside>.
+# Keep configs in the repo's subsets/ folder (gitignored), e.g.
+# subsets/erc-2027.toml, or anywhere outside the repo. Outputs are written
+# beside the config, in a folder named after it (subsets/erc-2027/). Inside
+# the repo the build writes only where git ignores the path, and never to
+# docs/ or src/, so a subset can't be committed or published.
 #
-# Easier start: `make subset CONFIG=~/cv-subsets/x.toml` with no file there
+# Easier start: `make subset CONFIG=subsets/x.toml` with no file there
 # yet writes a config listing every section, group and record id; build a
 # subset by deleting lines and running the same command again. `make subset-list [SECTION="Teaching"]` prints the ids with their
 # dates and titles.

@@ -499,23 +499,43 @@ def git_status():
 
 
 class OutputGuardTest(unittest.TestCase):
-    def assert_refused(self, out):
+    def assert_refused(self, out, fragment="private"):
         with TempConfig(sections_config(["Education"])) as c:
             with self.assertRaises(build_subset.BuildError) as e:
                 build_subset.build(c.path, out=out, master=MASTER)
-        self.assertIn("inside the repository", e.exception.problems[0])
+        self.assertIn(fragment, e.exception.problems[0])
+        self.assertIn("subsets/", e.exception.problems[0])  # says where to go
 
-    def test_repo_paths_refused(self):
-        for out in (REPO / "docs" / "x", REPO / "src", REPO, REPO / "build" / "x"):
+    def test_public_and_source_dirs_refused(self):
+        for out in (REPO / "docs" / "x", REPO / "docs", REPO / "src",
+                    REPO / "src" / "x", REPO):
             with self.subTest(out=out):
-                self.assert_refused(out)
+                self.assert_refused(out, "never go there")
         self.assertFalse((REPO / "docs" / "x").exists())
+
+    def test_tracked_or_unignored_repo_paths_refused(self):
+        for out in (REPO / "notes" / "x", REPO / "tests" / "x"):
+            with self.subTest(out=out):
+                self.assert_refused(out, "not ignored by git")
+        self.assertFalse((REPO / "notes" / "x").exists())
+
+    def test_scratch_dir_refused(self):
+        for out in (REPO / "build", REPO / "build" / ".subset-work",
+                    REPO / "build" / ".subset-work" / "x"):
+            with self.subTest(out=out):
+                self.assert_refused(out, "overlaps")
+
+    def test_ignored_repo_paths_allowed(self):
+        for out in (REPO / "subsets" / "erc", REPO / "build" / "mine"):
+            with self.subTest(out=out):
+                self.assertEqual(
+                    build_subset.resolve_out(REPO / "x.toml", "x", out), out)
 
     def test_relative_repo_path_refused(self):
         cwd = os.getcwd()
         os.chdir(REPO)
         try:
-            self.assert_refused(Path("docs/x"))
+            self.assert_refused(Path("docs/x"), "never go there")
         finally:
             os.chdir(cwd)
 
@@ -523,14 +543,14 @@ class OutputGuardTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             link = Path(tmp) / "link"
             link.symlink_to(REPO / "docs")
-            self.assert_refused(link / "x")
+            self.assert_refused(link / "x", "never go there")
 
-    def test_config_in_repo_means_default_out_refused(self):
-        # Default output = beside the config: inside the repo, so refused.
+    def test_config_in_src_means_default_out_refused(self):
+        # Default output = beside the config: src/example, so refused.
         # (Uses the one tracked TOML file, so nothing is created.)
         with self.assertRaises(build_subset.BuildError) as e:
             build_subset.build(SRC / "subset.template.toml", master=MASTER)
-        self.assertIn("inside the repository", e.exception.problems[0])
+        self.assertIn("never go there", e.exception.problems[0])
 
 
 @unittest.skipUnless(HAS_TYPST, "typst not installed")
@@ -629,29 +649,29 @@ class MakeTargetsTest(unittest.TestCase):
         self.assertNotEqual(run.returncode, 0)
         self.assertIn("usage: make subset", run.stdout)
 
-    def test_config_inside_repo_builds_with_out(self):
+    def test_config_in_subsets_folder(self):
+        # The container workflow: config and outputs both inside the repo,
+        # in the gitignored subsets/ folder, relative path, no OUT.
         before = git_status()
         folder = REPO / "subsets"
         existed = folder.exists()
         config = folder / "zz-test.toml"
         try:
-            with tempfile.TemporaryDirectory() as out:
-                run = subprocess.run(["make", "-s", "subset", f"CONFIG={config}"],
-                                     cwd=REPO, capture_output=True, text=True)
-                self.assertEqual(run.returncode, 0, run.stderr)  # starter written
-                config.write_text(sections_config(["Education"]))
-                run = subprocess.run(["make", "-s", "subset", f"CONFIG={config}"],
-                                     cwd=REPO, capture_output=True, text=True)
-                self.assertNotEqual(run.returncode, 0)  # default out: in the repo
-                self.assertIn("OUT=DIR", run.stderr)
-                run = subprocess.run(["make", "-s", "subset", f"CONFIG={config}",
-                                      f"OUT={out}"],
-                                     cwd=REPO, capture_output=True, text=True)
-                self.assertEqual(run.returncode, 0, run.stderr)
-                self.assertTrue((Path(out) / "darribas-cv-zz-test.pdf").exists())
+            def make_subset():
+                return subprocess.run(
+                    ["make", "-s", "subset", "CONFIG=subsets/zz-test.toml"],
+                    cwd=REPO, capture_output=True, text=True)
+            run = make_subset()
+            self.assertEqual(run.returncode, 0, run.stderr)  # starter written
+            self.assertTrue(config.exists())
+            config.write_text(sections_config(["Education"]))
+            run = make_subset()
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertTrue((folder / "zz-test" / "darribas-cv-zz-test.pdf").exists())
             self.assertEqual(git_status(), before)
         finally:
             config.unlink(missing_ok=True)
+            shutil.rmtree(folder / "zz-test", ignore_errors=True)
             if not existed:
                 shutil.rmtree(folder, ignore_errors=True)
 

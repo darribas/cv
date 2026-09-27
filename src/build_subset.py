@@ -19,11 +19,13 @@ the same command. They run:
     python3 src/build_subset.py --list [SECTION]
     python3 src/build_subset.py --scaffold [PATH]   # PATH, or stdout
 
-Outputs go beside the config (<config dir>/<name>/) or to --out, never into
-the repository: the PDF, the derived data, a verbatim copy of the config and
-a manifest.json recording what was built from what. The only in-repo writes
-are to build/.subset-work/ (gitignored, wiped per build), because Typst will
-not read files outside its --root.
+Outputs go beside the config (<config dir>/<name>/) or to --out: the PDF,
+the derived data, a verbatim copy of the config and a manifest.json recording
+what was built from what. Outside the repository anywhere will do; inside it,
+only where git ignores the path (e.g. subsets/) and never docs/ or src/, so a
+subset can never be committed or published. Scratch data goes to
+build/.subset-work/ (gitignored, wiped per build), because Typst will not
+read files outside its --root.
 
 Every problem — in the data, the config or the output path — stops the build
 with a message naming the file, key and value; all are reported together.
@@ -456,16 +458,55 @@ def inside_repo(path):
     return path == repo or repo in path.parents
 
 
+# Never written to, even if gitignored: the public site and the master data.
+FORBIDDEN = ("docs", "src")
+PRIVATE_HINT = ("Keep configs in the gitignored subsets/ folder (make subset "
+                "CONFIG=subsets/<name>.toml), or set OUT=subsets/<name> or a "
+                "directory outside the repository.")
+
+
+def check_out_in_repo(target):
+    """Problems with an output dir inside the repo, or [] if it is private.
+
+    Subsets are private (spec §13): inside the repository an output may only
+    go where git ignores it, so it can never be committed or published —
+    and never into docs/ (the public site) or src/, ignored or not.
+    """
+    repo = REPO.resolve()
+    rel = target.relative_to(repo)
+    if not rel.parts or rel.parts[0] in FORBIDDEN:
+        where = "the repository root" if not rel.parts else f"{rel.parts[0]}/"
+        return [f"output directory {target} is in {where} — subset CVs are "
+                "private and never go there. " + PRIVATE_HINT]
+    work = WORK.resolve()
+    if target == work or work in target.parents or target in work.parents:
+        return [f"output directory {target} overlaps the build's scratch "
+                f"directory {WORK.relative_to(REPO)}/. " + PRIVATE_HINT]
+    try:
+        run = subprocess.run(["git", "check-ignore", "-q", "--", str(rel)],
+                             cwd=REPO, capture_output=True, text=True)
+        code = run.returncode
+    except FileNotFoundError:
+        code = None
+    if code == 0:
+        return []
+    if code == 1:
+        return [f"output directory {target} is inside the repository but not "
+                "ignored by git, so the subset could be committed. "
+                + PRIVATE_HINT]
+    return [f"output directory {target} is inside the repository and git "
+            "could not confirm it is ignored (is git installed?). "
+            + PRIVATE_HINT]
+
+
 def resolve_out(config_path, name, out=None):
-    """The output directory. BuildError if it is inside the repository."""
+    """The output directory. BuildError unless it is private (see above)."""
     target = Path(out).expanduser() if out else config_path.parent / name
-    target = target.resolve()  # follows symlinks, so a link into the repo fails
+    target = target.resolve()  # follows symlinks, so a link into docs/ fails
     if inside_repo(target):
-        raise BuildError([
-            f"output directory {target} is inside the repository — subset CVs "
-            "are private and must never be written into it (above all docs/, "
-            "the public site). Pass an output directory outside it: "
-            "make subset CONFIG=... OUT=DIR (or --out DIR)."])
+        problems = check_out_in_repo(target)
+        if problems:
+            raise BuildError(problems)
     if target.exists() and not target.is_dir():
         raise BuildError([f"output path {target} exists and is not a directory"])
     return target
@@ -663,8 +704,8 @@ def scaffold(master):
         "# See src/subset.template.toml for every key.",
         "#",
         "# Build it with `make subset CONFIG=<this file>`; outputs are written",
-        "# beside it, in a folder named after it — which must be outside the cv",
-        "# repository (if this file is inside it, add OUT=<dir outside>).",
+        "# beside it, in a folder named after it. Inside the cv repository, keep",
+        "# it in the gitignored subsets/ folder so the outputs stay private.",
         "",
         "# name    = \"my-subset\"   # default: this file's name",
         "formats = [\"pdf\"]",

@@ -49,19 +49,22 @@ Shorter, audience-specific CVs built from the same data — see
 the record ids) to include:
 
 ```bash
-make subset CONFIG=~/cv-subsets/erc-2027.toml
+make subset CONFIG=subsets/erc-2027.toml
 ```
 
 The first time, there is no config yet, so this writes a starter one listing
 every section and record id. Delete what you don't want and run the same
 command again: now it builds. Outputs land beside the config
-(`~/cv-subsets/erc-2027/`): the PDF, the derived data, a copy of the config
-and a `manifest.json`. Rebuild any time with the same line. `make subset-list [SECTION="Teaching"]`
-prints record ids with their dates and titles; `src/subset.template.toml`
-documents every config key. Subsets are private: `.gitignore` ignores every
-`*.toml` (so a config may live in the repo, e.g. in `subsets/`, untracked),
-CI fails if one is ever committed, and the build refuses to write *outputs*
-into the repo — for a config inside it, add `OUT=<dir outside>`.
+(`subsets/erc-2027/`): the PDF, the derived data, a copy of the config and a
+`manifest.json`. Rebuild any time with the same line. `make subset-list
+[SECTION="Teaching"]` prints record ids with their dates and titles;
+`src/subset.template.toml` documents every config key.
+
+Subsets are private. `subsets/` and every `*.toml` but the template are
+gitignored, CI fails if one is ever committed, and inside the repo the build
+only writes where git ignores the path — never `docs/` (the public site) or
+`src/`. A config and outputs anywhere outside the repo
+(`CONFIG=~/cv-subsets/…`) work too.
 
 ## AI
 
