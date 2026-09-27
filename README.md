@@ -42,6 +42,25 @@ python3 src/validate_cv.py      # or: make validate
 Every addition lands as a PR — CI then rebuilds the PDF and web page from the
 new data.
 
+## Subset CVs
+
+Shorter, audience-specific CVs built from the same data — see
+`notes/SUBSET-CV-SPEC.md`. A TOML config, kept **outside this repository**,
+lists the sections (and optionally the record ids) to include:
+
+```bash
+mkdir -p ~/cv-subsets
+python3 src/build_subset.py --scaffold > ~/cv-subsets/erc-2027.toml  # every section + id
+# ...delete what you don't want, then:
+make subset CONFIG=~/cv-subsets/erc-2027.toml
+```
+
+Outputs land beside the config (`~/cv-subsets/erc-2027/`): the PDF, the
+derived data, a copy of the config and a `manifest.json`. `src/subset.template.toml`
+documents every key; `python3 src/build_subset.py --list [SECTION]` prints
+record ids. Subsets are private: the build refuses to write into the repo,
+`.gitignore` ignores `*.toml`, and CI fails if one is ever committed.
+
 ## AI
 
 I have used extensively AI tools to build the infrastructure around this CV,

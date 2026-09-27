@@ -154,10 +154,8 @@ repo — with a snapshot of the config and a manifest so any subset can be
 rebuilt. Validation runs inside every build. Subsets are never committed and
 never published; the build, `.gitignore` and a CI tripwire all enforce it.
 
-Phases (spec §15), one PR each (P0 done — see `LOG.md`):
+Phases (spec §15), one PR each (P0 and P1 done — see `LOG.md`):
 
-- **P1 — config + PDF.** `build_subset.py` with `--list` and `--scaffold`, the
-  template, the never-in-repo guards, a data-path input in `cv.typ`.
 - **P2 — summaries + currency.** `count` and `total`; ECB rates, config rates as
   fallback or fixed.
 - **P3 — typography.** Font/size/paper/margins/page numbers, with a hard

@@ -212,6 +212,10 @@ a later phase than the one implemented is an error saying which phase adds it.
   in any of its groups; groups left empty are dropped.
 - Publications keep their renderer-side sort (year descending) regardless.
 - `ids = []` is an error ("remove `ids` to include the whole section").
+- *(Settled in P1.)* A section with `[[section.group]]` tables takes its `ids`
+  under those groups; section-level `ids` alongside group tables is an error,
+  since which filter applies to which group would otherwise be ambiguous. An id
+  listed twice, or a section/group listed twice, is also an error.
 
 Omitting `ids` means "the whole section *as it is when built*" — a later rebuild
 picks up new records. Listing ids freezes the selection. Both are intended.
