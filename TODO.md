@@ -139,34 +139,42 @@ there's less content (e.g., only  a few recent papers) or because less
 information needs including (e.g., no links to code repositories for papers,
 related to previous point).
 
-**Fully specified — ready to implement.** See `notes/SUBSET-CV-SPEC.md`
-(revision 3) for the implementation brief, and `ARCHITECTURE.md` Decision 5 for
-the decisions behind it. In short: a **TOML config**, kept outside the repo
-(template in `src/subset.template.toml`), lists the sections to include and, optionally, the
-ids of the items wanted in each; the build filters the master data into a
-derived, still-schema-valid `cv.json` + `publications.json` that the existing
-renderers consume. Sections can carry summary lines ("12 of 112 publications",
-totals converted to one currency at live ECB rates, or rates supplied in the
-config when those can't be fetched); the config also sets
-typography (font, size, paper, margins). Output is PDF (Typst) and DOCX (a new
-Markdown renderer + pandoc), written beside the config — outside the repo —
-alongside a snapshot of the config and a manifest so any subset can be rebuilt.
-Validation runs as part of every build. Subsets are never committed and never
-published; the build, `.gitignore` and a CI tripwire all enforce it.
+**Fully specified — ready to implement.** `notes/SUBSET-CV-SPEC.md` is the
+implementation brief (hand it to Claude Code as-is); `ARCHITECTURE.md` Decision 5
+has the decisions behind it. In short: a **TOML config**, kept outside the repo
+(template in `src/subset.template.toml`), lists the sections to include and,
+optionally, the ids of the items wanted in each; the build filters the master
+data into a derived, still-schema-valid `cv.json` + `publications.json` that the
+existing renderers consume. Sections can carry summary lines ("12 of 112
+publications", totals converted to one currency at live ECB rates, or rates
+supplied in the config when those can't be fetched); the config also sets
+typography (font, size, paper, margins, page numbers). Output is PDF (Typst) and
+DOCX (a new Markdown renderer + pandoc), written beside the config — outside the
+repo — with a snapshot of the config and a manifest so any subset can be
+rebuilt. Validation runs inside every build. Subsets are never committed and
+never published; the build, `.gitignore` and a CI tripwire all enforce it.
 
-Work is phased in the spec (§13); each phase is independently shippable:
+Phases (spec §15), one PR each:
 
-- **P0 — ids.** A stable id on every `cv.json` entry (additive migration, then
-  required by the schema and assigned by the add-record skill going forward);
-  validator moved to `src/`; `Co-I`/`CoI` normalised.
-- **P1 — config + PDF.** `build_subset.py` with `--list` and `--scaffold`,
-  the template, the never-in-repo guards, a data-path input in `cv.typ`,
-  `make subset`.
-- **P2 — summaries + currency.** `count` and `total`; ECB rates, with dated
-  rates from the config as fallback (or fixed, for reproducing a build).
-- **P3 — typography.** Font/size/paper/margins, with a hard font-availability
-  check.
+- **P0 — ids, validator, tests.** A permanent id on every `cv.json` entry
+  (inserted without disturbing the file's hand formatting), required by the
+  schema and assigned by the add-record skill from then on; validator moved to
+  `src/`; `Co-I` → `CoI`; a `tests/` suite with `make test` in CI.
+- **P1 — config + PDF.** `build_subset.py` with `--list` and `--scaffold`, the
+  template, the never-in-repo guards, a data-path input in `cv.typ`.
+- **P2 — summaries + currency.** `count` and `total`; ECB rates, config rates as
+  fallback or fixed.
+- **P3 — typography.** Font/size/paper/margins/page numbers, with a hard
+  font-availability check.
 - **P4 — DOCX.** `render_markdown.py` + `reference.docx` + pandoc.
+- **P5 — header overrides.** Per-subset affiliation lines, and omitting
+  email/URL.
 
-Open questions are listed in the spec (§14) — notably current vs award-year
-exchange rates.
+### Award-year exchange rates for subset totals
+
+The subset CV's `total` summary (spec §8.3) converts every award at *today's*
+rates. Converting each award at the rate of its own year would be truer to what
+it was worth: the ECB publishes the full history back to 1999
+(`eurofxref-hist.xml`), so this could be a `money.basis = "current" |
+"award-year"` option. Neither is inflation-adjusted. Awards dated before 1999
+would need another source. Pick up once the P2 totals exist.

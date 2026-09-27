@@ -1,194 +1,144 @@
-# Subset CVs — feature specification
+# Subset CVs — implementation spec
 
-Status: **specified, not built** (revision 3). This is the implementation brief
-for the `TODO.md` item "Tooling for building subsets of the CV", written to be
-handed to an implementer (human or agent) without further design work. Every
-decision below is made; the ones deliberately left open are marked **OPEN**.
+**Status: final — ready to implement.** This is the brief for building the
+subset-CV feature (`TODO.md`, "Tooling for building subsets of the CV"). It is
+written for the implementer — human or Claude Code — to work from without
+further design discussion. Design rationale lives in `ARCHITECTURE.md`
+Decision 5; this document says *what to build*. Anything not decided is listed
+in §19 and is **out of scope** until decided.
 
-Companion reading: `ARCHITECTURE.md` (Decision 2 — data/render split; Decision 5
-— this feature's summary entry).
-
-*Revision 2* replaces the tracked JSON "profiles" of revision 1 with a local,
-untracked TOML config; reduces selection to one rule (list what you want,
-omitted means everything); converts money to one currency at live rates; adds
-per-subset typography (font, size, paper, margins); and bakes validation into
-every build.
-
-*Revision 3* makes "subsets never enter the repo and are never published" a hard
-rule with guards (§4.2, §11), moves the template to `src/`, and lets the config
-supply exchange rates for when they cannot be fetched (§8.3).
+Read before starting: `ARCHITECTURE.md` (Decisions 2 and 5), `src/cv.typ`,
+`src/render_html.py`, `src/cv.schema.json`, `.claude/skills/add-cv-record/`.
 
 ---
 
-## 1. The need
+## 1. Goal
 
-Organisations routinely ask for something shorter than the full CV: a 2-page
-version for a funder, a teaching-weighted version for a lectureship. Funders
-often also dictate typography ("Arial, 11pt, 2cm margins"). Today that means
-hand-editing a copy, which forks the content and rots.
+Build shorter, audience-specific versions of the CV from the same data, on the
+author's machine, reproducibly:
 
-The workflow:
+1. A **config file** (TOML) lists the sections to include and, where only part
+   of a section is wanted, the ids of the items to keep.
+2. Included sections can carry **summary lines** at their top ("12 of 112
+   publications", total award value converted to one currency).
+3. The config sets **how to render**: formats (PDF, DOCX), font, size, paper,
+   margins, page numbers.
+4. One command builds it. The config can be kept and rebuilt later.
 
-1. Write a **config file** saying which sections to include, and, where only
-   part of a section is wanted, which items.
-2. Retained sections may carry standard summary lines at their top (number of
-   papers, total income, …).
-3. The config also says how to render: format (PDF, DOCX), font, size, paper,
-   margins, currency.
-4. One command builds the subset. Keeping the config means it can be rebuilt
-   later.
+## 2. Non-negotiable principles
 
-**Subsets are private.** Neither configs nor built subsets are ever committed to
-this repo or published — not on the GitHub Pages site, not by CI, not by
-accident (§4.2, §11).
+1. **A subset is a data transform, not a renderer feature.** Config + master
+   data → a *derived* `cv.json` + `publications.json` that still validate
+   against `cv.schema.json` → the existing renderers. Renderers gain only
+   *generic* knobs (read data from a path; font/size/paper/margins/page numbers;
+   print a section's summary strings). They never learn what a config, an id
+   list or a metric is.
+2. **Subsets are private.** No subset config or output is ever committed to this
+   repo or published (not on GitHub Pages, not by CI). Enforced in code (§13).
+3. **Subsets select; they never rewrite.** Every retained entry reaches the
+   renderer verbatim. Wrong wording is a data fix in `src/`.
+4. **Fail loudly.** A subset CV goes to people who decide things. Any dangling
+   reference, missing font or missing exchange rate stops the build with a
+   message naming file, key and value. No silent omission, substitution or
+   fallback — except the one explicitly configured rates fallback (§8.3), which
+   warns.
+5. **Stdlib-only Python + the Typst binary.** No pip installs. pandoc is needed
+   **only** for DOCX, and nothing else may depend on it.
+6. **`src/` holds facts; the build's work directory holds a rendering-ready
+   projection.** Derived data may contain computed, pre-formatted text (summary
+   lines); `src/` never does.
+7. **The full CV does not change.** No code change may alter `make site`
+   output (§14.2). The only output change in the whole feature is P0's
+   deliberate one-entry data fix (`Co-I` → `CoI`).
 
-## 2. Design in one line
+## 3. The repository today (verified facts)
 
-**A subset is a data transform, not a renderer feature.** Config + master data
-→ a *derived* `cv.json` + `publications.json` that still validate against
-`cv.schema.json` → the existing renderers, unchanged in what they know. The
-renderers learn nothing about configs or selection; the only things they gain
-are generic knobs (read data from a given path; accept a font/size/paper) and
-the ability to print a section's summary line.
-
-```
-~/cv-subsets/erc-2027.toml ┐
-src/cv.json ───────────────┼─► build_subset.py ─► ~/cv-subsets/erc-2027/
-src/publications.json ─┘    (validate → select        cv.json, publications.json  (derived)
-                             → summarise → FX)        config.toml, manifest.json  (snapshot)
-                                                              │
-                                     ┌────────────────────────┴──────────────┐
-                                     ▼                                       ▼
-                             cv.typ + style → PDF        render_markdown.py → pandoc → DOCX
-```
-
-### The one boundary this draws
-
-`src/` holds **facts**; `build/` holds a **rendering-ready projection** of those
-facts. The projection may contain derived text (a computed summary line, a
-converted currency total) that would never be allowed in `src/`. That is what
-lets summaries and currency conversion be computed once, in Python, rather than
-re-implemented in Typst and again in each Python renderer.
-
-## 3. What exists today (implementation context)
-
-Verified against the tree at the time of writing:
-
-- `src/cv.json` — `basics` + 17 `sections`. A section is either **flat**
-  (`type` + `entries`) or **grouped** (`groups[]`, each with its own `type` +
-  `entries`). `Publications` is `type: "publications"` with
-  `source: "publications.json"`, its groups keyed by CSL `category`.
-- `src/publications.json` — 112 CSL-JSON records, each with a unique `id`.
-- 279 `cv.json` entries across 13 entry types. **None has an identifier.**
-- `src/cv.typ` (PDF) and `src/render_html.py` (web): independent templates over
-  the same data, both with hard-coded input paths. `cv.typ` hard-codes its look:
-  TeX Gyre Pagella 12.5pt, **US Letter**, 1in margins, headings at absolute
-  14pt/13pt, a 13mm date column.
-- `.claude/skills/add-cv-record/validate_cv.py` — stdlib-only schema validator,
-  stricter than CI's `make validate` (which only checks the JSON parses).
-- The pipeline is stdlib-only Python plus the Typst binary; no pip installs.
-
-### Data realities that shape the spec
-
-| Fact | Consequence |
-|---|---|
-| Research Income → *Awards*: 22/22 entries carry a structured `amount` — 16 GBP, 5 EUR, 1 USD | Totals need currency conversion (§8.2) |
-| Research Income → *Projects*: 0/6 carry `amount`; 5 carry free-text `funding` (`"€2,548,920"`) | Not convertible as-is; excluded from totals and disclosed (§8.2) |
-| Grant `amount` is the **total award across partners**, not the author's share | Summary wording must not imply personal income (§8.2) |
-| `role` holds both `"CoI"` (11) and `"Co-I"` (1) | Data-hygiene fix in P0 |
-| The full CV is set in US Letter | UK/EU funders will want A4 — a style option (§9) |
-| *Journal Referee* is one `text-list` entry holding ~50 journals | Item counts are meaningless there; such sections get no summary |
+- `src/cv.json`: `basics` + 17 `sections`. A section is **flat**
+  (`type` + `entries`) or **grouped** (`groups[]`, each with `title`, `type`,
+  `entries`). `Publications` is `type: "publications"`,
+  `source: "publications.json"`, groups keyed by CSL `category`.
+- 279 entries in `cv.json` across 13 entry types; **none has an id**. The file
+  is **hand-formatted**: many entries are one-line objects, others span several
+  lines, sections are separated by blank lines. `json.dump` does **not**
+  round-trip it (a 1,843-line diff) — see §6.2.
+- `src/publications.json`: 112 CSL-JSON records, each with a unique `id`;
+  round-trips exactly with `json.dumps(indent=2, ensure_ascii=False)`.
+- `src/cv.typ` reads `json("cv.json")` (relative to itself) and hard-codes:
+  TeX Gyre Pagella 12.5pt, `paper: "us-letter"`, 1in margins, level-1 headings
+  14pt, level-2 13pt, header name 15pt and contact lines 9pt, a 13mm date
+  column, no page numbers, and a trailing `datetime.today()` date stamp.
+  Monospace (`raw()`) is used for DOIs, grant codes and URLs.
+- `src/render_html.py` hard-codes `SRC/cv.json` and writes `docs/`.
+- `.claude/skills/add-cv-record/validate_cv.py`: stdlib schema validator
+  (only the draft-2020-12 keywords `cv.schema.json` uses) plus structural checks
+  on `publications.json`.
+- CI (`.github/workflows/build-site.yml`): installs the **latest** Typst
+  release, runs `make validate` (JSON parses), `make site`, commits `docs/` on
+  pushes to `main`. There is **no test suite** and no `tests/` directory.
+- `.gitignore` ignores `build/`.
+- Research Income → *Awards*: 22 `grant` entries, all with structured
+  `amount` (16 GBP, 5 EUR, 1 USD). *Projects*: 6 `project` entries, none with
+  `amount`; 5 with free-text `funding`.
+- `role` uses both `"CoI"` (11) and `"Co-I"` (1).
+- The committed `docs/cv.pdf` embeds its creation time (`/CreationDate`,
+  `xmp:CreateDate`) and prints its build date on the last page.
 
 ## 4. The config file
 
-### 4.1 Format: TOML, not YAML
+### 4.1 Format
 
-The config is **TOML**. It gives everything wanted from YAML — comments,
-low noise, easy hand-editing — without the two costs YAML carries here:
+TOML, parsed with `tomllib` (stdlib, Python ≥ 3.11). YAML is not used: it would
+need PyYAML (a pip install).
 
-- **No dependency.** Python reads TOML with the standard library (`tomllib`,
-  Python ≥ 3.11; checked). YAML needs PyYAML, a pip install — the first in the
-  pipeline, against its stdlib-only rule.
-- **No whitespace or type-coercion footguns** — the reasons `ARCHITECTURE.md`
-  Decision 3 already rejected YAML for the data. TOML is explicit about types,
-  so `title = "Norway"` stays a string.
+### 4.2 Location
 
-`[[section]]` tables preserve order, which is exactly what an ordered section
-list needs.
-
-### 4.2 Where it lives: outside the repo
-
-**Rule: no subset config and no subset output is ever part of this repository
-or published from it.** The repository carries only the code and one template.
-
-| What | Where | In the repo? |
+| What | Where | Tracked in git? |
 |---|---|---|
-| Template documenting every key | `src/subset.template.toml` (beside `cv.template.json`, same convention) | **yes** — the only subset file tracked |
-| Your configs | **anywhere outside the repo**, e.g. `~/cv-subsets/erc-2027.toml` | no |
-| Built subsets | next to the config by default: `~/cv-subsets/erc-2027/` (override with `--out`) | no |
-| Intermediate derived data | `build/.subset-work/` (already gitignored; wiped each build) | no |
+| Annotated template | `src/subset.template.toml` | **yes** — the only subset file in the repo |
+| The author's configs | anywhere **outside** the repo, e.g. `~/cv-subsets/erc-2027.toml` | never |
+| Built outputs | beside the config by default: `<config dir>/<name>/`; `--out DIR` overrides | never |
+| Intermediate derived data | `build/.subset-work/` (gitignored; wiped at the start of each build) | never |
 
-Outputs default to living **beside their config**, so a config outside the repo
-yields outputs outside the repo with no extra flags, and a config and the CVs
-built from it stay together. The intermediate derived JSON has to sit inside
-the repo's working tree — Typst refuses to read files outside its `--root` — so
-it goes to a gitignored, disposable work directory, and only the finished
-artifacts are copied out.
+The intermediate data sits inside the repo only because Typst will not read
+files outside its `--root`. Only finished artifacts are copied out.
 
-Each output directory holds the deliverables plus a **snapshot**:
-`config.toml` (the config, copied verbatim) and `manifest.json`. The build
-takes any config path, so `make subset CONFIG=~/cv-subsets/erc-2027/config.toml`
-rebuilds from a snapshot directly.
-
-`manifest.json` records what is needed to reproduce the output: the data's git
-commit (`git rev-parse HEAD`, plus a `dirty` flag), the build timestamp, the
-exchange rates used, their date and source (§8.3), the resolved font file, and
-item counts per section.
-
-The guards that make the rule hold are in §11.
-
-"Recreate later" therefore has two meanings, and the config serves both:
-
-- **Refresh** — rerun the config on today's data. Sections without an `ids`
-  list pick up new records automatically; FX rates are today's.
-- **Reproduce exactly** — check out the manifest's commit and set the
-  manifest's rates in the config with `source = "config"` (§8.3). Same data,
-  same rates, same output.
-
-Because configs are never in the repo, they exist only where you keep them —
-back up that directory like any other private document. A cloud agent session
-is an ephemeral container: a config written there is gone when it ends unless
-copied out.
-
-### 4.3 Worked example
+### 4.3 Full example
 
 ```toml
-# ~/cv-subsets/erc-2027.toml — copy of src/subset.template.toml, edited
-name    = "erc-2027"                 # output dir + file names; defaults to the file stem
-title   = "Curriculum Vitae"         # overrides basics.title for this subset
-formats = ["pdf", "docx"]
+# ~/cv-subsets/erc-2027.toml
+name    = "erc-2027"            # output dir + file names; default: the file stem
+formats = ["pdf", "docx"]       # "pdf" | "docx" | "md"; default ["pdf"]
 
-[style]                              # all optional; omitted = the full CV's look
-font    = "Arial"
-size    = 11                         # pt
-paper   = "a4"                       # "a4" | "us-letter"
-margins = 20                         # mm, all sides
+[header]
+title = "Curriculum Vitae"      # overrides basics.title (P1)
+# affiliation = ["…", "…"]      # P5 — see §10
+# email = false                 # P5
+# url = false                   # P5
 
-[money]
-currency   = "GBP"                   # default "GBP"
-source     = "live"                  # fetch ECB rates; use [money.rates] only if that fails (§8.3)
-rates_date = 2026-09-24              # required when [money.rates] is given
-[money.rates]                        # 1 unit of each currency = this many GBP
-EUR = 0.87
-USD = 0.74
+[style]                         # P3; every key optional
+font         = "Arial"
+size         = 11               # body size, pt
+paper        = "a4"             # "a4" | "us-letter"
+margins      = 20               # mm, all sides
+page_numbers = true             # "1 of 3", centred footer
+# fallback   = "Liberation Sans"  # explicit substitute if `font` is missing
 
-[summary]
-default = []                         # summary metrics applied to every section
+[money]                         # P2
+currency   = "GBP"              # default "GBP"
+source     = "live"             # "live" (default) | "config" — §8.3
+rates_date = 2026-09-24         # required whenever [money.rates] is given
 
-# --- Sections: listed = included, in this order. Unlisted = dropped. ---
+[money.rates]                   # 1 unit of each currency = this many GBP
+EUR = 0.87                      # €1 = £0.87
+USD = 0.74                      # $1 = £0.74
+
+[summary]                       # P2
+default = []                    # metrics for every section without its own `summary`
+
+# ---- Sections: listed = included, in this order; unlisted = dropped ----
 
 [[section]]
-title = "Education"                  # no ids → the whole section
+title = "Education"             # no ids → the whole section
 
 [[section]]
 title = "Current Academic Appointments"
@@ -197,506 +147,522 @@ title = "Current Academic Appointments"
 title   = "Research Income"
 summary = ["count", "total"]
   [[section.group]]
-  title = "Awards"                   # only this group, in full
+  title = "Awards"              # only this group, in full
 
 [[section]]
 title   = "Publications"
 summary = ["count"]
 ids = [
   "rey2023geographic",
-  "sato2026city2graph",
   # …
 ]
 
 [[section]]
-title = "Invited Lectures"
+title  = "Invited Lectures"
 rename = "Selected Invited Lectures"
   [[section.group]]
   title = "Keynote speeches"
   [[section.group]]
   title = "Seminars"
-  ids = ["seminars-2026-beyond-the-thesis", "seminars-2024-…"]
+  ids   = ["seminars-2026-beyond-thesis-helping-your"]
 ```
 
 ### 4.4 Keys
 
 Top level:
 
-| Key | Type | Default | Meaning |
+| Key | Type | Default | Phase |
 |---|---|---|---|
-| `name` | string | file stem | Output directory and file names |
-| `title` | string | `basics.title` | Document heading for this subset |
-| `formats` | array | `["pdf"]` | Any of `"pdf"`, `"docx"` (`"md"` to keep the intermediate) |
-| `style` | table | full CV's look | §9 |
-| `money` | table | `currency = "GBP"`, `source = "live"` | §8.3 |
-| `summary.default` | array | `[]` | Metrics applied to every section without its own `summary` |
-| `section` | array of tables | — | Included sections, in render order (§5) |
-| `drop` | array of titles | — | Alternative to `section`: everything **except** these, source order |
+| `name` | string, `^[a-z0-9][a-z0-9-]*$` | file stem | P1 |
+| `formats` | array of `"pdf"`, `"docx"`, `"md"` | `["pdf"]` | P1 (`pdf`), P4 (`docx`, `md`) |
+| `header` | table | — | P1 (`title`), P5 (rest) |
+| `style` | table | full CV's look | P3 |
+| `money` | table | `currency = "GBP"`, `source = "live"` | P2 |
+| `summary.default` | array of metric names | `[]` | P2 |
+| `section` | array of tables | — | P1 |
+| `drop` | array of section titles | — | P1 |
 
-Per `[[section]]` / `[[section.group]]`:
+Exactly one of `section` / `drop` must be present.
+
+`[[section]]` and `[[section.group]]`:
 
 | Key | Type | Meaning |
 |---|---|---|
 | `title` | string, required | Source title, matched exactly |
-| `rename` | string | Heading in the output; matching still uses `title` |
-| `ids` | array of strings | Only these items (§5) |
-| `summary` | array | Metrics for this section (§8) |
+| `rename` | string | Output heading; matching still uses `title` |
+| `ids` | non-empty array of strings | Only these items |
+| `summary` | array of metric names | §8 (P2) |
 
-**Unknown keys are errors.** TOML happily parses `idz = [...]`; silently
-ignoring it would produce a CV with a whole section where a selection was meant.
+**Unknown keys at any level are errors**, as are wrong types. A key belonging to
+a later phase than the one implemented is an error saying which phase adds it.
 
-## 5. Selection: one rule, applied at each level
+## 5. Selection — one rule, at every level
 
-> **Listed → included. Nothing more specified → included in full.
-> `ids` given → only those.**
+> **Listed → included. Nothing more specified → included in full. `ids` given →
+> only those.**
 
-- **Sections.** Sections listed as `[[section]]` are included, **in config
-  order** (so a funder's preferred order is expressible). Unlisted sections are
-  dropped. `drop = [...]` is the inverse mode for "the full CV minus two
-  sections"; giving both `section` and `drop` is an error.
-- **Groups.** For a grouped section, `[[section.group]]` tables restrict to
-  those groups, in config order. No group tables → all groups.
-- **Items.** No `ids` → every item. `ids` → exactly those items, printed in
-  **source order** (not list order), so the renderers' "show a repeated date
-  once" convention keeps working. On a grouped section, section-level `ids` may
-  name items from any of its groups; groups left with no selected item are
-  dropped.
-- `ids = []` is an error ("remove the key to include the whole section"), not a
-  silent empty section.
+- **Sections.** `[[section]]` entries are included **in config order**;
+  unlisted sections are dropped. `drop = [...]` is the inverse mode: all
+  sections in source order except those named.
+- **Groups.** In a grouped section, `[[section.group]]` tables restrict to those
+  groups, in config order. No group tables → all groups, source order.
+- **Items.** No `ids` → all items. `ids` → exactly those, **printed in source
+  order** (not list order), so both renderers' "blank a repeated date label"
+  logic keeps working. Section-level `ids` on a grouped section may name items
+  in any of its groups; groups left empty are dropped.
+- Publications keep their renderer-side sort (year descending) regardless.
+- `ids = []` is an error ("remove `ids` to include the whole section").
 
-This one rule removes the evaluation-order question from revision 1 — there is
-a single mechanism, so nothing to order — and with it the undated-entries
-problem, which only existed because of date predicates.
+Omitting `ids` means "the whole section *as it is when built*" — a later rebuild
+picks up new records. Listing ids freezes the selection. Both are intended.
 
-**Omitting `ids` and listing all of them are not the same thing.** Without
-`ids`, a section means "the whole section *as it is when built*": a refresh next
-year includes next year's papers. With `ids`, it means "exactly these", frozen.
-Pick deliberately.
+## 6. Item ids (P0)
 
-Rules (`since = 2019`, `limit = 10`, `role = "PI"`) are **dropped from this
-revision.** They can return later as shorthand that expands to an id list,
-without changing the rule above. The `--scaffold` command (§6.3) is what makes
-hand-picking from 391 items practical without them.
+### 6.1 Rules
 
-## 6. Item identity
+- Every record in both data files has an `id`, unique **across both files**.
+- Publications keep their existing CSL `id`s untouched.
+- `cv.json` ids match `^[a-z0-9][a-z0-9-]*$`, ≤ 60 characters.
+- Ids are **permanent**: never regenerated, never changed when an entry's
+  wording changes.
+- After migration, `id` is **required** by `cv.schema.json` `$defs/entry`.
 
-### 6.1 Ids for every record, going forward
+### 6.2 `src/assign_ids.py` — generation
 
-Every record gets a stable, unique id, **required** by the schema, not optional.
+Deterministic slug: `<context>-<year>-<keywords>`, each part omitted if empty,
+truncated to 60 characters (trailing `-` stripped):
 
-- Publications already have unique CSL `id`s (112/112).
-- `cv.json` entries gain `"id"`: `^[a-z0-9][a-z0-9-]*$`, unique across both
-  files (so a config `ids` list never needs to say which file it means).
-- **Migration (P0):** a one-off `src/assign_ids.py` writes a deterministic slug
-  into every existing entry: section-or-group title + start year + the most
-  distinguishing field, truncated, `-2`/`-3` on collision —
-  `education-2010-phd-economics`, `seminars-2026-beyond-the-thesis`,
-  `awards-2025-embed2social`. Idempotent and additive: it never rewrites an
-  existing id, never reorders, touches nothing else.
-- **Going forward:** the `add-cv-record` skill assigns the id when it adds a
-  record (it runs `assign_ids.py` after the append); the validator rejects a
-  record without one. Once all 279 entries have ids, the schema flips `id` from
-  optional to `required` in the same PR.
-- **Permanence.** Editing a record's wording never changes its id — that is why
-  ids are written into the data, not derived at build time (a derived slug would
-  let a typo fix silently change what a config selects). Rejected alternatives:
-  array indices (silently wrong after any insertion) and tags (selection would
-  live in the master data, and tuning one subset would mean editing `cv.json`).
+- **context**: first 2 significant words of the group title (grouped sections)
+  or section title (flat sections).
+- **year**: first 4-digit run in `date`, else in `years`, else omitted.
+- **keywords**: first 4 significant words of the type's key field:
 
-Sections and groups are matched by **title**, keeping configs readable; a
-renamed section fails the build loudly (§10) rather than vanishing.
+  | type | field | | type | field |
+  |---|---|---|---|---|
+  | education | `degree` | | talks | `title` |
+  | positions | `role` | | events | `title` |
+  | editorial | `journal` | | courses | `name` |
+  | awards | `title` | | people | `name` |
+  | grant | `title` | | text-list | `text` |
+  | project | `title` | | named | `name` |
+  | visits | `institution` | | | |
 
-### 6.2 Finding ids: `--list`
+- **Slugging**: NFKD-normalise, drop non-ASCII, lowercase, non-alphanumerics →
+  `-`. "Significant" = not in a small stopword set (`a an the of and in on for
+  to at with from by de la el y`).
+- **Collisions** (with any existing id in either file): append `-2`, `-3`, …
+  in source order.
 
-```
-$ python3 src/build_subset.py --list "Invited Lectures"
-seminars-2026-beyond-the-thesis   2026  "Beyond the Thesis: Helping your research find…"
-seminars-2025-…                   2025  …
-```
+A prototype of exactly this rule over the current data gives 279 ids, 10
+suffixed, max length 60 — e.g. `education-2010-phd-economics`,
+`current-academic-2022-professor-geographic-data-science`,
+`awards-2025-embedding-embeddings-across-social`,
+`seminars-2026-beyond-thesis-helping-your`, `supervisor-2024-yuta-sato`,
+`scientific-software-pysal`.
 
-One line per record: id, date, a short rendering. Without an argument it lists
-everything, section by section.
+**Writing ids into `cv.json` must preserve its hand formatting.** Do not
+`json.dump` the file. Instead:
 
-### 6.3 Starting a config: `--scaffold`
+1. Parse with `json` to compute ids in source order.
+2. Locate each entry object's opening `{` in the raw text with a small
+   position-tracking scanner (string/escape-aware brace walk, mapping each
+   object to its JSON path `sections[i](.groups[k]).entries[j]`).
+3. Insert text immediately after that `{`:
+   - one-line object (`{` followed by a space): `"id": "<id>", `
+   - multi-line object (`{` followed by a newline): a new line
+     `<indent>"id": "<id>",` using the indentation of the following line.
+4. Skip entries that already have an `id` (idempotent, additive).
 
-```
-$ python3 src/build_subset.py --scaffold > ~/cv-subsets/erc-2027.toml
-```
+Invariant, tested (§14): removing every inserted `"id": "…", ` / id line from
+the new text yields the original file **byte-for-byte**, and `json.loads` of
+the new text equals the old data plus `id` keys.
 
-Writes a complete, valid config from the **current** data: every section in
-source order, every group, and every id listed with its one-line description as
-a trailing comment. Building a subset is then *deleting* what you don't want —
-easier than typing ids. Deleting a section's whole `ids` key flips it back to
-"whole section".
+### 6.3 Discovery commands (P1)
 
-The tracked `src/subset.template.toml` stays small and static — it documents keys,
-it does not list records, so it never goes stale as the data grows. The
-scaffold is the data-aware counterpart.
+- `python3 src/build_subset.py --list [SECTION]` — one line per record: id,
+  date, short text. Without an argument: everything, section by section.
+- `python3 src/build_subset.py --scaffold` — prints to stdout a complete, valid
+  config: every section and group in source order, every id listed with its
+  one-line description as a trailing TOML comment. Building a subset = deleting
+  lines. Deleting a whole `ids` key reverts to "whole section".
+
+`src/subset.template.toml` stays small and static: it documents every key; it
+does not list records.
 
 ## 7. The build — `src/build_subset.py`
 
-Stdlib-only Python.
+### 7.1 CLI
 
 ```
-python3 src/build_subset.py ~/cv-subsets/erc-2027.toml [--out DIR]   # build
-python3 src/build_subset.py --list [SECTION]        # find ids
-python3 src/build_subset.py --scaffold              # new config on stdout
+python3 src/build_subset.py CONFIG [--out DIR] [--strict]
+python3 src/build_subset.py --list [SECTION]
+python3 src/build_subset.py --scaffold
 make subset CONFIG=~/cv-subsets/erc-2027.toml
 ```
 
-### 7.1 Pipeline
+Must be run from within the repo (it reads `src/`). `--strict` turns warnings
+into errors.
 
-1. **Validate the master data** (§10) — refuse to build from broken data.
-2. **Validate the config** — keys, types, references.
-3. **Select** (§5) → derived `cv.json` + `publications.json`.
-4. **Summarise** (§8), obtaining FX rates if a `total` needs them (§8.3).
-5. **Validate the derived data** against `cv.schema.json`.
-6. **Resolve the style** (§9), including the font availability check.
-7. **Render** each requested format.
-8. **Write** `config.toml` snapshot and `manifest.json`.
+### 7.2 Pipeline
 
-Steps 1–2 collect **every** problem before exiting, rather than stopping at the
-first, so one run shows the full list.
+1. Validate the master data (§12). Collect all errors; stop if any.
+2. Validate the config (§12). Collect all errors; stop if any.
+3. Resolve the output directory; refuse repo paths (§13).
+4. Select (§5) → derived data in `build/.subset-work/` (wiped first).
+5. Summarise (§8) — obtaining exchange rates only if a `total` needs them.
+6. Validate the derived data against `cv.schema.json`.
+7. Resolve style (§9), including the font check.
+8. Render each format (§11).
+9. Copy artifacts to the output dir; write `config.toml` (verbatim copy of the
+   config) and `manifest.json`.
 
-### 7.2 Outputs
+### 7.3 Outputs
 
 ```
-~/cv-subsets/erc-2027/            # beside the config, outside the repo
-  darribas-cv-erc-2027.pdf
-  darribas-cv-erc-2027.docx
-  cv.json, publications.json    # derived data — the debugging surface
+<out>/
+  darribas-cv-<name>.pdf
+  darribas-cv-<name>.docx       # if requested
+  darribas-cv-<name>.md         # if requested
+  cv.json, publications.json    # the derived data (debugging surface)
   config.toml                   # snapshot of the config used
-  manifest.json                 # commit, timestamp, FX rates, font, counts
+  manifest.json
 ```
 
-Artifact names carry the author and subset name so they are self-describing as
-email attachments.
+The `darribas` prefix comes from slugging the family name in `basics.name`.
 
-### 7.3 Derived-data contract
+`manifest.json`: data commit (`git rev-parse HEAD`) and `dirty` flag, build
+timestamp, config path, formats, page count of the PDF, item counts per section
+(kept / total), exchange rates used with their date and source (§8.3) in a form
+pasteable into `[money.rates]`, resolved font family and file, warnings raised.
 
-The derived `cv.json` must:
+### 7.4 Derived-data contract
 
-- validate against `cv.schema.json` (plus §8.1's `summary` key);
-- preserve every retained entry **verbatim** — a subset selects, it never
-  rewrites. Wrong wording for an audience is a data fix in `src/`;
-- carry the publications section's `source` rewritten to the derived
-  publications file **relative to `src/`**
-  (`"../build/.subset-work/publications.json"`), because Typst resolves
-  `json()` relative to `cv.typ`.
+The derived `cv.json`:
 
-### 7.4 Renderer changes — generic knobs only
+- validates against `cv.schema.json` (with P2's `summary` addition);
+- keeps retained entries verbatim, `id` included;
+- has `basics.title` replaced if `header.title` is set;
+- has sections/groups `title` replaced by `rename` where given;
+- has the publications section's `source` rewritten to the derived publications
+  file **relative to `src/`**: `"../build/.subset-work/publications.json"`.
 
-- **`cv.typ`** reads its data path and style from `sys.inputs`:
-  `json(sys.inputs.at("data", default: "cv.json"))`, compiled with
-  `typst compile --root . --input data=… --input font=… src/cv.typ out.pdf`
-  (`--root .` lets Typst read outside `src/`). Every input defaults to today's
-  value, so a bare compile is byte-identical to now.
-- **`render_html.py`** gains `--data`/`--out`, defaulting to today's paths.
-- **`render_markdown.py`** (new, §11) is written against the same contract.
+### 7.5 Renderer changes (generic only)
 
-None of them knows what a config, an id list or a summary metric is.
+**`src/cv.typ` (P1):**
 
-## 8. Section summaries
+```typ
+#let cv = json(sys.inputs.at("data", default: "cv.json"))
+```
 
-### 8.1 How they reach the page
+Compiled by the build as:
 
-The derived data's section and group objects may carry
-`"summary": ["12 of 112 publications"]` — **already-formatted strings** computed
-by the build. Each renderer gains one generic block: print `summary` as a short
-italic lead line under the heading, parts joined by " · ". The full CV never
-sets it. `cv.schema.json` gains `summary` (array of strings) on sections and
-groups.
+```
+typst compile --root . --font-path fonts \
+  --input data=../build/.subset-work/cv.json [style inputs, §9] \
+  src/cv.typ build/.subset-work/cv.pdf
+```
 
-The cost, stated plainly: these strings embed formatting (currency symbols,
-separators, wording) made outside a renderer — a departure from Decision 2's
-"renderers own all formatting", accepted because the alternative is
-reimplementing metrics and currency conversion in Typst *and* twice in Python,
-and because it lives only in `build/`.
+**`src/render_html.py` (P1):** accept `--data PATH` and `--out DIR`, defaulting
+to today's `src/cv.json` and `docs/`. Needed for the identity test (§14.2), not
+as a subset format.
+
+With no inputs/arguments both behave exactly as today.
+
+## 8. Section summaries and money (P2)
+
+### 8.1 Mechanism
+
+`cv.schema.json` gains `"summary": {"type": "array", "items": {"type":
+"string"}}` on `$defs/section` and `$defs/group`. The build writes
+pre-formatted strings there. Each renderer prints them as one line directly
+under the heading: italic, ~0.9× body size, parts joined by ` · `. No other
+renderer logic. The full CV never sets `summary`.
+
+A section whose `total` was converted also gets a final note line — appended by
+the build as the last `summary` element, rendered the same way:
+*"Converted to GBP at ECB reference rates of 24 September 2026."*
 
 ### 8.2 Metrics
 
-Values are shown **subset and full, side by side** whenever they differ
-("12 of 112"); when nothing was dropped, just the number ("112 publications").
+Shown as subset **and** full, side by side, when they differ; just the number
+when nothing was dropped.
 
-| Metric | Renders as | Applies to |
+| Metric | Output | Applies to |
 |---|---|---|
-| `count` | `12 of 112 publications` | any section of countable items |
-| `total` | `≈ £1.3M of ≈ £4.4M total award value` | sections/groups of type `grant` |
+| `count` | `12 of 112 publications` / `112 publications` | any section or group |
+| `total` | `≈ £1.3M of ≈ £4.4M total award value` | entries of type `grant` only |
 
-Both are opt-in per section (`summary = [...]`) or globally via
-`summary.default`. That is deliberately the whole vocabulary for now; further
-metrics (`span`, `ongoing`) can be added without touching the renderers, since
-they only print strings. Sections whose entries are not countable things (the
-*Journal Referee* blob) should not be given `count`; the build warns if they
-are.
+Noun for `count`: the section's own title, lowercased, for publications
+("publications"), else "items" unless a per-type noun is defined (`grant` →
+"awards", `talks` → "talks", `people` → "people", `courses` → "courses").
+Warn (not fail) if `count` is set on a section of type `text-list` or `named`.
 
-**`total` — money.** Rules:
+`total` rules:
 
-1. **One currency.** Every structured `amount` is converted to
-   `money.currency` (default `GBP`) and summed. The output is a single figure.
-2. **Say it was converted.** A converted total is prefixed `≈`, and the section
-   carries one small note: *"Converted to GBP at ECB reference rates of
-   24 September 2026."* (or *"…at exchange rates of 24 September 2026"* when
-   the rates came from the config). A single-currency total with no conversion
-   carries neither.
-3. **Never imply a personal share.** `amount` is the whole award across all
-   partners; the label says *"total award value"*, not "income".
-4. **Disclose what can't be counted.** `total` sums only entries with a
-   structured `amount` and only groups of type `grant` — so the *Projects*
-   group (free-text `funding`, and awards where the author was a researcher
-   rather than an investigator) is not folded in. If entries in scope lack an
-   `amount`, the line says so: `(3 awards without a recorded amount)`.
+1. Convert every structured `amount` in scope to `money.currency` and sum.
+2. Prefix `≈` whenever any conversion happened; add the note line (§8.1).
+3. Label as *total award value* — `amount` is the whole award across partners,
+   not the author's share. Never "income".
+4. Only `grant` entries count; `project` entries (free-text `funding`) never do.
+   If some in-scope `grant` entries lack `amount`, append
+   `(N awards without a recorded amount)`.
+5. Format: `£1.3M` for ≥ 1,000,000 (one decimal), `£54,761` below; symbols from
+   the renderers' existing currency map (GBP £, EUR €, USD $).
 
-Converting a 2012 award at 2026 rates is a presentational choice, not a
-historical valuation — see **OPEN** in §14.
+### 8.3 Exchange rates
 
-### 8.3 Exchange rates: fetched live, or supplied in the config
+Never committed to the repo. Two sources:
 
-Rates are never committed to the repo. They come from one of two places.
-
-**Live (default).** The European Central Bank's daily reference rates
-(`https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`) — official,
-free, no API key, published since 1999, parseable with `urllib` + `xml.etree`.
-They are EUR-based; cross rates (e.g. USD→GBP) are derived via EUR.
-
-**From the config**, for when the ECB cannot be reached. This is a real case,
-not a theoretical one: the proxy of the cloud sandbox this spec was written in
-refused `ecb.europa.eu` (HTTP 403).
-
-```toml
-[money]
-currency   = "GBP"
-source     = "live"        # "live"   (default): fetch; fall back to [money.rates] if the fetch fails
-                           # "config": always use [money.rates]; never touch the network
-rates_date = 2026-09-24    # the date the rates are from — required whenever [money.rates] is given
-
-[money.rates]              # 1 unit of each currency = this many units of `currency`
-EUR = 0.87                 # i.e. €1 = £0.87
-USD = 0.74                 # i.e. $1 = £0.74
-```
-
-Behaviour:
+- **Live** — ECB daily reference rates,
+  `https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`, via
+  `urllib.request` + `xml.etree`, 10 s timeout. EUR-based; cross rates via EUR.
+- **Config** — `[money.rates]`: value = units of `money.currency` per 1 unit of
+  that currency. `rates_date` (TOML date) required when rates are given.
 
 | `source` | ECB reachable | ECB unreachable |
 |---|---|---|
-| `"live"`, no `[money.rates]` | live rates | **build fails**, naming the error and suggesting `[money.rates]` |
-| `"live"`, with `[money.rates]` | live rates (config rates ignored) | config rates, with a **warning** that the fallback was used |
-| `"config"` | config rates; no fetch attempted | config rates |
+| `"live"`, no `[money.rates]` | live | **error**, suggesting `[money.rates]` |
+| `"live"`, with `[money.rates]` | live (config rates ignored) | config rates + **warning** |
+| `"config"` | config rates, **no network request** | config rates |
 
-Rules for supplied rates:
+Validation: keys are 3-letter uppercase codes; values positive numbers; the
+target currency is not listed; every currency occurring in in-scope amounts has
+a rate (missing → error naming it). Warn if `rates_date` is > 90 days before the
+build date. Note wording: "ECB reference rates of <date>" for live,
+"exchange rates of <rates_date>" for config.
 
-- **Direction is fixed and stated:** each value is how many units of the target
-  `currency` one unit of that currency buys (`EUR = 0.87` ⇒ €1 = £0.87). A
-  value that is inverted by mistake would be off by roughly 1.3× for EUR — so
-  the template spells the direction out in a comment beside every rate.
-- **Validated:** keys must be three-letter currency codes, values positive
-  numbers; the target currency itself may not be listed.
-- **Complete:** every currency that actually occurs among the amounts being
-  totalled must have a rate. A missing one fails the build, naming it — never
-  a partial total.
-- **Dated:** `rates_date` (a native TOML date) is required, because it is
-  printed in the conversion note; undated rates would make the note
-  unverifiable. If `rates_date` is more than 90 days before the build date, the
-  build **warns** that the rates are stale (it does not fail — old rates are
-  exactly what reproducing an old build needs).
-- **Recorded:** `manifest.json` records the rates actually used, their date, and
-  their source (`"ecb"`, `"config"`, or `"config (fallback: ECB unreachable)"`),
-  written in a form that can be pasted straight back into `[money.rates]`.
+Rates are **today's** (or the configured date's); award-year rates are a
+tracked follow-up in `TODO.md`, not part of this spec.
 
-No path ever falls back silently to stale, guessed or zero rates.
+Network access is only ever attempted when a `total` needs a conversion and
+`source = "live"`. Tests never hit the network (§14).
 
-## 9. Styles (typography per subset)
+## 9. Style (P3)
 
-Funders set typography; the full CV's look is only one option.
+| Key | Type | Default (= full CV) | Typst input |
+|---|---|---|---|
+| `font` | string | `"TeX Gyre Pagella"` | `font` |
+| `size` | number, pt, 8–14 | `12.5` | `size` |
+| `paper` | `"a4"` \| `"us-letter"` | `"us-letter"` | `paper` |
+| `margins` | number, mm, 10–40 | `25.4` | `margins` |
+| `page_numbers` | bool | `false` | `page-numbers` |
+| `fallback` | string | — | (replaces `font` if used) |
 
-```toml
-[style]
-font    = "Arial"        # family name
-size    = 11             # body size, pt
-paper   = "a4"           # "a4" | "us-letter"
-margins = 20             # mm
-```
+`cv.typ` changes:
 
-Every key is optional; an omitted key keeps the full CV's value (Pagella,
-12.5pt, US Letter, 1in ≈ 25.4mm). Units are fixed (pt, mm) and values are plain
-numbers, validated in Python before reaching Typst — no string-to-length parsing
-in the renderer.
+- Read each input with the current value as default; parse numbers with
+  `float(...)` (values validated in Python first, so no free-form lengths).
+- Express the currently absolute sizes **relative to the body size** so they
+  scale: 14pt → `14/12.5 em`, 13pt → `13/12.5 em`, 15pt → `15/12.5 em`, 9pt →
+  `9/12.5 em`. At the default size output must be identical (§14.2).
+- `page_numbers = true`: `set page(footer: context align(center,
+  text(size: 0.8em, counter(page).display("1 of 1", both: true))))`.
 
-**PDF.** `cv.typ` reads `font`, `size`, `paper`, `margins` from `sys.inputs`,
-defaulting to today's values. One renderer refactor comes with it: the heading
-sizes (14pt/13pt) and the header's 15pt/9pt become **relative to the body size**
-(`em`), so an 11pt body gets proportionally smaller headings instead of
-oversized ones. At the default size the result must be identical (§12).
+**Font check.** Typst silently substitutes a missing font. Before compiling, run
+`typst fonts --font-path fonts` and require `font` in the list; else, if
+`fallback` is set and listed, use it with a warning (recorded in the manifest);
+else fail. Arial cannot be bundled (proprietary); it is found on macOS/Windows
+via system fonts. Liberation Sans is metric-compatible with Arial but the PDF
+will name it — hence explicit opt-in only.
 
-**Fonts must actually exist — checked, not assumed.** Typst, asked for a font it
-cannot find, substitutes a fallback and only warns. For a funder that demands
-Arial, a PDF silently set in something else is a failed application. So the
-build runs `typst fonts --font-path fonts`, and fails if the requested family is
-not listed.
+**DOCX styles** (P4): write a per-build copy of `src/reference.docx`, patching
+`word/styles.xml` (fonts, sizes) and the section properties in
+`word/document.xml` (page size, margins; page-number footer if requested) with
+stdlib `zipfile`. The committed file is never modified.
 
-Arial specifically: it is proprietary, so it cannot be bundled in this public
-repo. It is found on macOS/Windows via system fonts. Where it is missing (Linux,
-CI, cloud sessions), `style.fallback = "Liberation Sans"` may be set explicitly:
-Liberation Sans (OFL) is **metric-compatible** with Arial — identical widths,
-identical page breaks — but the PDF will name the font Liberation Sans, which a
-strict automated check could flag. The substitution is therefore never implicit,
-and is recorded in `manifest.json`.
+## 10. Header overrides (P5 — after the core works)
 
-**DOCX.** Font, size, paper and margins are written into a **per-build copy** of
-`src/reference.docx` (pandoc's style carrier) by patching its `styles.xml`
-(fonts, sizes) and section properties (page size, margins) with stdlib
-`zipfile`. The committed reference file is never modified.
+`[header]` beyond `title`:
 
-## 10. Validation, baked into every build
+| Key | Type | Effect |
+|---|---|---|
+| `affiliation` | array of strings | Replaces `basics.affiliation` |
+| `email` | string or `false` | Replaces, or `false` omits the email |
+| `url` | string or `false` | Replaces, or `false` omits the URL |
 
-A subset CV is sent to people who decide things. The build refuses to produce a
-plausible-looking document with something quietly missing.
-
-**The validator moves to `src/validate_cv.py`**, shared by the build and the
-`add-cv-record` skill (whose `validate_cv.py` becomes a one-line shim, or the
-skill's instructions point at the new path). One validator, two callers.
-
-The build exits non-zero, naming file, key and value, on:
-
-- master data that fails `cv.schema.json`, a record without an id, or a
-  duplicate id across both files;
-- an unknown config key, or a value of the wrong type;
-- a `section`/`group` title that does not exist;
-- an id that matches no record, or matches one outside the section it is listed
-  under;
-- `ids = []`; both `section` and `drop`; neither;
-- a requested font that is not available (§9);
-- a `total` needing conversion with no rates available — ECB unreachable and
-  no `[money.rates]` — or a rate missing for a currency in scope; malformed
-  `[money.rates]`, or rates given without `rates_date` (§8.3);
-- an output path inside the repository other than the gitignored work
-  directory (§11);
-- derived data that fails the schema.
-
-Warnings: a `count` on an uncountable section; a `total` with partial coverage;
-`fallback` font used; config exchange rates used as a fallback; config rates
-more than 90 days old.
-
-Because configs are untracked, CI cannot check them against data changes: if a
-record a config names is later deleted, the next build of that config fails
-(loudly, with the id). That is the trade-off of keeping configs out of the repo,
-and the loud failure is what makes it acceptable.
+`name` is not overridable. Omitting email/url requires both renderers to treat
+those fields as optional (today `cv.typ` and `render_html.py` assume them), and
+the schema to drop them from `basics.required` — a small change, deliberately
+kept out of the first pass.
 
 ## 11. Formats
 
-- **PDF** — `cv.typ` over the derived data, with `sys.inputs` style (§7.4, §9).
-- **DOCX** — a third renderer, `src/render_markdown.py`, emits Markdown from the
-  derived data; `pandoc cv.md -o cv.docx --reference-doc=<per-build copy>`. This
-  is the route `ARCHITECTURE.md` already nominated. The date column becomes a
-  bold lead-in (`**2026** — …`), since Markdown has no two-column row.
-  - pandoc is a dependency **only** for DOCX: `make site` and PDF subsets must
-    keep working without it; the build checks for it only when `docx` is
-    requested.
-  - Web-only `links` stay out by the same omission mechanism the PDF uses — the
-    Markdown renderer never names the field.
+- **PDF** (P1): `cv.typ` over derived data (§7.5), style inputs from P3.
+- **DOCX** (P4): new `src/render_markdown.py` (same per-type dispatch shape as
+  the other renderers; date column becomes a bold lead-in `**2026** — …`;
+  summary lines as an italic paragraph; web-only `links` never read), then
+  `pandoc cv.md -o cv.docx --reference-doc=<per-build copy>`. The build checks
+  for `pandoc` only when `docx` is requested. `md` keeps the intermediate.
 
-### Never in the repo, never published — the guards
+## 12. Validation (inside every build)
 
-A rule that relies on remembering is not a rule. Four mechanisms enforce it:
+Move `.claude/skills/add-cv-record/validate_cv.py` to `src/validate_cv.py`
+(P0), importable as a module and runnable as a script; leave a thin shim at the
+old path (or update the skill's instructions) so the skill keeps working.
 
-1. **The build refuses repo paths.** `build_subset.py` resolves `--out` (and
-   the default beside-the-config location) and exits with an error if it falls
-   anywhere inside the repository — above all `docs/`, which is the GitHub
-   Pages site. The only place inside the repo it writes is the gitignored
-   `build/.subset-work/`, wiped at the start of each build.
-2. **`.gitignore` safety net.** `subsets/`, `build/` and `*.toml` are ignored,
-   with a single exception for `!src/subset.template.toml` (the repo has no
-   other TOML files), so a config or output dropped into the working tree by
-   mistake cannot be picked up by `git add .`.
-3. **A CI tripwire.** A step in `build-site.yml` fails the run if any tracked
-   file is a subset artifact — anything under `subsets/` or `build/`, any
-   `*.toml` other than `src/subset.template.toml`, or any `docs/` file that
-   `make site` does not produce. That catches a `git add -f`.
-4. **CI never runs the subset build**, and `make site` never calls it. There is
-   no code path from a push to a published subset.
+Errors (exit 1, all collected and printed together, each naming file, key and
+value):
 
-Agents follow the same rule: the `add-cv-record` skill, and any future
-subset-drafting skill (§16), write configs outside the repo and never stage
-them. Revision 1's `publish` flag is withdrawn permanently.
+- master data fails the schema; a record lacks an `id`; duplicate ids across
+  both files;
+- config: unknown key, wrong type, key from an unimplemented phase, both or
+  neither of `section`/`drop`, `ids = []`;
+- a section/group title that does not exist; an id that matches no record; an
+  id listed under a section it does not belong to;
+- output path inside the repo (§13);
+- exchange rates unavailable or incomplete; malformed `[money.rates]`; rates
+  without `rates_date` (§8.3);
+- requested font unavailable and no usable fallback (§9);
+- derived data fails the schema.
 
-## 12. Acceptance criteria
+Warnings (exit 0; errors under `--strict`): `count` on a `text-list`/`named`
+section; `total` with entries lacking `amount`; fallback font used; config rates
+used as fallback; config rates older than 90 days.
 
-1. **Identity.** A config listing all 17 sections in source order, with no
-   `ids`, no `style` and no `summary`, produces PDF and HTML identical to
-   `docs/cv.pdf` / `docs/index.html` (modulo the trailing date stamp). The proof
-   that the transform is transparent, and the regression guard for every later
-   change.
-2. **Scaffold round-trip.** `--scaffold` output, built unmodified, gives the
-   same result as (1) — every id listed selects exactly every item.
-3. **Renderer inertia.** `make site` output is unchanged by the whole feature;
-   bare `typst compile src/cv.typ` and `render_html.py` still work.
-4. **Loud failure.** Every §10 condition exits non-zero with a message naming
-   file, key and value.
-5. **Reproducibility.** Rebuilding from a `build/…/config.toml` snapshot, at the
-   manifest's commit, with the manifest's rates set and `source = "config"`, gives identical derived
-   JSON.
-6. **Style.** An `Arial, 11, a4, 20` build produces an A4 PDF whose embedded
-   text fonts are Arial (checked with the PDF's font list; the monospace face
-   used for DOIs and grant codes is separate — see §14), or fails if Arial is
-   unavailable and no fallback is set.
-7. **Template.** `src/subset.template.toml` builds as-is.
-8. **Never in the repo.** `--out docs/x` and `--out src/` both fail; a default
-   build of a config outside the repo leaves `git status` clean; the CI tripwire
-   fails on a force-added config.
-9. **Rates fallback.** With the network blocked: `source = "live"` plus
-   `[money.rates]` builds and warns; without `[money.rates]` it fails naming the
-   currency; `source = "config"` makes no network request at all.
+`make validate` runs `src/validate_cv.py` in addition to today's parse check.
 
-## 13. Phasing
+## 13. Never in the repo, never published — guards (P1)
 
-| Phase | Content | Ships |
-|---|---|---|
-| **P0** | `id` on every `cv.json` entry via `src/assign_ids.py`, then required by the schema; uniqueness across both files; validator moved to `src/validate_cv.py`; `add-cv-record` assigns ids going forward; `Co-I` → `CoI` | Data + validator; no output change |
-| **P1** | `build_subset.py` (validate → select → render PDF → snapshot), `--list`, `--scaffold`, `src/subset.template.toml`, repo-path guard + `.gitignore` + CI tripwire, `cv.typ` data input, `make subset`, identity + scaffold tests | PDF subsets |
-| **P2** | `summary` in schema + renderer lead line; `count`, `total`; ECB fetch, `[money.rates]` fallback/`config` source, manifest | Summary lines, one-currency totals |
-| **P3** | `[style]`: `cv.typ` style inputs + relative heading sizes; font check; `fallback` | Funder typography |
-| **P4** | `render_markdown.py`, `src/reference.docx`, per-build style patching, pandoc | DOCX |
+1. **Build refuses repo paths.** The resolved output dir must not be inside the
+   repository (resolve symlinks). The only in-repo writes are to
+   `build/.subset-work/`.
+2. **`.gitignore`**: add `subsets/` and `*.toml` with `!src/subset.template.toml`.
+3. **CI tripwire** (new step in `build-site.yml`, before building): fail if
+   `git ls-files` lists any `*.toml` other than `src/subset.template.toml`, or
+   anything under `build/` or `subsets/`.
+4. **CI never runs `build_subset.py`**, and `make site` never calls it.
 
-Each phase is shippable on its own; P1 is already useful.
+Agents working on this repo never create configs inside it and never stage
+subset files.
 
-## 14. Open questions
+## 14. Tests
 
-- **OPEN — FX basis.** Revision 2 converts at *today's* rates, as asked. The
-  alternative is the rate in each award's year: arguably truer to what the award
-  was worth, and available from the same source (the ECB's historical series,
-  `eurofxref-hist.xml`, back to 1999). Could be `money.basis = "current" |
-  "award-year"` later. Neither is inflation-adjusted.
-- **OPEN — the Projects group's money.** Its five free-text `funding` values
-  could become structured `amount`s (a one-off data fix). Whether they then
-  belong in a "total award value" — they are projects the author worked on, not
-  awards they held — is an editorial call, which is why `total` is limited to
-  `grant` groups meanwhile.
-- **OPEN — header paragraph.** Shorter CVs often open with a short statement. It
-  would be the first prose living in a config rather than in `src/`, against the
-  "a subset never rewrites" rule.
-- **OPEN — style presets.** If the same funder rules recur,
-  `style.preset = "…"` naming a tracked preset file saves retyping. Only once a
-  preset has been needed twice.
-- **OPEN — the monospace face.** DOIs, grant codes and URLs are set in a
-  monospace font (`raw()` in `cv.typ`). A funder's "Arial only" rule may or may
-  not tolerate that; `style.mono` (or setting them in the body font) is a small
-  addition if one objects.
-- **OPEN — rules as shorthand.** `since`/`limit` could come back as sugar that
-  expands to an id list at build time, without changing §5's rule.
+### 14.1 Infrastructure (P0 creates it)
 
-## 15. Non-goals
+- `tests/` with stdlib `unittest` modules: `tests/test_*.py`.
+- `make test` → `python3 -m unittest discover -s tests -v`.
+- CI: a `make test` step in `build-site.yml` after Typst is installed.
+- Tests needing Typst use `@unittest.skipUnless(shutil.which("typst"), …)`;
+  DOCX tests likewise for `pandoc` (CI runs the Typst ones; pandoc ones may
+  skip in CI unless pandoc is added there in P4).
+- **Configs are generated inside each test** into a `tempfile.TemporaryDirectory()`
+  — no TOML fixtures are tracked, which also exercises "config and outputs
+  outside the repo".
+- **No network**: the ECB fetch is a single function, patched in tests
+  (`unittest.mock`) to return canned XML or raise.
 
-- **No content rewriting.** A subset selects; it never edits an entry.
-- **No page-count optimisation.** The build does not iterate to fit 2 pages;
-  `manifest.json` reports the page count so the author can adjust.
-- **No formats beyond PDF/DOCX** here. Browser-side export stays its own item.
-- **No publishing, ever.** Subsets are private documents. They are not
-  committed, not built by CI, and not served from the Pages site (§11).
+### 14.2 The identity test (the key regression guard)
 
-## 16. Natural follow-on
+Comparing against the committed `docs/cv.pdf` cannot work: the PDF embeds its
+creation time, prints its build date, and CI uses the latest Typst. Instead,
+**within one test run**:
 
-Once P1 lands, a `build-cv-subset` agent skill could **draft a config from a
-job advert or funder guidance** ("2 pages, Arial 11pt, publications from the
-last five years"), running `--scaffold` and deleting what does not fit, then
-show the TOML for approval and build it. The config stays the reviewable
-artifact — the agent proposes, the author reads, the build is deterministic.
+1. Set a fixed timestamp: `SOURCE_DATE_EPOCH=1767225600` and pass
+   `--creation-timestamp 1767225600` to Typst.
+2. Build A: `typst compile` of `src/cv.typ` with no inputs.
+3. Build B: the subset build of a config listing all 17 sections, no ids, no
+   style, no summary.
+4. Assert A and B are byte-identical. **Verify** that the fixed timestamp also
+   pins `datetime.today()` in the document; if the installed Typst does not,
+   compare the PDFs' extracted text with the final date line removed instead
+   (and note it in the test).
+5. Same for HTML: `render_html.py` bare vs `--data` on B's derived data, into
+   temp dirs; byte-identical within one run.
+
+### 14.3 Tests per phase
+
+| Phase | Tests |
+|---|---|
+| P0 | id invariant (§6.2: stripping ids restores the original bytes; parsed data equals old + ids); every entry has an id; ids unique across files; `assign_ids.py` idempotent (second run = no change); slug rule on sample entries; `make site` output unchanged |
+| P1 | identity (§14.2); `--scaffold` output parses and builds to the same result as identity; selection rule cases (section/group/ids, config order, source-order printing, `drop`); every §12 config error; output-path guard (`--out docs/x`, `--out src/` fail); a default build from a temp-dir config leaves `git status --porcelain` unchanged |
+| P2 | `count` both forms; `total` single-currency (no ≈, no note) and multi-currency; partial-coverage suffix; rates table (all 6 cells, with patched fetch); `source = "config"` makes no fetch call; stale-rates warning; missing-currency error |
+| P3 | defaults unchanged (identity still passes); A4 page size in output; page numbers present; unavailable font fails; fallback warns |
+| P4 | Markdown renderer covers every entry type; DOCX builds when pandoc present; patched reference docx has requested font/size/paper |
+| P5 | affiliation replaced; email/url omitted in PDF and DOCX |
+
+## 15. Phases
+
+Implement in order; one branch and one PR per phase; each must leave `make site`
+output unchanged (bar P0's `CoI` fix) and `make test` green.
+
+**P0 — ids, validator, tests scaffold.**
+`src/assign_ids.py`; ids inserted into `src/cv.json` (text-preserving, §6.2);
+`cv.schema.json`: `id` property (pattern) then `required`; `src/validate_cv.py`
+(moved, + cross-file uniqueness, + required id) with a shim at the old path;
+`CoI` normalisation (`Co-I` → `CoI`); `add-cv-record` skill: new records get an
+id (run `assign_ids.py` after appending, then validate); `tests/` + `make test`
++ CI step; `make validate` runs the validator.
+*Done when:* §14.3 P0 tests pass; the P0 diff to `cv.json` is only added ids
+and the one `CoI` fix.
+
+**P1 — config, selection, PDF.**
+`src/build_subset.py` (config parsing/validation, selection, derived data,
+PDF render, snapshot + manifest, `--list`, `--scaffold`, `--out`, `--strict`);
+`src/subset.template.toml`; `cv.typ` `data` input; `render_html.py`
+`--data/--out`; `make subset`; §13 guards.
+*Done when:* identity and P1 tests pass; the author can build a real subset
+from a config outside the repo.
+
+**P2 — summaries and money.** Schema `summary`; the three-line lead-line block
+in `cv.typ` and `render_html.py`; metrics; exchange rates.
+
+**P3 — style.** `[style]` keys, relative heading sizes, page numbers, font check.
+
+**P4 — DOCX.** `render_markdown.py`, `src/reference.docx`, per-build patching,
+pandoc wiring.
+
+**P5 — header overrides.** §10.
+
+After each phase: update `LOG.md` (what was done), trim `TODO.md`, and keep
+`ARCHITECTURE.md` Decision 5 accurate if a decision changed.
+
+## 16. Files touched
+
+| File | P0 | P1 | P2 | P3 | P4 | P5 |
+|---|---|---|---|---|---|---|
+| `src/cv.json` | ids, CoI | | | | | |
+| `src/cv.schema.json` | `id` | | `summary` | | | basics.required |
+| `src/assign_ids.py` | new | | | | | |
+| `src/validate_cv.py` | moved | | | | | |
+| `.claude/skills/add-cv-record/*` | ids, shim | | | | | |
+| `src/build_subset.py` | | new | ✓ | ✓ | ✓ | ✓ |
+| `src/subset.template.toml` | | new | ✓ | ✓ | ✓ | ✓ |
+| `src/cv.typ` | | `data` | summary | style | | optional contact |
+| `src/render_html.py` | | args | summary | | | optional contact |
+| `src/render_markdown.py`, `src/reference.docx` | | | | | new | ✓ |
+| `Makefile` | `test`, validate | `subset` | | | | |
+| `.github/workflows/build-site.yml` | test step | tripwire | | | (pandoc?) | |
+| `.gitignore` | | toml rules | | | | |
+| `tests/` | new | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+## 17. Acceptance (feature complete)
+
+1. `make site` output identical to before the feature (identity test).
+2. `make test` green locally and in CI.
+3. A real config outside the repo builds PDF and DOCX, A4/Arial/11pt/page
+   numbers, with count and converted-total summaries, into the config's
+   directory, with snapshot and manifest; `git status` stays clean.
+4. The same config with the network blocked and `[money.rates]` given builds
+   with a warning; without rates it fails naming the currency.
+5. Rebuilding from the snapshot at the manifest's commit with
+   `source = "config"` and the manifest's rates gives identical derived JSON.
+
+## 18. Non-goals
+
+- Rewriting or abbreviating entry content.
+- Page-count fitting or page-limit enforcement (the manifest reports the count).
+- Formats beyond PDF/DOCX; HTML subsets.
+- Publishing subsets in any form; CI building subsets.
+- Date- or rule-based selection (`since`, `limit`).
+
+## 19. Deferred (not in scope until decided)
+
+- Award-year exchange rates (tracked in `TODO.md`).
+- Whether the *Projects* group's free-text `funding` becomes structured
+  `amount`, and whether it then counts towards `total`.
+- A running header (name on each page).
+- A profile-specific header paragraph.
+- Style presets.
+- A separate monospace font setting for DOIs/codes/URLs.
+- A `build-cv-subset` agent skill that drafts a config from a job advert or
+  funder guidance (via `--scaffold`), for the author to review and build.

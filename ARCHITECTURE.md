@@ -226,7 +226,7 @@ wants the austere version has the PDF button right there.
 ## Decision 5 — Subset CVs: **filter the data, not the renderer**
 
 The `TODO.md` goal of shorter, audience-specific CVs is fully specified in
-`notes/SUBSET-CV-SPEC.md` (the implementation brief, revision 3); this entry
+`notes/SUBSET-CV-SPEC.md` (the implementation brief); this entry
 records the decisions, not the mechanics.
 
 ### The shape
@@ -285,7 +285,7 @@ total award value, not personal income.
 
 ### Typography per subset, and fonts that must exist
 
-Font, size, paper and margins are config options passed into `cv.typ` (and
+Font, size, paper, margins and page numbers are config options passed into `cv.typ` (and
 patched into a per-build copy of pandoc's `reference.docx`). Because Typst
 silently substitutes a missing font, the build checks availability and fails
 rather than hand a funder the wrong typeface. Arial cannot be bundled; a
