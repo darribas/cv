@@ -93,6 +93,7 @@
       "type": "object",
       "description": "One CV item. Which fields apply depends on the section/group 'type' (see cv.template.json for a worked example per type). All fields are optional here so the editor offers them everywhere; the renderer uses only the ones its type knows.",
       "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "maxLength": 60, "description": "Permanent, unique id (unique across cv.json and publications.json) that subset configs select by. Never hand-written and never changed once set: run src/assign_ids.py after adding an entry. Not rendered." },
         "date": { "type": "string", "description": "Left-column label (usually a year or range; open ranges end '-'). Repeated consecutive values are blanked automatically." },
 
         "degree": { "type": "string", "description": "education: e.g. 'PhD Economics'." },
