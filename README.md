@@ -36,7 +36,7 @@ rather than transcribing it.
 **Validate manually** (optional; the skill runs this for you):
 
 ```bash
-python3 .claude/skills/add-cv-record/validate_cv.py
+python3 src/validate_cv.py      # or: make validate
 ```
 
 Every addition lands as a PR — CI then rebuilds the PDF and web page from the
