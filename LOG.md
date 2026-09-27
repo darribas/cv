@@ -185,3 +185,41 @@ First phase of `notes/SUBSET-CV-SPEC.md` (§15 P0); the rest stays in `TODO.md`.
   compared byte for byte. Typst's `--creation-timestamp` was verified to pin
   `datetime.today()` too (Typst 0.15), so the PDF comparison needs no
   text-extraction fallback.
+
+## Subset CVs — P1: config, selection, PDF
+
+Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
+
+- **`src/build_subset.py`**: `CONFIG [--out DIR] [--strict]` validates the
+  master data and the TOML config, selects into a derived `cv.json` +
+  `publications.json` under `build/.subset-work/` (schema-checked), renders
+  the PDF with the unchanged `cv.typ`, and writes `darribas-cv-<name>.pdf`,
+  the derived data, a verbatim `config.toml` and `manifest.json` (data commit
+  and dirty flag, build time, per-section kept/total counts, page count)
+  beside the config. Every problem is reported at once, naming file, key and
+  value, with "did you mean" suggestions for titles and ids; later-phase keys
+  are errors naming their phase. `--list [SECTION]` and `--scaffold [PATH]`
+  (a config listing every section, group and id, with one-line
+  descriptions; never overwriting an existing file) make picking
+  records practical.
+- **`make` is the interface**: `make subset CONFIG=… [OUT=…]` builds the
+  config, or writes a starter one there if none exists yet (then stops, to
+  be edited); `make subset-list [SECTION=…]` prints record ids.
+- **Renderers, generic knobs only**: `cv.typ` reads an optional `data` input;
+  `render_html.py` takes `--data`/`--out`. Bare, both behave exactly as before.
+- **Never tracked, never published**: configs and outputs normally live in
+  the gitignored `subsets/` folder (the build often runs in a container that
+  mounts only the repo), or anywhere outside the repo. Inside the repo the
+  build writes only where `git check-ignore` confirms the path is ignored,
+  never `docs/`, `src/` or the repo root (symlinks resolved). `.gitignore`
+  ignores `subsets/` and every `*.toml` but `src/subset.template.toml`; a CI
+  step fails if any such file is tracked. (First built as "outputs never
+  inside the repo"; relaxed at the author's request for the container case —
+  ARCHITECTURE.md Decision 5.)
+- **Settled** (spec §5): section-level `ids` together with group tables is an
+  error — ids go under the groups.
+- **Tests** (79 total): the identity test (an all-sections config and the
+  `--scaffold` output both build a PDF byte-identical to plain `cv.typ`, and
+  the same HTML), the selection rule, every P1 config error, the output-path
+  guard, and a real build from a temp-dir config leaving `git status`
+  unchanged.

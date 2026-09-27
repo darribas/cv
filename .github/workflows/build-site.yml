@@ -38,6 +38,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: No subset CV files tracked
+        # Subset CVs are private (notes/SUBSET-CV-SPEC.md §13): their configs
+        # and outputs must never be committed. The template is the one
+        # TOML file allowed. CI never builds a subset either.
+        run: |
+          bad=$(git ls-files | grep -E '\.toml$|^build/|(^|/)subsets/' \
+            | grep -vx 'src/subset.template.toml' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Subset CV files must not be committed:"
+            echo "$bad"
+            exit 1
+          fi
+
       - name: Install Typst (latest release)
         run: |
           curl -fsSL "https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz" \

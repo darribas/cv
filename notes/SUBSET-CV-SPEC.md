@@ -95,8 +95,8 @@ need PyYAML (a pip install).
 | What | Where | Tracked in git? |
 |---|---|---|
 | Annotated template | `src/subset.template.toml` | **yes** — the only subset file in the repo |
-| The author's configs | anywhere **outside** the repo, e.g. `~/cv-subsets/erc-2027.toml` | never |
-| Built outputs | beside the config by default: `<config dir>/<name>/`; `--out DIR` overrides | never |
+| The author's configs | the gitignored `subsets/` folder, e.g. `subsets/erc-2027.toml`, or anywhere outside the repo | never |
+| Built outputs | beside the config by default: `<config dir>/<name>/`; `--out DIR` overrides. Inside the repo only where git ignores the path, never `docs/` or `src/` (§13) | never |
 | Intermediate derived data | `build/.subset-work/` (gitignored; wiped at the start of each build) | never |
 
 The intermediate data sits inside the repo only because Typst will not read
@@ -212,6 +212,10 @@ a later phase than the one implemented is an error saying which phase adds it.
   in any of its groups; groups left empty are dropped.
 - Publications keep their renderer-side sort (year descending) regardless.
 - `ids = []` is an error ("remove `ids` to include the whole section").
+- *(Settled in P1.)* A section with `[[section.group]]` tables takes its `ids`
+  under those groups; section-level `ids` alongside group tables is an error,
+  since which filter applies to which group would otherwise be ambiguous. An id
+  listed twice, or a section/group listed twice, is also an error.
 
 Omitting `ids` means "the whole section *as it is when built*" — a later rebuild
 picks up new records. Listing ids freezes the selection. Both are intended.
@@ -296,9 +300,17 @@ does not list records.
 ```
 python3 src/build_subset.py CONFIG [--out DIR] [--strict]
 python3 src/build_subset.py --list [SECTION]
-python3 src/build_subset.py --scaffold
-make subset CONFIG=~/cv-subsets/erc-2027.toml
+python3 src/build_subset.py --scaffold [PATH]
+make subset CONFIG=~/cv-subsets/erc-2027.toml [OUT=DIR]   # CONFIG --new-if-missing
+make subset-list [SECTION="Teaching"]                     # --list
 ```
+
+*(Settled in P1.)* `make` is the author's interface; the Python CLI is what it
+runs. `make subset` builds CONFIG, or, if no file exists there, writes the
+`--scaffold` config there and stops (the unedited scaffold is the full CV, so
+building it would be pointless); the same command then builds it once edited.
+Writing a scaffold to a path refuses to overwrite a file; `--scaffold`
+without PATH prints to stdout.
 
 Must be run from within the repo (it reads `src/`). `--strict` turns warnings
 into errors.
@@ -307,7 +319,7 @@ into errors.
 
 1. Validate the master data (§12). Collect all errors; stop if any.
 2. Validate the config (§12). Collect all errors; stop if any.
-3. Resolve the output directory; refuse repo paths (§13).
+3. Resolve the output directory; refuse non-private repo paths (§13).
 4. Select (§5) → derived data in `build/.subset-work/` (wiped first).
 5. Summarise (§8) — obtaining exchange rates only if a `total` needs them.
 6. Validate the derived data against `cv.schema.json`.
@@ -509,7 +521,8 @@ value):
   neither of `section`/`drop`, `ids = []`;
 - a section/group title that does not exist; an id that matches no record; an
   id listed under a section it does not belong to;
-- output path inside the repo (§13);
+- output path in `docs/`, `src/`, the repo root, the scratch directory, or
+  anywhere else in the repo that git does not ignore (§13);
 - exchange rates unavailable or incomplete; malformed `[money.rates]`; rates
   without `rates_date` (§8.3);
 - requested font unavailable and no usable fallback (§9);
@@ -523,14 +536,22 @@ used as fallback; config rates older than 90 days.
 
 ## 13. Never in the repo, never published — guards (P1)
 
-1. **Build refuses repo paths.** The resolved output dir must not be inside the
-   repository (resolve symlinks). The only in-repo writes are to
-   `build/.subset-work/`.
+1. **Build refuses non-private repo paths.** *(Revised in P1: the build often
+   runs in a container that mounts only the repository, so outputs must be
+   able to land inside it.)* The resolved output dir (symlinks resolved) may
+   be inside the repository only if `git check-ignore` confirms git ignores
+   it — e.g. `subsets/<name>/` — and never in `docs/` (the public site),
+   `src/`, the repo root or `build/.subset-work/`, ignored or not. If git
+   cannot confirm, the build refuses.
 2. **`.gitignore`**: add `subsets/` and `*.toml` with `!src/subset.template.toml`.
 3. **CI tripwire** (new step in `build-site.yml`, before building): fail if
    `git ls-files` lists any `*.toml` other than `src/subset.template.toml`, or
    anything under `build/` or `subsets/`.
 4. **CI never runs `build_subset.py`**, and `make site` never calls it.
+
+*(Changed in P1, at the author's request.)* Configs may live inside the repo,
+normally in `subsets/`; `.gitignore` and the CI tripwire keep them untracked,
+and guard 1 keeps their outputs private.
 
 Agents working on this repo never create configs inside it and never stage
 subset files.

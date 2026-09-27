@@ -241,14 +241,17 @@ writing the same logic three times in two languages.
 
 ### The config: local TOML, never in the repo, never published
 
-One config per use case, kept **outside the repository**; the repo carries only
-`src/subset.template.toml`. Outputs land beside the config, so they are outside
-the repo too, together with a snapshot of the config and a manifest (data
+One config per use case, kept in the gitignored `subsets/` folder or outside
+the repository; the repo tracks only `src/subset.template.toml`. Outputs land
+beside the config, together with a snapshot of the config and a manifest (data
 commit, FX rates and their source, resolved font) from which any output can be
-rebuilt. Subsets are private documents: the build refuses to write into the
-repo (above all `docs/`, the Pages site), `.gitignore` ignores every TOML file
-but the template, a CI step fails if a subset artifact is ever tracked, and no
-CI or `make site` path builds one. **TOML rather than YAML**: comments and low noise as wanted, but read
+rebuilt. Subsets are private documents: inside the repo the build writes only
+where git ignores the path and never into `docs/` (the Pages site) or `src/`,
+`.gitignore` ignores every TOML file but the template, a CI step fails if a
+subset artifact is ever tracked, and no CI or `make site` path builds one.
+(First drafted as "never inside the repo at all"; relaxed in P1 because the
+build often runs in a container that mounts only the repository. Privacy
+rests on "never tracked, never published", which git-ignored paths satisfy.) **TOML rather than YAML**: comments and low noise as wanted, but read
 by Python's standard library (`tomllib`), where YAML would be the pipeline's
 first pip dependency — and without the whitespace/type-coercion footguns
 Decision 3 already rejected YAML for.

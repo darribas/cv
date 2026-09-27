@@ -12,7 +12,7 @@ JSON     := $(wildcard src/*.json)
 PREVIEW  := build/preview
 FONTS    := fonts
 
-.PHONY: site pdf html watch preview validate test clean
+.PHONY: site pdf html watch preview validate test subset subset-list clean
 
 ## site: build both the PDF and the HTML page  (default target)
 site: pdf html
@@ -49,6 +49,21 @@ validate:
 ## test: run the unit tests (tests/test_*.py; Typst-dependent ones skip without it)
 test:
 	$(PYTHON) -m unittest discover -s tests -v
+
+## Subset CVs (notes/SUBSET-CV-SPEC.md). Configs live OUTSIDE the repo.
+##
+## subset: build a subset CV from its config — or, if CONFIG doesn't exist
+##         yet, write a starter config there (every section and record id)
+##         to edit, then run the same command again to build it
+##         make subset CONFIG=~/cv-subsets/erc-2027.toml [OUT=dir]
+subset:
+	@test -n "$(CONFIG)" || { echo "usage: make subset CONFIG=path/to/config.toml [OUT=dir]"; exit 2; }
+	@$(PYTHON) src/build_subset.py "$(CONFIG)" --new-if-missing $(if $(OUT),--out "$(OUT)")
+
+## subset-list: print record ids (all, or one section)
+##         make subset-list [SECTION="Research Income"]
+subset-list:
+	@$(PYTHON) src/build_subset.py --list $(if $(SECTION),"$(SECTION)")
 
 ## clean: remove build/preview artifacts (the committed PDF/HTML stay)
 clean:

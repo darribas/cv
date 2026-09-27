@@ -15,3 +15,10 @@ notes/cv-current.pdf
 
 # Python bytecode (tests import the src/ scripts as modules)
 __pycache__/
+
+# Subset CVs are private: configs and outputs live outside the repo, and these
+# rules plus a CI tripwire (build-site.yml) keep any stray copy from being
+# committed. The annotated template is the only TOML file tracked.
+subsets/
+*.toml
+!src/subset.template.toml
