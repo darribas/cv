@@ -1,7 +1,9 @@
 """src/build_subset.py (spec P1): config, selection, PDF, guards.
 
 Configs are written inside each test into a temporary directory — none are
-tracked, which also exercises "config and outputs outside the repo".
+tracked, which also exercises "config and outputs outside the repo". The two
+tests that put a config inside the repo use the gitignored subsets/ folder and
+remove it afterwards.
 """
 
 import contextlib
@@ -163,13 +165,26 @@ class ScaffoldTest(unittest.TestCase):
             self.assertEqual(path.read_text(encoding="utf-8"),
                              build_subset.scaffold(MASTER))
 
-    def test_write_refuses_existing_repo_and_non_toml(self):
+    def test_write_inside_repo_allowed_and_untracked(self):
+        before = git_status()
+        folder = REPO / "subsets"
+        existed = folder.exists()
+        path = folder / "zz-test-scaffold.toml"
+        try:
+            build_subset.write_scaffold(MASTER, path)
+            self.assertTrue(path.exists())
+            self.assertEqual(git_status(), before)  # gitignored
+        finally:
+            path.unlink(missing_ok=True)
+            if not existed:
+                shutil.rmtree(folder, ignore_errors=True)
+
+    def test_write_refuses_existing_and_non_toml(self):
         with tempfile.TemporaryDirectory() as tmp:
             existing = Path(tmp) / "mine.toml"
             existing.write_text("# hand-edited\n")
             for path, fragment in [
                 (existing, "already exists"),
-                (REPO / "notes" / "x.toml", "inside the repository"),
                 (Path(tmp) / "x.txt", "must end in .toml"),
             ]:
                 with self.subTest(path=path):
@@ -177,7 +192,6 @@ class ScaffoldTest(unittest.TestCase):
                         build_subset.write_scaffold(MASTER, path)
                     self.assertIn(fragment, e.exception.problems[0])
             self.assertEqual(existing.read_text(), "# hand-edited\n")
-            self.assertFalse((REPO / "notes" / "x.toml").exists())
 
     def test_ids_carry_a_description_comment(self):
         text = build_subset.scaffold(MASTER)
@@ -615,12 +629,31 @@ class MakeTargetsTest(unittest.TestCase):
         self.assertNotEqual(run.returncode, 0)
         self.assertIn("usage: make subset", run.stdout)
 
-    def test_missing_config_inside_repo_is_refused(self):
-        run = subprocess.run(["make", "-s", "subset", "CONFIG=notes/x.toml"],
-                             cwd=REPO, capture_output=True, text=True)
-        self.assertNotEqual(run.returncode, 0)
-        self.assertIn("inside the repository", run.stderr)
-        self.assertFalse((REPO / "notes" / "x.toml").exists())
+    def test_config_inside_repo_builds_with_out(self):
+        before = git_status()
+        folder = REPO / "subsets"
+        existed = folder.exists()
+        config = folder / "zz-test.toml"
+        try:
+            with tempfile.TemporaryDirectory() as out:
+                run = subprocess.run(["make", "-s", "subset", f"CONFIG={config}"],
+                                     cwd=REPO, capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)  # starter written
+                config.write_text(sections_config(["Education"]))
+                run = subprocess.run(["make", "-s", "subset", f"CONFIG={config}"],
+                                     cwd=REPO, capture_output=True, text=True)
+                self.assertNotEqual(run.returncode, 0)  # default out: in the repo
+                self.assertIn("OUT=DIR", run.stderr)
+                run = subprocess.run(["make", "-s", "subset", f"CONFIG={config}",
+                                      f"OUT={out}"],
+                                     cwd=REPO, capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)
+                self.assertTrue((Path(out) / "darribas-cv-zz-test.pdf").exists())
+            self.assertEqual(git_status(), before)
+        finally:
+            config.unlink(missing_ok=True)
+            if not existed:
+                shutil.rmtree(folder, ignore_errors=True)
 
     def test_list(self):
         run = subprocess.run(["make", "-s", "subset-list", "SECTION=Education"],

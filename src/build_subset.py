@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build a subset CV: a shorter, audience-specific CV from the same data.
 
-A TOML config (kept OUTSIDE this repository — see src/subset.template.toml)
-names the sections to include and, optionally, the ids of the records to keep.
+A TOML config (see src/subset.template.toml; git ignores every *.toml but
+that template, so a config inside the repo stays untracked) names the sections to include and, optionally, the ids of the records to keep.
 The build filters the master data into a derived cv.json + publications.json
 that still validate against cv.schema.json, then runs the unchanged renderers
 over it (ARCHITECTURE.md, Decision 5; the full brief is
@@ -464,8 +464,8 @@ def resolve_out(config_path, name, out=None):
         raise BuildError([
             f"output directory {target} is inside the repository — subset CVs "
             "are private and must never be written into it (above all docs/, "
-            "the public site). Keep the config outside the repo, or pass "
-            "--out DIR outside it."])
+            "the public site). Pass an output directory outside it: "
+            "make subset CONFIG=... OUT=DIR (or --out DIR)."])
     if target.exists() and not target.is_dir():
         raise BuildError([f"output path {target} exists and is not a directory"])
     return target
@@ -662,9 +662,9 @@ def scaffold(master):
         "# Sections print in the order listed here; records in data order.",
         "# See src/subset.template.toml for every key.",
         "#",
-        "# Keep this file OUTSIDE the cv repository (e.g. ~/cv-subsets/).",
         "# Build it with `make subset CONFIG=<this file>`; outputs are written",
-        "# beside it, in a folder named after it.",
+        "# beside it, in a folder named after it — which must be outside the cv",
+        "# repository (if this file is inside it, add OUT=<dir outside>).",
         "",
         "# name    = \"my-subset\"   # default: this file's name",
         "formats = [\"pdf\"]",
@@ -685,11 +685,8 @@ def scaffold(master):
 
 
 def write_scaffold(master, path):
-    """Write scaffold() to a new file outside the repo; never overwrite."""
+    """Write scaffold() to a new .toml file; never overwrite."""
     path = Path(path).expanduser().resolve()
-    if inside_repo(path):
-        raise BuildError([f"{path} is inside the repository — keep subset "
-                          "configs outside it, e.g. ~/cv-subsets/"])
     if path.suffix != ".toml":
         raise BuildError([f"{path}: a config file name must end in .toml"])
     if path.exists():
@@ -720,7 +717,7 @@ def main(argv=None):
                     help="list every record (or one section's) with its id")
     ap.add_argument("--scaffold", nargs="?", const="-", metavar="PATH",
                     help="write a config listing every section and id to "
-                         "PATH (a new file outside the repo), or to stdout")
+                         "PATH (a new .toml file), or to stdout")
     args = ap.parse_args(argv)
 
     modes = [args.config is not None, args.list is not None,

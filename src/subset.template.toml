@@ -5,9 +5,11 @@
 # This file documents every key; it is the only subset file in the
 # repository.
 #
-# DO NOT keep your configs here. Copy this file OUTSIDE the repository, e.g.
-# ~/cv-subsets/erc-2027.toml — outputs are written beside the config, in a
-# folder named after it, and the build refuses to write into the repo.
+# Configs can live anywhere, e.g. ~/cv-subsets/erc-2027.toml. Git ignores
+# every *.toml in the repo but this template, so one kept inside it stays
+# untracked. Outputs are written beside the config, in a folder named after
+# it, and must be outside the repo (the build refuses to write into it): for
+# a config inside the repo, add OUT=<dir outside>.
 #
 # Easier start: `make subset CONFIG=~/cv-subsets/x.toml` with no file there
 # yet writes a config listing every section, group and record id; build a

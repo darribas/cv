@@ -95,7 +95,7 @@ need PyYAML (a pip install).
 | What | Where | Tracked in git? |
 |---|---|---|
 | Annotated template | `src/subset.template.toml` | **yes** — the only subset file in the repo |
-| The author's configs | anywhere **outside** the repo, e.g. `~/cv-subsets/erc-2027.toml` | never |
+| The author's configs | anywhere, e.g. `~/cv-subsets/erc-2027.toml`; inside the repo they are gitignored (P1: the build no longer refuses them) | never |
 | Built outputs | beside the config by default: `<config dir>/<name>/`; `--out DIR` overrides | never |
 | Intermediate derived data | `build/.subset-work/` (gitignored; wiped at the start of each build) | never |
 
@@ -543,6 +543,10 @@ used as fallback; config rates older than 90 days.
    `git ls-files` lists any `*.toml` other than `src/subset.template.toml`, or
    anything under `build/` or `subsets/`.
 4. **CI never runs `build_subset.py`**, and `make site` never calls it.
+
+*(Changed in P1, at the author's request.)* A config inside the repo is
+allowed — `.gitignore` and the CI tripwire keep it untracked — but its outputs
+must still go outside, via `--out`/`OUT=`, since guard 1 is unchanged.
 
 Agents working on this repo never create configs inside it and never stage
 subset files.

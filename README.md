@@ -45,8 +45,8 @@ new data.
 ## Subset CVs
 
 Shorter, audience-specific CVs built from the same data — see
-`notes/SUBSET-CV-SPEC.md`. A TOML config, kept **outside this repository**,
-lists the sections (and optionally the record ids) to include:
+`notes/SUBSET-CV-SPEC.md`. A TOML config lists the sections (and optionally
+the record ids) to include:
 
 ```bash
 make subset CONFIG=~/cv-subsets/erc-2027.toml
@@ -58,8 +58,10 @@ command again: now it builds. Outputs land beside the config
 (`~/cv-subsets/erc-2027/`): the PDF, the derived data, a copy of the config
 and a `manifest.json`. Rebuild any time with the same line. `make subset-list [SECTION="Teaching"]`
 prints record ids with their dates and titles; `src/subset.template.toml`
-documents every config key. Subsets are private: the build refuses to write into the repo,
-`.gitignore` ignores `*.toml`, and CI fails if one is ever committed.
+documents every config key. Subsets are private: `.gitignore` ignores every
+`*.toml` (so a config may live in the repo, e.g. in `subsets/`, untracked),
+CI fails if one is ever committed, and the build refuses to write *outputs*
+into the repo — for a config inside it, add `OUT=<dir outside>`.
 
 ## AI
 

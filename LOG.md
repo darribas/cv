@@ -208,12 +208,13 @@ Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
 - **Renderers, generic knobs only**: `cv.typ` reads an optional `data` input;
   `render_html.py` takes `--data`/`--out`. Bare, both behave exactly as before.
 - **Never in the repo**: the build refuses output paths inside the
-  repository (symlinks resolved); `.gitignore` ignores `subsets/` and every
+  repository (symlinks resolved) — configs may live inside it (gitignored),
+  but then need `OUT=` pointing outside; `.gitignore` ignores `subsets/` and every
   `*.toml` but `src/subset.template.toml`; a CI step fails if any such file is
   tracked.
 - **Settled** (spec §5): section-level `ids` together with group tables is an
   error — ids go under the groups.
-- **Tests** (74 total): the identity test (an all-sections config and the
+- **Tests** (76 total): the identity test (an all-sections config and the
   `--scaffold` output both build a PDF byte-identical to plain `cv.typ`, and
   the same HTML), the selection rule, every P1 config error, the output-path
   guard, and a real build from a temp-dir config leaving `git status`
