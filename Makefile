@@ -12,7 +12,7 @@ JSON     := $(wildcard src/*.json)
 PREVIEW  := build/preview
 FONTS    := fonts
 
-.PHONY: site pdf html watch preview validate test subset clean
+.PHONY: site pdf html watch preview validate test subset subset-new subset-list clean
 
 ## site: build both the PDF and the HTML page  (default target)
 site: pdf html
@@ -50,11 +50,24 @@ validate:
 test:
 	$(PYTHON) -m unittest discover -s tests -v
 
-## subset: build a subset CV from a config kept outside the repo
+## Subset CVs (notes/SUBSET-CV-SPEC.md). Configs live OUTSIDE the repo.
+##
+## subset-new: write a starter config listing every section and record id
+##         make subset-new CONFIG=~/cv-subsets/erc-2027.toml
+subset-new:
+	@test -n "$(CONFIG)" || { echo "usage: make subset-new CONFIG=path/to/new.toml"; exit 2; }
+	@$(PYTHON) src/build_subset.py --scaffold "$(CONFIG)"
+
+## subset-list: print record ids (all, or one section)
+##         make subset-list [SECTION="Research Income"]
+subset-list:
+	@$(PYTHON) src/build_subset.py --list $(if $(SECTION),"$(SECTION)")
+
+## subset: build a subset CV from its config
 ##         make subset CONFIG=~/cv-subsets/erc-2027.toml [OUT=dir]
 subset:
 	@test -n "$(CONFIG)" || { echo "usage: make subset CONFIG=path/to/config.toml [OUT=dir]"; exit 2; }
-	$(PYTHON) src/build_subset.py "$(CONFIG)" $(if $(OUT),--out "$(OUT)")
+	@$(PYTHON) src/build_subset.py "$(CONFIG)" $(if $(OUT),--out "$(OUT)")
 
 ## clean: remove build/preview artifacts (the committed PDF/HTML stay)
 clean:

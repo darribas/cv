@@ -300,9 +300,16 @@ does not list records.
 ```
 python3 src/build_subset.py CONFIG [--out DIR] [--strict]
 python3 src/build_subset.py --list [SECTION]
-python3 src/build_subset.py --scaffold
-make subset CONFIG=~/cv-subsets/erc-2027.toml
+python3 src/build_subset.py --scaffold [PATH]
+make subset CONFIG=~/cv-subsets/erc-2027.toml [OUT=DIR]
+make subset-new CONFIG=~/cv-subsets/erc-2027.toml   # --scaffold PATH
+make subset-list [SECTION="Teaching"]               # --list
 ```
+
+*(Settled in P1.)* `make` is the author's interface; the Python CLI is what it
+runs. `--scaffold PATH` writes a new file and refuses to overwrite one or to
+write inside the repo (a shell redirect could clobber a hand-edited config);
+without PATH it prints to stdout.
 
 Must be run from within the repo (it reads `src/`). `--strict` turns warnings
 into errors.

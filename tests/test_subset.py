@@ -156,6 +156,29 @@ class ScaffoldTest(unittest.TestCase):
                                                for i in g["ids"] or []]}
         self.assertEqual(listed, set(MASTER.owner))
 
+    def test_write_to_new_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "new" / "erc.toml"  # parent created too
+            build_subset.write_scaffold(MASTER, path)
+            self.assertEqual(path.read_text(encoding="utf-8"),
+                             build_subset.scaffold(MASTER))
+
+    def test_write_refuses_existing_repo_and_non_toml(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            existing = Path(tmp) / "mine.toml"
+            existing.write_text("# hand-edited\n")
+            for path, fragment in [
+                (existing, "already exists"),
+                (REPO / "notes" / "x.toml", "inside the repository"),
+                (Path(tmp) / "x.txt", "must end in .toml"),
+            ]:
+                with self.subTest(path=path):
+                    with self.assertRaises(build_subset.BuildError) as e:
+                        build_subset.write_scaffold(MASTER, path)
+                    self.assertIn(fragment, e.exception.problems[0])
+            self.assertEqual(existing.read_text(), "# hand-edited\n")
+            self.assertFalse((REPO / "notes" / "x.toml").exists())
+
     def test_ids_carry_a_description_comment(self):
         text = build_subset.scaffold(MASTER)
         self.assertIn('"education-2010-phd-economics",  # 2010 PhD Economics',
@@ -553,6 +576,45 @@ class BuildTest(unittest.TestCase):
             self.assertTrue((c.dir / "elsewhere" / "darribas-cv-subset.pdf").exists())
 
 
+@unittest.skipUnless(HAS_TYPST and shutil.which("make"), "needs typst and make")
+class MakeTargetsTest(unittest.TestCase):
+    """The make interface: subset-new, then subset, with a ~ path."""
+
+    def make(self, *args, home):
+        return subprocess.run(["make", "-s", *args], cwd=REPO, text=True,
+                              capture_output=True, env={**os.environ, "HOME": home})
+
+    def test_new_then_build(self):
+        before = git_status()
+        with tempfile.TemporaryDirectory() as home:
+            config = "~/cv-subsets/everything.toml"  # expanded by the build
+            run = self.make("subset-new", f"CONFIG={config}", home=home)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertIn("make subset CONFIG=", run.stdout)
+            run = self.make("subset", f"CONFIG={config}", home=home)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertTrue((Path(home) / "cv-subsets" / "everything" /
+                             "darribas-cv-everything.pdf").exists())
+            run = self.make("subset-new", f"CONFIG={config}", home=home)
+            self.assertNotEqual(run.returncode, 0)
+            self.assertIn("already exists", run.stderr)
+        self.assertEqual(git_status(), before)
+
+    def test_usage_without_config(self):
+        for target in ("subset", "subset-new"):
+            run = subprocess.run(["make", "-s", target], cwd=REPO,
+                                 capture_output=True, text=True)
+            self.assertNotEqual(run.returncode, 0)
+            self.assertIn("usage: make", run.stdout)
+
+    def test_list(self):
+        run = subprocess.run(["make", "-s", "subset-list", "SECTION=Education"],
+                             cwd=REPO, capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertIn("education-2010-phd-economics", run.stdout)
+        self.assertNotIn("rey2023geographic", run.stdout)
+
+
 class ListTest(unittest.TestCase):
     def test_everything(self):
         text = build_subset.listing(MASTER)
@@ -577,6 +639,8 @@ class ListTest(unittest.TestCase):
                 build_subset.main([])
             with self.assertRaises(SystemExit):
                 build_subset.main(["x.toml", "--scaffold"])
+            with self.assertRaises(SystemExit):
+                build_subset.main(["--list", "--scaffold", "x.toml"])
 
 
 if __name__ == "__main__":

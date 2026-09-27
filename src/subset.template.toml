@@ -1,18 +1,18 @@
 # Subset CV config — annotated template.
 #
 # A subset CV is a shorter, audience-specific version of the full CV, built
-# from the same data:   python3 src/build_subset.py CONFIG   (or make subset
-# CONFIG=...). This file documents every key; it is the only subset file in
-# the repository.
+# from the same data:   make subset CONFIG=~/cv-subsets/erc-2027.toml
+# This file documents every key; it is the only subset file in the
+# repository.
 #
 # DO NOT keep your configs here. Copy this file OUTSIDE the repository, e.g.
 # ~/cv-subsets/erc-2027.toml — outputs are written beside the config, in a
 # folder named after it, and the build refuses to write into the repo.
 #
-# Easier start: `python3 src/build_subset.py --scaffold > ~/cv-subsets/x.toml`
-# writes a config listing every section, group and record id; build a subset
-# by deleting lines. `--list [SECTION]` prints the ids with their dates and
-# titles.
+# Easier start: `make subset-new CONFIG=~/cv-subsets/x.toml` writes a config
+# listing every section, group and record id; build a subset by deleting
+# lines. `make subset-list [SECTION="Teaching"]` prints the ids with their
+# dates and titles.
 #
 # Keys marked (P2)…(P5) belong to phases not built yet
 # (notes/SUBSET-CV-SPEC.md §15); using one is an error that says so.

@@ -198,9 +198,12 @@ Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
   and dirty flag, build time, per-section kept/total counts, page count)
   beside the config. Every problem is reported at once, naming file, key and
   value, with "did you mean" suggestions for titles and ids; later-phase keys
-  are errors naming their phase. `--list [SECTION]` and `--scaffold` (a
-  config listing every section, group and id, with one-line descriptions)
-  make picking records practical. `make subset CONFIG=...`.
+  are errors naming their phase. `--list [SECTION]` and `--scaffold [PATH]`
+  (a config listing every section, group and id, with one-line
+  descriptions; written only to a new file outside the repo) make picking
+  records practical.
+- **`make` is the interface**: `make subset-new CONFIG=…` (starter config),
+  `make subset-list [SECTION=…]`, `make subset CONFIG=… [OUT=…]`.
 - **Renderers, generic knobs only**: `cv.typ` reads an optional `data` input;
   `render_html.py` takes `--data`/`--out`. Bare, both behave exactly as before.
 - **Never in the repo**: the build refuses output paths inside the
@@ -209,7 +212,7 @@ Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
   tracked.
 - **Settled** (spec §5): section-level `ids` together with group tables is an
   error — ids go under the groups.
-- **Tests** (69 total): the identity test (an all-sections config and the
+- **Tests** (74 total): the identity test (an all-sections config and the
   `--scaffold` output both build a PDF byte-identical to plain `cv.typ`, and
   the same HTML), the selection rule, every P1 config error, the output-path
   guard, and a real build from a temp-dir config leaving `git status`

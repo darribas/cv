@@ -49,16 +49,16 @@ Shorter, audience-specific CVs built from the same data — see
 lists the sections (and optionally the record ids) to include:
 
 ```bash
-mkdir -p ~/cv-subsets
-python3 src/build_subset.py --scaffold > ~/cv-subsets/erc-2027.toml  # every section + id
-# ...delete what you don't want, then:
+make subset-new CONFIG=~/cv-subsets/erc-2027.toml   # starter config: every section + id
+# ...delete the sections and ids you don't want, then:
 make subset CONFIG=~/cv-subsets/erc-2027.toml
 ```
 
 Outputs land beside the config (`~/cv-subsets/erc-2027/`): the PDF, the
-derived data, a copy of the config and a `manifest.json`. `src/subset.template.toml`
-documents every key; `python3 src/build_subset.py --list [SECTION]` prints
-record ids. Subsets are private: the build refuses to write into the repo,
+derived data, a copy of the config and a `manifest.json`. Rebuild any time
+with the same `make subset` line. `make subset-list [SECTION="Teaching"]`
+prints record ids with their dates and titles; `src/subset.template.toml`
+documents every config key. Subsets are private: the build refuses to write into the repo,
 `.gitignore` ignores `*.toml`, and CI fails if one is ever committed.
 
 ## AI
