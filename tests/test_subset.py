@@ -578,7 +578,7 @@ class BuildTest(unittest.TestCase):
 
 @unittest.skipUnless(HAS_TYPST and shutil.which("make"), "needs typst and make")
 class MakeTargetsTest(unittest.TestCase):
-    """The make interface: subset-new, then subset, with a ~ path."""
+    """The make interface: `make subset` twice — starter, then build."""
 
     def make(self, *args, home):
         return subprocess.run(["make", "-s", *args], cwd=REPO, text=True,
@@ -588,24 +588,39 @@ class MakeTargetsTest(unittest.TestCase):
         before = git_status()
         with tempfile.TemporaryDirectory() as home:
             config = "~/cv-subsets/everything.toml"  # expanded by the build
-            run = self.make("subset-new", f"CONFIG={config}", home=home)
-            self.assertEqual(run.returncode, 0, run.stderr)
-            self.assertIn("make subset CONFIG=", run.stdout)
+            written = Path(home) / "cv-subsets" / "everything.toml"
+            out = Path(home) / "cv-subsets" / "everything"
+
+            # First run: no config yet -> writes the starter, builds nothing.
             run = self.make("subset", f"CONFIG={config}", home=home)
             self.assertEqual(run.returncode, 0, run.stderr)
-            self.assertTrue((Path(home) / "cv-subsets" / "everything" /
-                             "darribas-cv-everything.pdf").exists())
-            run = self.make("subset-new", f"CONFIG={config}", home=home)
-            self.assertNotEqual(run.returncode, 0)
-            self.assertIn("already exists", run.stderr)
+            self.assertIn("wrote a starter one", run.stdout)
+            self.assertEqual(written.read_text(encoding="utf-8"),
+                             build_subset.scaffold(MASTER))
+            self.assertFalse(out.exists())
+
+            # Edit it, then the same command builds it, leaving it untouched.
+            edited = sections_config(["Education"])
+            written.write_text(edited, encoding="utf-8")
+            run = self.make("subset", f"CONFIG={config}", home=home)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertIn("Built everything", run.stdout)
+            self.assertTrue((out / "darribas-cv-everything.pdf").exists())
+            self.assertEqual(written.read_text(encoding="utf-8"), edited)
         self.assertEqual(git_status(), before)
 
     def test_usage_without_config(self):
-        for target in ("subset", "subset-new"):
-            run = subprocess.run(["make", "-s", target], cwd=REPO,
-                                 capture_output=True, text=True)
-            self.assertNotEqual(run.returncode, 0)
-            self.assertIn("usage: make", run.stdout)
+        run = subprocess.run(["make", "-s", "subset"], cwd=REPO,
+                             capture_output=True, text=True)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("usage: make subset", run.stdout)
+
+    def test_missing_config_inside_repo_is_refused(self):
+        run = subprocess.run(["make", "-s", "subset", "CONFIG=notes/x.toml"],
+                             cwd=REPO, capture_output=True, text=True)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("inside the repository", run.stderr)
+        self.assertFalse((REPO / "notes" / "x.toml").exists())
 
     def test_list(self):
         run = subprocess.run(["make", "-s", "subset-list", "SECTION=Education"],

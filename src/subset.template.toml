@@ -9,9 +9,9 @@
 # ~/cv-subsets/erc-2027.toml — outputs are written beside the config, in a
 # folder named after it, and the build refuses to write into the repo.
 #
-# Easier start: `make subset-new CONFIG=~/cv-subsets/x.toml` writes a config
-# listing every section, group and record id; build a subset by deleting
-# lines. `make subset-list [SECTION="Teaching"]` prints the ids with their
+# Easier start: `make subset CONFIG=~/cv-subsets/x.toml` with no file there
+# yet writes a config listing every section, group and record id; build a
+# subset by deleting lines and running the same command again. `make subset-list [SECTION="Teaching"]` prints the ids with their
 # dates and titles.
 #
 # Keys marked (P2)…(P5) belong to phases not built yet

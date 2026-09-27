@@ -202,8 +202,9 @@ Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
   (a config listing every section, group and id, with one-line
   descriptions; written only to a new file outside the repo) make picking
   records practical.
-- **`make` is the interface**: `make subset-new CONFIG=…` (starter config),
-  `make subset-list [SECTION=…]`, `make subset CONFIG=… [OUT=…]`.
+- **`make` is the interface**: `make subset CONFIG=… [OUT=…]` builds the
+  config, or writes a starter one there if none exists yet (then stops, to
+  be edited); `make subset-list [SECTION=…]` prints record ids.
 - **Renderers, generic knobs only**: `cv.typ` reads an optional `data` input;
   `render_html.py` takes `--data`/`--out`. Bare, both behave exactly as before.
 - **Never in the repo**: the build refuses output paths inside the
