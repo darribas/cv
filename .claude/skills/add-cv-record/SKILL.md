@@ -94,7 +94,8 @@ with that `Accept` header.) Then:
    `category`. The response carries extras (`abstract`, `reference`, `license`,
    …) — drop them so the file stays consistent with existing entries.
 2. **Set `id`** yourself (author+year+word, e.g. `smith2026spatial`) — the raw
-   response has no citation key in that style.
+   response has no citation key in that style. It must be unique across
+   **both** `publications.json` and `cv.json` (the validator checks).
 3. **Set `category`** from the returned CSL `type`:
 
    | CSL `type` returned | `category` to set |
@@ -195,24 +196,38 @@ a row of small pills under the entry, behind the header's "Links" switch.
 5. Ordering within a section is manual and meaningful (usually reverse-chronological
    by `date`); place the new entry where it reads correctly. The `date` column
    blanks automatically when consecutive entries repeat a value.
+6. **Give it an id — by script, never by hand.** Every `cv.json` entry carries
+   a permanent `id` (subset CVs select records by it; the schema requires it).
+   Leave `id` out of the pasted entry, then run:
+
+   ```bash
+   python3 src/assign_ids.py
+   ```
+
+   It adds an id to every entry that lacks one — only yours, since the rest
+   already have theirs — without reformatting the file, and prints what it
+   added. Never edit or regenerate an existing entry's id, even if you change
+   its wording: configs outside the repo depend on it staying put.
 
 Money uses `"amount": { "value": <number>, "currency": "GBP" | "EUR" | "USD" }` —
 never a hard-coded symbol; the renderer prints the symbol.
 
 ### 4. Validate
 
-Run the bundled schema validator. It checks `cv.json` against `cv.schema.json`
-and sanity-checks `publications.json` (including that every `category` maps to a
-rendered group). It is stdlib-only — no installs.
+Run the schema validator. It checks `cv.json` against `cv.schema.json`,
+sanity-checks `publications.json` (including that every `category` maps to a
+rendered group), and checks that every record has an id unique across both
+files. It is stdlib-only — no installs.
 
 ```bash
-python3 .claude/skills/add-cv-record/validate_cv.py
+python3 src/validate_cv.py
 ```
 
-Fix anything it reports and re-run until it prints both ✓ lines. This is stricter
-than CI's `make validate` (which only checks that JSON parses), so a clean run
-here is the meaningful gate. Optionally, `make validate` mirrors the CI parse
-check.
+Fix anything it reports and re-run until it prints all three ✓ lines. (A
+"missing required key 'id'" error means step 3b.6 was skipped: run
+`python3 src/assign_ids.py`.) CI runs the same check via `make validate`.
+The old path, `.claude/skills/add-cv-record/validate_cv.py`, still works — it
+forwards to `src/validate_cv.py`.
 
 > Do **not** run a Typst/HTML build as part of this skill. The build needs the
 > Typst binary + bundled fonts and is the CI's job on the PR; schema validation

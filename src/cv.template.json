@@ -1,5 +1,5 @@
 {
-  "//": "COPY-PASTE LIBRARY (never rendered). To add an entry: find the section 'type' below, copy one entry block into the matching section in cv.json, edit the values, delete the '//' hint keys. The schema autocompletes and validates as you type. Publications are NOT here — add them to publications.json in CSL-JSON.",
+  "//": "COPY-PASTE LIBRARY (never rendered). To add an entry: find the section 'type' below, copy one entry block into the matching section in cv.json, edit the values, delete the '//' hint keys, then run src/assign_ids.py to give it its permanent 'id' (never write one by hand). The schema autocompletes and validates as you type. Publications are NOT here — add them to publications.json in CSL-JSON.",
 
   "sections": [
     {
