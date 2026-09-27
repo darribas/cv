@@ -9,7 +9,11 @@ depends on cv.typ; the two renderers are independent templates over shared
 data, kept visually aligned by hand, not by shared code.
 
 Build:  python3 src/render_html.py   (or: make html)
+        python3 src/render_html.py --data PATH --out DIR
+--data reads another cv.json (default src/cv.json; a publications section's
+`source` stays relative to src/); --out writes somewhere other than docs/.
 """
+import argparse
 import json
 import re
 import shutil
@@ -21,7 +25,7 @@ SRC = ROOT / "src"
 DOCS = ROOT / "docs"
 FONTS = ROOT / "fonts" / "texgyrepagella"
 
-cv = json.loads((SRC / "cv.json").read_text(encoding="utf-8"))
+cv = None  # the CV data, loaded by main()
 
 
 # ===========================================================================
@@ -453,7 +457,25 @@ PAGE = """<!doctype html>
 """
 
 
-def main():
+def shown(path):
+    """A path for log lines: repo-relative when inside the repo."""
+    try:
+        return path.resolve().relative_to(ROOT)
+    except ValueError:
+        return path
+
+
+def main(argv=None):
+    global cv
+    ap = argparse.ArgumentParser(description="Render the CV as a static HTML page.")
+    ap.add_argument("--data", type=Path, default=SRC / "cv.json",
+                    help="cv.json to render (default: src/cv.json)")
+    ap.add_argument("--out", type=Path, default=DOCS,
+                    help="output directory (default: docs/)")
+    args = ap.parse_args(argv)
+    cv = json.loads(args.data.read_text(encoding="utf-8"))
+    out = args.out
+
     sections_html = "\n".join(render_section(s) for s in cv["sections"])
     html = PAGE.format(
         name=esc(cv["basics"]["name"]),
@@ -465,18 +487,18 @@ def main():
         sections=sections_html,
         footer=render_footer(),
     )
-    DOCS.mkdir(exist_ok=True)
-    (DOCS / "index.html").write_text(html, encoding="utf-8")
-    print(f"Wrote {(DOCS / 'index.html').relative_to(ROOT)}")
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "index.html").write_text(html, encoding="utf-8")
+    print(f"Wrote {shown(out / 'index.html')}")
 
-    shutil.copy(SRC / "style.css", DOCS / "style.css")
-    print(f"Wrote {(DOCS / 'style.css').relative_to(ROOT)}")
+    shutil.copy(SRC / "style.css", out / "style.css")
+    print(f"Wrote {shown(out / 'style.css')}")
 
-    docs_fonts = DOCS / "fonts"
-    docs_fonts.mkdir(exist_ok=True)
+    out_fonts = out / "fonts"
+    out_fonts.mkdir(exist_ok=True)
     for otf in FONTS.glob("*.otf"):
-        shutil.copy(otf, docs_fonts / otf.name)
-    print(f"Staged {len(list(FONTS.glob('*.otf')))} font files into {docs_fonts.relative_to(ROOT)}")
+        shutil.copy(otf, out_fonts / otf.name)
+    print(f"Staged {len(list(FONTS.glob('*.otf')))} font files into {shown(out_fonts)}")
 
 
 if __name__ == "__main__":

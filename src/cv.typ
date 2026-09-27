@@ -7,11 +7,15 @@
 // JSON, never this file.
 //
 // Typst resolves json() relative to THIS file, so cv.json / publications.json
-// must sit beside it in src/.
+// must sit beside it in src/. The optional `data` input points it at another
+// cv.json instead (a path relative to src/, inside the --root); the subset
+// build uses it for its derived data. A publications section's `source` is
+// likewise relative to src/.
 //
 // Build:  typst compile src/cv.typ docs/cv.pdf   (or: make pdf)
+//         typst compile --root . --input data=../build/x/cv.json src/cv.typ out.pdf
 
-#let cv = json("cv.json")
+#let cv = json(sys.inputs.at("data", default: "cv.json"))
 
 // ===========================================================================
 // Helpers
