@@ -1,0 +1,74 @@
+# Subset CV config — annotated template.
+#
+# A subset CV is a shorter, audience-specific version of the full CV, built
+# from the same data:   python3 src/build_subset.py CONFIG   (or make subset
+# CONFIG=...). This file documents every key; it is the only subset file in
+# the repository.
+#
+# DO NOT keep your configs here. Copy this file OUTSIDE the repository, e.g.
+# ~/cv-subsets/erc-2027.toml — outputs are written beside the config, in a
+# folder named after it, and the build refuses to write into the repo.
+#
+# Easier start: `python3 src/build_subset.py --scaffold > ~/cv-subsets/x.toml`
+# writes a config listing every section, group and record id; build a subset
+# by deleting lines. `--list [SECTION]` prints the ids with their dates and
+# titles.
+#
+# Keys marked (P2)…(P5) belong to phases not built yet
+# (notes/SUBSET-CV-SPEC.md §15); using one is an error that says so.
+
+name    = "example"         # output folder + file names (darribas-cv-<name>.pdf);
+                            # a-z, 0-9 and "-"; default: the config's file name
+formats = ["pdf"]           # "pdf"; "docx" and "md" come in P4
+
+[header]
+title = "Curriculum Vitae"  # replaces the document heading (basics.title)
+# affiliation = ["…", "…"]  # (P5) replaces the address lines
+# email = false             # (P5) replace, or false to omit
+# url   = false             # (P5) replace, or false to omit
+
+# [style]                   # (P3) typography; every key optional
+# font         = "Arial"    #   must be installed — the build checks
+# size         = 11         #   body size, pt (8–14)
+# paper        = "a4"       #   "a4" | "us-letter"
+# margins      = 20         #   mm, all sides (10–40)
+# page_numbers = true       #   "1 of 3", centred footer
+# fallback     = "Liberation Sans"  # used, with a warning, if `font` is missing
+
+# [money]                   # (P2) for `total` summaries
+# currency   = "GBP"        #   convert award amounts to this
+# source     = "live"       #   "live" (ECB rates) | "config" (the rates below)
+# rates_date = 2026-09-24   #   required with [money.rates]
+# [money.rates]             #   1 unit of each currency = this many GBP
+# EUR = 0.87
+# USD = 0.74
+
+# [summary]                 # (P2)
+# default = []              #   metrics for every section without its own
+
+# ---- Sections --------------------------------------------------------------
+# Listed -> included, in the order listed; unlisted -> dropped.
+# Nothing more specified -> the whole section (as it is when built, so a later
+# rebuild picks up new records). `ids` -> only those records, printed in data
+# order. Titles must match the data exactly (see --list).
+#
+# Instead of [[section]] tables you can write   drop = ["Teaching", ...]
+# to keep every section except those. Use one or the other, not both.
+
+[[section]]
+title = "Education"               # the whole section
+
+[[section]]
+title  = "Publications"
+rename = "Selected Publications"  # heading shown; matching still uses `title`
+ids = [                           # only these records; a grouped section's ids
+  "rey2023geographic",            # may come from any of its groups, and groups
+]                                 # left empty are dropped
+# summary = ["count"]             # (P2) "1 of 112 publications"
+
+[[section]]
+title = "Research Income"
+  [[section.group]]               # only these groups, in this order
+  title = "Awards"                # the whole group
+  # rename, ids and (P2) summary work here as on a section. A section with
+  # group tables takes its ids under the groups, not at section level.

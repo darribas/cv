@@ -12,7 +12,7 @@ JSON     := $(wildcard src/*.json)
 PREVIEW  := build/preview
 FONTS    := fonts
 
-.PHONY: site pdf html watch preview validate test clean
+.PHONY: site pdf html watch preview validate test subset clean
 
 ## site: build both the PDF and the HTML page  (default target)
 site: pdf html
@@ -49,6 +49,12 @@ validate:
 ## test: run the unit tests (tests/test_*.py; Typst-dependent ones skip without it)
 test:
 	$(PYTHON) -m unittest discover -s tests -v
+
+## subset: build a subset CV from a config kept outside the repo
+##         make subset CONFIG=~/cv-subsets/erc-2027.toml [OUT=dir]
+subset:
+	@test -n "$(CONFIG)" || { echo "usage: make subset CONFIG=path/to/config.toml [OUT=dir]"; exit 2; }
+	$(PYTHON) src/build_subset.py "$(CONFIG)" $(if $(OUT),--out "$(OUT)")
 
 ## clean: remove build/preview artifacts (the committed PDF/HTML stay)
 clean:
