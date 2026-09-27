@@ -154,12 +154,8 @@ repo — with a snapshot of the config and a manifest so any subset can be
 rebuilt. Validation runs inside every build. Subsets are never committed and
 never published; the build, `.gitignore` and a CI tripwire all enforce it.
 
-Phases (spec §15), one PR each:
+Phases (spec §15), one PR each (P0 done — see `LOG.md`):
 
-- **P0 — ids, validator, tests.** A permanent id on every `cv.json` entry
-  (inserted without disturbing the file's hand formatting), required by the
-  schema and assigned by the add-record skill from then on; validator moved to
-  `src/`; `Co-I` → `CoI`; a `tests/` suite with `make test` in CI.
 - **P1 — config + PDF.** `build_subset.py` with `--list` and `--scaffold`, the
   template, the never-in-repo guards, a data-path input in `cv.typ`.
 - **P2 — summaries + currency.** `count` and `total`; ECB rates, config rates as
