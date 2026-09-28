@@ -219,15 +219,16 @@
 // A subset build's summary ("12 of 112 publications · …", set in its derived
 // data) prints in parentheses after the heading's title, and its currency
 // note as a footnote. It reaches the heading show rules below through this
-// state, not the heading's body, so it stays out of the PDF bookmarks. The
-// full CV never has a summary.
+// state, not the heading's body, so it stays out of the PDF bookmarks.
+// Summaries are set by the subset build, and for the full CV by
+// src/build_site_data.py (make site); src/cv.json itself never has one.
 #let heading-summary = state("heading-summary", none)
 #let summary-aside = context {
   let s = heading-summary.get()
   if s != none {
     h(0.35em)
-    text(size: 11pt, weight: "regular", style: "italic")[(#s.parts.join(" · "))]
-    if s.note != none { footnote(s.note) }
+    // The footnote marker sits inside the small italic text, not the title's.
+    text(size: 11pt, weight: "regular", style: "italic")[(#s.parts.join(" · "))#if s.note != none { footnote(s.note) }]
   }
 }
 #let summarised-heading(level, x) = {

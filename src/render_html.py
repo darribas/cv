@@ -343,7 +343,9 @@ def render_list(kind, entries):
 
 def heading_text(x):
     """A heading's title, plus a subset build's summary in parentheses after
-    it (and its currency note as a tooltip). The full CV has no summaries."""
+    it (and its currency note as a tooltip). Summaries are set by the subset
+    build, and on the full CV by src/build_site_data.py; src/cv.json itself
+    never has one."""
     if "summary" not in x:
         return esc(x["title"])
     note = x.get("summary_note")

@@ -1,0 +1,17 @@
+{
+  "//": "Summaries on the full CV (make site; src/build_site_data.py): section title -> metrics, printed in parentheses after the heading. 'total' sums the award amounts, with the share held as PI. The dated rates below convert other currencies; `make rates` refreshes them from the ECB.",
+  "sections": {
+    "Research Income": [
+      "total"
+    ]
+  },
+  "money": {
+    "currency": "GBP",
+    "rates_date": "2026-09-25",
+    "rates_source": "ECB reference rates",
+    "rates": {
+      "EUR": 0.86045,
+      "USD": 0.754582
+    }
+  }
+}

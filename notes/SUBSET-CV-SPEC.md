@@ -388,7 +388,7 @@ With no inputs/arguments both behave exactly as today.
 "string"}}` on `$defs/section` and `$defs/group`. The build writes
 pre-formatted strings there. Each renderer prints them as one line directly
 under the heading: italic, ~0.9× body size, parts joined by ` · `. No other
-renderer logic. The full CV never sets `summary`.
+renderer logic. `src/cv.json` never sets `summary` (but see "Full CV" below).
 
 A section whose `total` was converted also gets a final note line — appended by
 the build as the last `summary` element, rendered the same way:
@@ -423,7 +423,8 @@ Warn (not fail) if `count` is set on a section of type `text-list` or `named`.
 
 ### 8.3 Exchange rates
 
-Never committed to the repo. Two sources:
+A subset's rates are never committed to the repo (the full CV's are: see
+below). Two sources:
 
 - **Live** — ECB daily reference rates,
   `https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`, via
@@ -454,11 +455,24 @@ parentheses after the heading's title, not on a line below it, and the
 conversion note goes in its own `summary_note` string, printed as a footnote
 (a tooltip in HTML), not as a `summary` element; a `count` that comes from
 `summary.default` is omitted for a section or group kept whole (an explicit
-one still shows "112 publications"); `count`'s publications noun is the source title, not a `rename`;
+one still shows "112 publications"); `total` also gives the share from
+awards whose `role` is "PI" ("≈ £6.9M of ≈ £7.7M as PI"), omitted when no
+award in scope's whole is PI; `count`'s publications noun is the source title, not a `rename`;
 `summary.default` applies to sections only, and a `total` that comes from it
 silently skips sections without `grant` entries (an explicit one is an
 error); cross rates are kept to six significant figures, the same figures
 the manifest records.
+
+### 8.4 Full CV (added after P2, at the author's request)
+
+The full CV carries heading summaries too. `src/summaries.json` names the
+sections and their metrics (today: Research Income → `total`) and holds dated
+exchange rates (`rates_date`, `rates_source`, `rates`); `src/build_site_data.py`
+writes `build/site/cv.json` — `src/cv.json` plus the summary strings — and
+`make site` / `make preview` render that. The site build never fetches: its
+rates are tracked, refreshed on demand with `make rates` (ECB). Rates 90+ days
+old warn; a missing currency fails the build. `make watch` still renders
+`src/cv.json` directly, without summaries.
 
 ## 9. Style (P3)
 

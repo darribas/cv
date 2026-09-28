@@ -236,8 +236,8 @@ Third phase of `notes/SUBSET-CV-SPEC.md` (§15 P2); P3–P5 stay in `TODO.md`.
   parentheses after the heading's title, smaller, italic, joined by " · " —
   no extra vertical space — and the note as a footnote (a tooltip on the
   web page). In Typst the summary reaches the heading's show rule through a
-  `state`, so the PDF bookmarks keep the bare title. The full CV never has
-  one, so `make site` is unchanged.
+  `state`, so the PDF bookmarks keep the bare title; the footnote marker is
+  set small and italic like the summary.
 - **`count`**: "1 of 112 publications", or "112 publications" when nothing
   was dropped — only when asked for on that section: a count from
   `summary.default` is left out for sections kept whole. The noun is a publications heading's own (source) title, else
@@ -247,7 +247,8 @@ Third phase of `notes/SUBSET-CV-SPEC.md` (§15 P2); P3–P5 stay in `TODO.md`.
   scope, subset and whole side by side ("≈ £7.0M of ≈ £12.5M total award
   value"), `≈` and a "Converted to GBP at … of <date>." footnote when
   currencies were converted, and "(N awards without a recorded amount)" plus a warning
-  for gaps. Projects never count. An explicit `total` on a section without
+  for gaps, then the share held as PI ("≈ £7.7M as PI", role "PI"; left out
+  when no award is PI). Projects never count. An explicit `total` on a section without
   awards is an error; one from `summary.default` just skips such sections.
 - **`[money]`**: `currency` (GBP/EUR/USD), `source = "live" | "config"`,
   `rates_date`, `[money.rates]`. Live rates are the ECB daily reference rates
@@ -260,7 +261,15 @@ Third phase of `notes/SUBSET-CV-SPEC.md` (§15 P2); P3–P5 stay in `TODO.md`.
 - **Settled with the author**: summaries sit beside the heading rather than
   on a line of their own, to save space; `source = "config"` without
   `[money.rates]` is an error even if nothing needs converting.
-- **Tests**: `tests/test_summary.py` (30, the ECB fetch always patched):
+- **Full CV summaries** (added at the author's request): `make site` now
+  renders `build/site/cv.json`, written by `src/build_site_data.py` —
+  `src/cv.json` plus the summaries configured in the new, tracked
+  `src/summaries.json` (Research Income: total award value and PI share,
+  with a footnote on the conversion). Its dated rates are tracked so CI
+  builds offline and reproducibly; `make rates` refreshes them from the ECB.
+  ARCHITECTURE.md Decision 5 records why.
+- **Tests**: `tests/test_summary.py` (33) and `tests/test_site_data.py` (10),
+  the ECB fetch always patched:
   both `count` forms, single- and multi-currency totals, the partial-coverage
   suffix, all six cells of the rates table, no fetch with `source =
   "config"`, stale and missing-currency rates, the `[money]`/`summary`

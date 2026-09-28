@@ -9,10 +9,13 @@ SRC      := src/cv.typ
 PDF      := docs/cv.pdf
 HTML     := docs/index.html
 JSON     := $(wildcard src/*.json)
+# What `make site` renders: src/cv.json plus the heading summaries configured
+# in src/summaries.json (src/build_site_data.py). Relative to src/ for Typst.
+SITEDATA := build/site/cv.json
 PREVIEW  := build/preview
 FONTS    := fonts
 
-.PHONY: site pdf html watch preview validate test subset subset-list clean
+.PHONY: site pdf html watch preview validate test rates subset subset-list clean
 
 ## site: build both the PDF and the HTML page  (default target)
 site: pdf html
@@ -20,26 +23,30 @@ site: pdf html
 ## pdf: build the CV PDF into docs/
 pdf: $(PDF)
 
-$(PDF): $(SRC) $(JSON) | docs
-	$(TYPST) compile --font-path $(FONTS) $(SRC) $(PDF)
+$(PDF): $(SRC) $(SITEDATA) | docs
+	$(TYPST) compile --root . --font-path $(FONTS) --input data=../$(SITEDATA) $(SRC) $(PDF)
 
 ## html: build the CV web page into docs/ (index.html, style.css, fonts/)
 html: $(HTML)
 
-$(HTML): src/render_html.py src/style.css $(JSON) | docs
-	$(PYTHON) src/render_html.py
+$(HTML): src/render_html.py src/style.css $(SITEDATA) | docs
+	$(PYTHON) src/render_html.py --data $(SITEDATA)
+
+$(SITEDATA): src/build_site_data.py src/build_subset.py $(JSON)
+	$(PYTHON) src/build_site_data.py --out $(SITEDATA)
 
 docs:
 	mkdir -p docs
 
-## watch: rebuild the PDF on save while editing
+## watch: rebuild the PDF on save while editing (straight from src/cv.json,
+##        so without the heading summaries of src/summaries.json)
 watch: | docs
 	$(TYPST) watch --font-path $(FONTS) $(SRC) $(PDF)
 
 ## preview: render one PNG per page into build/ for visual review
-preview: | docs
+preview: $(SITEDATA) | docs
 	mkdir -p $(PREVIEW)
-	$(TYPST) compile --font-path $(FONTS) --format png --ppi 120 $(SRC) "$(PREVIEW)/cv-{p}.png"
+	$(TYPST) compile --root . --font-path $(FONTS) --input data=../$(SITEDATA) --format png --ppi 120 $(SRC) "$(PREVIEW)/cv-{p}.png"
 
 ## validate: check every src/*.json parses, then schema + id checks
 validate:
@@ -50,7 +57,13 @@ validate:
 test:
 	$(PYTHON) -m unittest discover -s tests -v
 
-## Subset CVs (notes/SUBSET-CV-SPEC.md). Configs live OUTSIDE the repo.
+## rates: refresh the exchange rates in src/summaries.json from the ECB's
+##        daily reference rates (network), for the full CV's totals
+rates:
+	@$(PYTHON) src/build_site_data.py --update-rates
+
+## Subset CVs (notes/SUBSET-CV-SPEC.md). Configs live in the gitignored
+## subsets/ folder or outside the repo.
 ##
 ## subset: build a subset CV from its config — or, if CONFIG doesn't exist
 ##         yet, write a starter config there (every section and record id)
@@ -67,6 +80,6 @@ subset-list:
 
 ## clean: remove build/preview artifacts (the committed PDF/HTML stay)
 clean:
-	rm -rf $(PREVIEW)
+	rm -rf $(PREVIEW) $(dir $(SITEDATA))
 	rm -f $(PDF) $(HTML) docs/style.css
 	rm -rf docs/fonts

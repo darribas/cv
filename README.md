@@ -67,6 +67,11 @@ section that lost records. Totals in mixed currencies use the ECB's daily rates,
 when needed; rates written in the config's `[money.rates]` serve as the
 fallback offline (or always, with `source = "config"`).
 
+The full CV has summaries too: `src/summaries.json` picks the headings
+(Research Income: total award value and the share as PI) and holds the dated
+exchange rates it uses, so the site builds offline. `make rates` refreshes
+them from the ECB.
+
 Subsets are private. `subsets/` and every `*.toml` but the template are
 gitignored, CI fails if one is ever committed, and inside the repo the build
 only writes where git ignores the path — never `docs/` (the public site) or

@@ -278,13 +278,29 @@ departs from "renderers own all formatting" — accepted because the alternative
 is reimplementing metrics and currency conversion in Typst *and* twice in
 Python, and because it lands only in `build/`.
 
-Money is converted to one currency (default GBP) at **live ECB reference
-rates, fetched at build time and never committed**. The config may supply dated
+Money is converted to one currency (default GBP). For a subset, at **live
+ECB reference rates, fetched at build time**. The config may supply dated
 rates, used as a fallback when the ECB is unreachable (or always, with
 `source = "config"`, to reproduce an old build). With neither, the build fails —
-never a silent fallback. A
-converted figure is marked `≈` with the rate date noted, and is labelled as
-total award value, not personal income.
+never a silent fallback. A converted figure is marked `≈` with the rate date
+in a footnote, and is labelled as total award value, not personal income;
+`total` also gives the share of it from awards held as PI.
+
+### The full CV gets summaries too, from tracked rates
+
+Added at the author's request after P2: the full CV shows chosen heading
+summaries as well — Research Income's total award value and PI share. The
+same machinery makes them: `src/build_site_data.py` writes
+`build/site/cv.json` (`src/cv.json` plus the summary strings) and `make site`
+renders that, so the published PDF and page are still a projection of `src/`.
+Which headings get which metrics lives in `src/summaries.json`, and so do the
+**dated exchange rates** the full CV uses. Those rates are tracked, unlike a
+subset's: CI rebuilds the site on every push and should neither need the
+network nor have its figure drift with each day's rates. `make rates`
+refreshes them from the ECB when the author chooses; a site build with rates
+90+ days old warns, and one missing a currency the awards use fails.
+(Rejected: live rates in CI — network-dependent and drifting; per-currency
+sums without conversion — no single figure.)
 
 ### Typography per subset, and fonts that must exist
 

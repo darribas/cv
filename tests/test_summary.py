@@ -46,6 +46,9 @@ FIXTURE = build_subset.Master({"basics": {"name": "Ada Lovelace"}, "sections": [
             grant("a1", 2000), grant("a2", 3000, "EUR")]},
         {"title": "Projects", "type": "project", "entries": [
             {"id": "p1", "date": "2020", "title": "P", "funding": "£1M"}]}]},
+    {"title": "Led Grants", "type": "grant", "entries": [
+        dict(grant("pa", 500_000), role="PI"), dict(grant("pb", 300_000), role="CoI"),
+        dict(grant("pc", 10_000, "EUR"), role="PI")]},
     {"title": "Talks", "type": "talks", "entries": [
         {"id": f"t{i}", "date": "2020", "title": "T"} for i in range(3)]},
     {"title": "Staff", "type": "people", "entries": [{"id": "s1", "name": "X"}]},
@@ -264,6 +267,39 @@ class TotalTest(unittest.TestCase):
         # Whole section: the default count is left out, the total is not.
         self.assertEqual(r.summary("Home Grants"), ["£1.3M total award value"])
 
+    def test_pi_share(self):
+        r = Run(config_rates() + '''
+            [[section]]
+            title = "Led Grants"
+            summary = ["total"]
+        ''')
+        # PI: £500,000 + €10,000 × 0.9; everything adds pb's £300,000.
+        self.assertEqual(r.summary("Led Grants"), [
+            "≈ £809,000 total award value", "≈ £509,000 as PI"])
+        self.assertIsNotNone(r.note("Led Grants"))
+
+    def test_pi_share_of_a_subset(self):
+        r = Run(config_rates() + '''
+            [[section]]
+            title = "Led Grants"
+            summary = ["total"]
+            ids = ["pa", "pb"]
+        ''')
+        self.assertEqual(r.summary("Led Grants"), [
+            "£800,000 of ≈ £809,000 total award value",
+            "£500,000 of ≈ £509,000 as PI"])
+        r = Run(config_rates() + '''
+            [[section]]
+            title = "Led Grants"
+            summary = ["total"]
+            ids = ["pb"]
+        ''')
+        self.assertEqual(r.summary("Led Grants")[1], "£0 of ≈ £509,000 as PI")
+
+    def test_no_pi_awards_no_pi_part(self):
+        r = Run('[[section]]\ntitle = "Home Grants"\nsummary = ["total"]\n')
+        self.assertEqual(r.summary("Home Grants"), ["£1.3M total award value"])
+
     def test_money_format(self):
         fmt = build_subset.fmt_money
         self.assertEqual(fmt(54761, "GBP"), "£54,761")
@@ -480,11 +516,13 @@ class BuildTest(unittest.TestCase):
             out = c.dir / "money"
             cv = json.loads((out / "cv.json").read_text(encoding="utf-8"))
             summary = cv["sections"][0]["summary"]
-            self.assertEqual(len(summary), 2)
+            self.assertEqual(len(summary), 3)
             self.assertEqual(summary[0], "2 of 28 items")
             # £6,788,641 + €250,000 × 0.85 of the whole Awards group.
             self.assertRegex(summary[1], r"^≈ £7\.0M of ≈ £\d+\.\dM total "
                                          r"award value$")
+            # The first one is held as PI (in GBP), the second as CoI.
+            self.assertRegex(summary[2], r"^£6\.8M of ≈ £\d+\.\dM as PI$")
             self.assertEqual(cv["sections"][0]["summary_note"],
                              "Converted to GBP at exchange rates of 1 June 2025.")
             m = json.loads((out / "manifest.json").read_text(encoding="utf-8"))

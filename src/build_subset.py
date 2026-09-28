@@ -685,13 +685,14 @@ def resolve_rates(money, needed, today, warnings):
             raise BuildError([f"exchange rates: [money.rates] has no rate for "
                               f"{c}, which in-scope awards are in" for c in missing])
         rates = {c: configured[c] for c in sorted(needed)}
-        source, label = "config", f"exchange rates of {_long_date(date)}"
+        source = "config"
+        label = f"{money.get('label', 'exchange rates')} of {_long_date(date)}"
         age = (today - date).days
         if age > STALE_DAYS:
-            warnings.append(f"the config's exchange rates are from {date}, "
-                            f"{age} days before this build (more than "
-                            f"{STALE_DAYS}); update [money.rates] and "
-                            "rates_date")
+            warnings.append(f"the exchange rates are from {date}, {age} days "
+                            f"before this build (more than {STALE_DAYS}); "
+                            + money.get("refresh", "update [money.rates] and "
+                                                   "rates_date"))
 
     pasteable = "\n".join([f"rates_date = {date.isoformat()}", "",
                            "[money.rates]"]
@@ -735,7 +736,8 @@ def _count(master, src, group, kept, full):
 
 
 def _total(kept, full, target, rates, warnings, where):
-    """(text, converted?) for the `total` metric over grant entries."""
+    """(parts, converted?) for the `total` metric over grant entries: the
+    total award value, then the share of it from awards held as PI."""
     def figure(grants):
         amounts = [e["amount"] for e in grants if "amount" in e]
         value = sum(a["value"] * (1 if a["currency"] == target
@@ -743,19 +745,29 @@ def _total(kept, full, target, rates, warnings, where):
         converted = any(a["currency"] != target for a in amounts)
         return ("≈ " if converted else "") + fmt_money(value, target), converted
 
-    text, converted = figure(kept)
-    if len(kept) != len(full):
-        whole, whole_converted = figure(full)
-        text += f" of {whole}"
-        converted = converted or whole_converted
-    text += " total award value"
+    def subset_of_whole(kept, full, label):
+        text, converted = figure(kept)
+        if len(kept) != len(full):
+            whole, whole_converted = figure(full)
+            text += f" of {whole}"
+            converted = converted or whole_converted
+        return f"{text} {label}", converted
+
+    text, converted = subset_of_whole(kept, full, "total award value")
     missing = sum("amount" not in e for e in kept)
     if missing:
         s = "s" * (missing != 1)
         text += f" ({missing} award{s} without a recorded amount)"
         warnings.append(f"{where}: total: {missing} award{s} without a "
                         "recorded amount, left out of the total")
-    return text, converted
+    parts = [text]
+    pi_full = [e for e in full if e.get("role") == "PI"]
+    if pi_full:
+        pi_text, pi_converted = subset_of_whole(
+            [e for e in kept if e.get("role") == "PI"], pi_full, "as PI")
+        parts.append(pi_text)
+        converted = converted or pi_converted
+    return parts, converted
 
 
 def summarise(plan, master, scopes, today, warnings):
@@ -814,10 +826,10 @@ def summarise(plan, master, scopes, today, warnings):
             if m == "count":
                 parts.append(_count(master, src, group, kept, full))
             else:
-                text, conv = _total(_grants(master, src, kept),
+                more, conv = _total(_grants(master, src, kept),
                                     _grants(master, src, full), target,
                                     rates, warnings, where)
-                parts.append(text)
+                parts += more
                 converted = converted or conv
         out["summary"] = parts
         if converted:
