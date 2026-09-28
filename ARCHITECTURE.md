@@ -7,8 +7,9 @@ are built.
 
 ## Context
 
-The repository currently holds a single source file, `cv-darribas.tex` (~1,760
-lines): an `article` + `currvita` LaTeX CV. The `TODO.md` goals are, in order:
+When this log began, the repository held a single source file,
+`cv-darribas.tex` (~1,760 lines): an `article` + `currvita` LaTeX CV. The
+`TODO.md` goals were, in order:
 
 1. Clean up the source and give it **real sectioning** (the current sections
    are visual only — `currvita`'s `\begin{cvlist}{...}` emits no `\section`, so
@@ -213,10 +214,10 @@ ignore what they don't know.
 
 ### The toggle: a checkbox, not JavaScript
 
-The page's controls are JS-free (the Sections popover is the native Popover
-API), and the toggle keeps it that way: a visually-hidden checkbox before
-`<main>`, the header button is its `<label>`, and `#show-links:checked ~ main
-.weblinks` does the rest. The state lives in the URL rather than in
+The page's controls work without JavaScript (the Sections popover is the native
+Popover API), and the toggle keeps it that way: a visually-hidden checkbox
+before `<main>`, the header button is its `<label>`, and `#show-links:checked ~
+main .weblinks` does the rest. The state lives in the URL rather than in
 `localStorage`: a `?links=on|off` parameter overrides the default, and the
 page's script (see per-item links below) rewrites it as the switch flips. So a
 reload keeps the view, and a shared link — a copied permalink included — says
@@ -351,18 +352,20 @@ both.
   - Website feed ← the CSL-JSON publications.
   - Subset CVs ← filter the data before rendering.
 - **CI:** a GitHub Action installs the Typst binary (seconds, no TeXLive),
-  rebuilds, and commits the PDF. Fonts are solved by bundling TeX Gyre Pagella
-  in `fonts/` and passing `--font-path fonts` (wired into the Makefile), so
-  the runner needs nothing beyond the Typst binary itself — no system font
-  install step.
+  validates, runs the tests, rebuilds, and commits the PDF and web page. Fonts
+  are solved by bundling TeX Gyre Pagella in `fonts/` and passing `--font-path
+  fonts` (wired into the Makefile), so the runner needs nothing beyond the Typst
+  binary itself — no system font install step.
 
 ### Why this satisfies the criteria
 
 - **Robust:** strict JSON + schema validation; unambiguous, parser-free.
 - **Long-lived standards:** JSON, JSON Schema, CSL-JSON — all durable and
   engine-independent. The data outlives any renderer.
-- **Minimal scripts:** Typst reads the data directly; the only bespoke code is
-  one renderer template. Comments and templates use conventions, not tooling.
+- **Minimal scripts:** Typst reads the data directly; the bespoke code is the
+  renderers (Typst for the PDF, stdlib Python for HTML) plus stdlib-only
+  helpers (validation, ids, subsets) — no third-party dependencies. Comments
+  and templates use conventions, not tooling.
 - **Easy to update:** copy a template block and edit; the editor autocompletes,
   documents, and validates as you go.
 
@@ -399,8 +402,14 @@ original `.tex` and its one-shot migration parser have likewise been retired
 (`notes/MIGRATION-REVIEW.md` has the commit).
 
 TODO items 1–4 are now done: the GitHub Action (`.github/workflows/
-build-site.yml`) rebuilds and commits both the PDF and the HTML page on every
-push, and `src/render_html.py` is the second renderer HTML needed — Typst's
-own HTML export was tested and confirmed unusable for this document (see
-above). GitHub Pages itself is now switched on and the site is publicly live
-(see `LOG.md`).
+build-site.yml`) validates, tests, and rebuilds and commits both the PDF and
+the HTML page on every push, and `src/render_html.py` is the second renderer
+HTML needed — Typst's own HTML export was tested and confirmed unusable for
+this document (see above). GitHub Pages itself is switched on and the site is
+publicly live (see `LOG.md`).
+
+Since then: publications carry web-only `links` (Decision 4), every item has a
+shareable permalink (Decision 4, issue #17), and subset CVs are built through
+phase P2 of the spec — ids, config and selection, PDF, heading summaries and
+exchange rates (Decision 5). P3–P5 (typography, DOCX, header overrides) are in
+`TODO.md`.

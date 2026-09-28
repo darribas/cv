@@ -1,7 +1,7 @@
 # CV build pipeline. Design rationale lives in ARCHITECTURE.md.
 #
 # Source of truth is src/ (hand-edited JSON + the Typst renderer).
-# Build outputs go to docs/ (served by GitHub Pages later).
+# Build outputs go to docs/ (served by GitHub Pages).
 
 TYPST    ?= typst
 PYTHON   ?= python3
@@ -78,7 +78,8 @@ subset:
 subset-list:
 	@$(PYTHON) src/build_subset.py --list $(if $(SECTION),"$(SECTION)")
 
-## clean: remove build/preview artifacts (the committed PDF/HTML stay)
+## clean: remove build/ artifacts and the built docs/ files (restore the
+##        committed ones with `git checkout docs`)
 clean:
 	rm -rf $(PREVIEW) $(dir $(SITEDATA))
 	rm -f $(PDF) $(HTML) docs/style.css

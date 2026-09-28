@@ -4,6 +4,23 @@ This repository tracks my CV, and adds scaffolding to re-build it
 automatically on new changes/commits, as well as serving it through different
 forms.
 
+## Building
+
+The PDF and web page are published at `docs/` (GitHub Pages); CI rebuilds and
+commits them on every push to `main`, so there is normally nothing to run.
+Locally, with [Typst](https://typst.app) and Python 3 (stdlib only):
+
+```bash
+make site       # docs/cv.pdf + docs/index.html
+make validate   # JSON parses, schema and id checks
+make test       # unit tests
+```
+
+The web page adds what the PDF leaves out: a "Links" switch showing each
+publication's code, data and other links, and a permalink on every item
+(`…/#<record-id>`) that highlights it when opened. `?links=on|off` in the URL
+sets the switch.
+
 ## Adding records with an AI agent
 
 The CV is structured data (`src/cv.json` for the body, `src/publications.json`
