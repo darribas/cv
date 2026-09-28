@@ -450,18 +450,26 @@ tracked follow-up in `TODO.md`, not part of this spec.
 Network access is only ever attempted when a `total` needs a conversion and
 `source = "live"`. Tests never hit the network (§14).
 
-*Settled in P2* (with the author, to save space): the summary prints in
-parentheses after the heading's title, not on a line below it, and the
-conversion note goes in its own `summary_note` string, printed as a footnote
-(a tooltip in HTML), not as a `summary` element; a `count` that comes from
-`summary.default` is omitted for a section or group kept whole (an explicit
-one still shows "112 publications"); `total` also gives the share from
-awards whose `role` is "PI" ("≈ £6.9M of ≈ £7.7M as PI"), omitted when no
-award in scope's whole is PI; `count`'s publications noun is the source title, not a `rename`;
-`summary.default` applies to sections only, and a `total` that comes from it
-silently skips sections without `grant` entries (an explicit one is an
-error); cross rates are kept to six significant figures, the same figures
-the manifest records.
+*Settled in P2, with the author — supersedes the format in §8.1–8.2
+("parsimony is king"):* the summary prints in parentheses after the heading's
+title, not on a line below it, parts joined by `; `:
+`Research Income (7 of 28; ≈ £11.1M, £7.5M as PI)`.
+
+- `count` has no noun: `7 of 28`, or `28` for a whole section when asked for
+  explicitly; a `count` that comes from `summary.default` is omitted for a
+  section or group kept whole.
+- `total` shows only the figures for the records kept (the count already
+  says it is a selection; the full CV carries the complete figures) and no
+  label: `≈ £11.1M`, then `, £7.5M as PI` — the part from awards whose
+  `role` is "PI", omitted if none is — then `, N award(s) without an amount`
+  if any. One `≈` leads the money when anything was converted; the
+  conversion note goes in its own `summary_note` string, printed as a
+  footnote (a tooltip in HTML). A total with no awards kept is omitted.
+- `summary.default` applies to sections only, and a `total` that comes from
+  it silently skips sections without `grant` entries (an explicit one is an
+  error); rates are needed only for the currencies of the awards kept; cross
+  rates are kept to six significant figures, the same figures the manifest
+  records.
 
 ### 8.4 Full CV (added after P2, at the author's request)
 

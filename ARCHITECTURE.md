@@ -272,7 +272,7 @@ a config listing every id makes hand-picking practical.
 
 ### The one boundary this moves: `src/` holds facts, `build/` holds a projection
 
-Section summaries ("12 of 112 publications", "≈ £1.3M of ≈ £4.4M") are computed
+Section summaries ("Research Income (7 of 28; ≈ £11.1M, £7.5M as PI)") are computed
 in the build and written into the derived data as pre-formatted strings. That
 departs from "renderers own all formatting" — accepted because the alternative
 is reimplementing metrics and currency conversion in Typst *and* twice in
@@ -283,8 +283,10 @@ ECB reference rates, fetched at build time**. The config may supply dated
 rates, used as a fallback when the ECB is unreachable (or always, with
 `source = "config"`, to reproduce an old build). With neither, the build fails —
 never a silent fallback. A converted figure is marked `≈` with the rate date
-in a footnote, and is labelled as total award value, not personal income;
-`total` also gives the share of it from awards held as PI.
+in a footnote; `total` also gives the part from awards held as PI. The
+figures are whole awards across partners, not personal income; at the
+author's choice they carry no label ("parsimony is king"), relying on the
+heading.
 
 ### The full CV gets summaries too, from tracked rates
 

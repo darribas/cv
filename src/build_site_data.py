@@ -2,7 +2,7 @@
 """Summaries on the full CV: the data `make site` renders.
 
 The full CV carries a few heading summaries too — e.g. Research Income's
-"(≈ £12.5M total award value · ≈ £7.7M as PI)". Which headings get which
+"(≈ £12.5M, £7.7M as PI)". Which headings get which
 metrics, and the exchange rates the totals use, live in src/summaries.json.
 This script computes them with the subset build's machinery
 (build_subset.summarise, spec §8) and writes build/site/cv.json: src/cv.json

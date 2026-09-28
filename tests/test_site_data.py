@@ -43,9 +43,8 @@ class SiteDataTest(unittest.TestCase):
             cv, warnings = build_site_data.site_data(MASTER, sections, money,
                                                      TODAY)
         ri = research_income(cv)
-        total, pi = ri["summary"]
-        self.assertRegex(total, r"^≈ £\d+\.\dM total award value$")
-        self.assertRegex(pi, r"^≈ £\d+\.\dM as PI$")
+        (total,) = ri["summary"]
+        self.assertRegex(total, r"^≈ £\d+\.\dM, £\d+\.\dM as PI$")
         date = money["rates_date"]
         self.assertEqual(ri["summary_note"],
                          f"Converted to GBP at ECB reference rates of "
@@ -148,8 +147,8 @@ class RenderTest(unittest.TestCase):
             text = subprocess.run(["pdftotext", str(work / "cv.pdf"), "-"],
                                   capture_output=True, text=True,
                                   check=True).stdout
-            self.assertRegex(text, r"Research Income \(≈ £\d+\.\dM total "
-                                   r"award value · ≈ £\d+\.\dM as PI\)")
+            self.assertRegex(text, r"Research Income \(≈ £\d+\.\dM, "
+                                   r"£\d+\.\dM as PI\)")
 
 
 if __name__ == "__main__":

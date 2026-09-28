@@ -54,15 +54,15 @@ USD = 0.74                  #   rates it used in this form, ready to paste
 default = []                # metrics for every section without its own
                             #   `summary` (groups only get one explicitly)
 
-# Metrics, shown in parentheses after the heading's title, joined by " · ":
-#   "count" -> "12 of 112 publications"; for a whole section, "112
-#              publications" if asked for explicitly, and nothing if it only
+# Metrics, shown in parentheses after the heading's title, joined by "; ",
+# e.g. "Research Income (7 of 28; ≈ £11.1M, £7.5M as PI)":
+#   "count" -> "7 of 28": records kept of the section's; for a whole
+#              section "28" if asked for explicitly, and nothing if it only
 #              comes from `default`
-#   "total" -> "≈ £1.3M of ≈ £4.4M total award value": the summed `amount` of
-#              the award (type grant) entries — whole awards, not a share —
-#              with ≈ and a footnote "Converted to GBP at …" when currencies
-#              were converted. Awards without an amount are counted in
-#              brackets.
+#   "total" -> "≈ £11.1M, £7.5M as PI": the summed `amount` of the award
+#              (type grant) entries kept — whole awards, not a share — then
+#              the part from awards held as PI (if any). ≈ and a footnote
+#              "Converted to GBP at …" when currencies were converted.
 
 # ---- Sections --------------------------------------------------------------
 # Listed -> included, in the order listed; unlisted -> dropped.
@@ -82,11 +82,11 @@ rename = "Selected Publications"  # heading shown; matching still uses `title`
 ids = [                           # only these records; a grouped section's ids
   "rey2023geographic",            # may come from any of its groups, and groups
 ]                                 # left empty are dropped
-summary = ["count"]               # "(1 of 112 publications)"
+summary = ["count"]               # "(1 of 112)"
 
 [[section]]
 title   = "Research Income"
-summary = ["count", "total"]      # "(22 of 28 items · ≈ £…M total award value)"
+summary = ["count", "total"]      # "(22 of 28; ≈ £…M, £…M as PI)"
   [[section.group]]               # only these groups, in this order
   title = "Awards"                # the whole group
   # rename, ids and summary work here as on a section. A section with

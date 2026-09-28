@@ -4,10 +4,10 @@
 A TOML config (see src/subset.template.toml; git ignores every *.toml but
 that template, so a config inside the repo stays untracked) names the
 sections to include and, optionally, the ids of the records to keep, and
-which headings carry a summary ("12 of 112 publications", "≈ £1.3M of
-≈ £4.4M total award value"). The build filters the master data into a
-derived cv.json + publications.json that still validate against
-cv.schema.json, writes the finished summary strings into them, then runs the
+which headings carry a summary ("(7 of 28; ≈ £11.1M, £7.5M as PI)": records
+kept of the section's, then the summed award amounts and the share as PI).
+The build filters the master data into a derived cv.json +
+publications.json that still validate against cv.schema.json, writes the finished summary strings into them, then runs the
 unchanged renderers over it (ARCHITECTURE.md, Decision 5; the full brief is
 notes/SUBSET-CV-SPEC.md). Renderers learn nothing about configs or ids; they
 print a `summary` if one is there.
@@ -84,13 +84,9 @@ LATER = {
 FORMATS = {"pdf"}
 LATER_FORMATS = {"docx": "P4", "md": "P4"}
 
-# Section summaries (spec §8): the metrics a `summary` array may name, the
-# noun `count` uses per entry type, and the exchange-rate sources for `total`.
+# Section summaries (spec §8): the metrics a `summary` array may name, and
+# the exchange-rate sources for `total`.
 METRICS = ("count", "total")
-NOUNS = {"grant": "awards", "talks": "talks", "people": "people",
-         "courses": "courses"}
-SINGULAR = {"awards": "award", "talks": "talk", "people": "person",
-            "courses": "course", "items": "item"}
 UNCOUNTABLE = {"text-list", "named"}  # `count` on these warns
 SOURCES = ("live", "config")
 CODE_RE = re.compile(r"^[A-Z]{3}$")
@@ -716,58 +712,34 @@ def fmt_money(value, currency):
     return f"{symbol}{round(value):,}"
 
 
-def _noun(master, src, group, full):
-    """The noun `count` uses: a publications heading's own title, else one
-    per entry type, else "items"."""
-    if master.is_pubs(src):
-        return (group or src)["title"].lower()
-    kinds = {master.kind(src, g) for g, _ in full}
-    return NOUNS.get(kinds.pop(), "items") if len(kinds) == 1 else "items"
-
-
-def _count(master, src, group, kept, full):
+def _count(kept, full):
+    """"7 of 28" where records were dropped, else "28"."""
     n, total = sum(len(i) for _, i in kept), sum(len(i) for _, i in full)
-    noun = _noun(master, src, group, full)
-    if n != total:
-        return f"{n} of {total} {noun}"
-    if total == 1:
-        noun = SINGULAR.get(noun, noun[:-1] if noun.endswith("s") else noun)
-    return f"{total} {noun}"
+    return f"{n} of {total}" if n != total else f"{total}"
 
 
-def _total(kept, full, target, rates, warnings, where):
-    """(parts, converted?) for the `total` metric over grant entries: the
-    total award value, then the share of it from awards held as PI."""
-    def figure(grants):
-        amounts = [e["amount"] for e in grants if "amount" in e]
-        value = sum(a["value"] * (1 if a["currency"] == target
-                                  else rates[a["currency"]]) for a in amounts)
-        converted = any(a["currency"] != target for a in amounts)
-        return ("≈ " if converted else "") + fmt_money(value, target), converted
+def _total(grants, target, rates, warnings, where):
+    """(text, converted?) for the `total` metric over the grant entries kept:
+    "≈ £11.1M, £7.5M as PI" — the summed award amounts, then the share from
+    awards held as PI (left out if none is). One ≈ covers both figures."""
+    def value(grants):
+        return sum(e["amount"]["value"] * (1 if e["amount"]["currency"] == target
+                                           else rates[e["amount"]["currency"]])
+                   for e in grants if "amount" in e)
 
-    def subset_of_whole(kept, full, label):
-        text, converted = figure(kept)
-        if len(kept) != len(full):
-            whole, whole_converted = figure(full)
-            text += f" of {whole}"
-            converted = converted or whole_converted
-        return f"{text} {label}", converted
-
-    text, converted = subset_of_whole(kept, full, "total award value")
-    missing = sum("amount" not in e for e in kept)
+    converted = any(e["amount"]["currency"] != target
+                    for e in grants if "amount" in e)
+    parts = [("≈ " if converted else "") + fmt_money(value(grants), target)]
+    pi = [e for e in grants if e.get("role") == "PI"]
+    if pi:
+        parts.append(f"{fmt_money(value(pi), target)} as PI")
+    missing = sum("amount" not in e for e in grants)
     if missing:
         s = "s" * (missing != 1)
-        text += f" ({missing} award{s} without a recorded amount)"
+        parts.append(f"{missing} award{s} without an amount")
         warnings.append(f"{where}: total: {missing} award{s} without a "
                         "recorded amount, left out of the total")
-    parts = [text]
-    pi_full = [e for e in full if e.get("role") == "PI"]
-    if pi_full:
-        pi_text, pi_converted = subset_of_whole(
-            [e for e in kept if e.get("role") == "PI"], pi_full, "as PI")
-        parts.append(pi_text)
-        converted = converted or pi_converted
-    return parts, converted
+    return ", ".join(parts), converted
 
 
 def summarise(plan, master, scopes, today, warnings):
@@ -812,7 +784,8 @@ def summarise(plan, master, scopes, today, warnings):
                             "text-list/named entries, which are not "
                             "separate records — shown anyway")
         if "total" in metrics:
-            needed |= {e["amount"]["currency"] for e in grants
+            needed |= {e["amount"]["currency"]
+                       for e in _grants(master, src, kept)
                        if "amount" in e} - {target}
         if metrics:
             todo.append((where, out, src, group, metrics, kept, full))
@@ -824,14 +797,14 @@ def summarise(plan, master, scopes, today, warnings):
         parts, converted = [], False
         for m in metrics:
             if m == "count":
-                parts.append(_count(master, src, group, kept, full))
-            else:
-                more, conv = _total(_grants(master, src, kept),
-                                    _grants(master, src, full), target,
+                parts.append(_count(kept, full))
+            elif _grants(master, src, kept):  # no awards kept: no total
+                text, conv = _total(_grants(master, src, kept), target,
                                     rates, warnings, where)
-                parts += more
+                parts.append(text)
                 converted = converted or conv
-        out["summary"] = parts
+        if parts:
+            out["summary"] = parts
         if converted:
             out["summary_note"] = record["note"]
     return record

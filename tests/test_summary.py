@@ -108,7 +108,7 @@ def errors(text, master=FIXTURE, **kw):
 
 
 class CountTest(unittest.TestCase):
-    def test_subset_and_full_forms(self):
+    def test_subset_and_whole_forms(self):
         r = Run('''
             [[section]]
             title = "Talks"
@@ -118,8 +118,8 @@ class CountTest(unittest.TestCase):
             title = "Staff"
             summary = ["count"]
         ''')
-        self.assertEqual(r.summary("Talks"), ["1 of 3 talks"])
-        self.assertEqual(r.summary("Staff"), ["1 person"])
+        self.assertEqual(r.summary("Talks"), ["1 of 3"])
+        self.assertEqual(r.summary("Staff"), ["1"])  # whole, asked for
         self.assertEqual(r.warnings, [])
         self.assertIsNone(r.record)
 
@@ -132,13 +132,9 @@ class CountTest(unittest.TestCase):
             title = "Publications"
             ids = ["rey2023geographic"]
         ''', master=MASTER)
-        self.assertEqual(r.summary("Publications"), [f"1 of {n} publications"])
-        r = Run('[[section]]\ntitle = "Publications"\nrename = "Papers"\n'
-                'summary = ["count"]\n', master=MASTER)
-        # The noun is the source title, whatever the heading is renamed to.
-        self.assertEqual(r.summary("Papers"), [f"{n} publications"])
+        self.assertEqual(r.summary("Publications"), [f"1 of {n}"])
 
-    def test_group_count_and_nouns(self):
+    def test_group_count(self):
         r = Run('''
             [[section]]
             title = "Research Income"
@@ -150,9 +146,8 @@ class CountTest(unittest.TestCase):
               [[section.group]]
               title = "Projects"
         ''')
-        # Mixed entry types -> "items"; a grant group -> "awards".
-        self.assertEqual(r.summary("Research Income"), ["2 of 3 items"])
-        self.assertEqual(r.summary("Research Income", "Awards"), ["1 of 2 awards"])
+        self.assertEqual(r.summary("Research Income"), ["2 of 3"])
+        self.assertEqual(r.summary("Research Income", "Awards"), ["1 of 2"])
         self.assertIsNone(r.summary("Research Income", "Projects"))
 
     def test_default_applies_to_sections_not_groups(self):
@@ -170,9 +165,9 @@ class CountTest(unittest.TestCase):
               [[section.group]]
               title = "Awards"
         ''')
-        self.assertEqual(r.summary("Talks"), ["2 of 3 talks"])
+        self.assertEqual(r.summary("Talks"), ["2 of 3"])
         self.assertIsNone(r.summary("Staff"))  # its own empty summary wins
-        self.assertEqual(r.summary("Research Income"), ["2 of 3 items"])
+        self.assertEqual(r.summary("Research Income"), ["2 of 3"])
         self.assertIsNone(r.summary("Research Income", "Awards"))
 
     def test_default_count_omitted_for_whole_sections(self):
@@ -181,18 +176,24 @@ class CountTest(unittest.TestCase):
             default = ["count"]
             [[section]]
             title = "Talks"
-            [[section]]
-            title = "Staff"
-            summary = ["count"]
         ''')
         self.assertIsNone(r.summary("Talks"))  # nothing dropped: no summary
-        self.assertEqual(r.summary("Staff"), ["1 person"])  # explicit: shown
 
     def test_count_on_named_warns(self):
         r = Run('[[section]]\ntitle = "Languages"\nsummary = ["count"]\n')
-        self.assertEqual(r.summary("Languages"), ["1 item"])
+        self.assertEqual(r.summary("Languages"), ["1"])
         self.assertEqual(len(r.warnings), 1)
         self.assertIn("'Languages'", r.warnings[0])
+
+    def test_joined_with_total(self):
+        r = Run(config_rates() + '''
+            [[section]]
+            title = "Led Grants"
+            summary = ["count", "total"]
+            ids = ["pa", "pc"]
+        ''')
+        self.assertEqual(r.summary("Led Grants"),
+                         ["2 of 3", "≈ £509,000, £509,000 as PI"])
 
 
 class TotalTest(unittest.TestCase):
@@ -200,33 +201,41 @@ class TotalTest(unittest.TestCase):
         r = Run('''
             [[section]]
             title = "Home Grants"
-            summary = ["count", "total"]
+            summary = ["total"]
             ids = ["h1", "h2"]
         ''')
-        self.assertEqual(r.summary("Home Grants"),
-                         ["2 of 3 awards", "£66,761 of £1.3M total award value"])
+        self.assertEqual(r.summary("Home Grants"), ["£66,761"])
         self.assertIsNone(r.note("Home Grants"))
         self.assertIsNone(r.record)
         r.fetch.assert_not_called()  # nothing to convert, so no network
 
-    def test_nothing_dropped_shows_one_figure(self):
+    def test_only_the_kept_figure(self):
         r = Run('[[section]]\ntitle = "Home Grants"\nsummary = ["total"]\n')
-        self.assertEqual(r.summary("Home Grants"), ["£1.3M total award value"])
+        self.assertEqual(r.summary("Home Grants"), ["£1.3M"])
 
     def test_multi_currency(self):
         r = Run(config_rates() + '''
             [[section]]
             title = "Mixed Grants"
             summary = ["total"]
-            ids = ["m2"]
+            ids = ["m1", "m2", "m3"]
         ''')
-        # €100,000 × 0.9; the whole: £1,000,000 + £90,000 + $50,000 × 0.8.
-        self.assertEqual(r.summary("Mixed Grants"),
-                         ["≈ £90,000 of ≈ £1.1M total award value"])
+        # £1,000,000 + €100,000 × 0.9 + $50,000 × 0.8.
+        self.assertEqual(r.summary("Mixed Grants"), ["≈ £1.1M"])
         self.assertEqual(r.note("Mixed Grants"), "Converted to GBP at "
                          "exchange rates of 24 September 2026.")
         self.assertEqual(r.record["rates"], {"EUR": 0.9, "USD": 0.8})
         self.assertEqual(r.warnings, [])
+
+    def test_rates_only_for_the_currencies_kept(self):
+        r = Run(config_rates() + '''
+            [[section]]
+            title = "Mixed Grants"
+            summary = ["total"]
+            ids = ["m2"]
+        ''')
+        self.assertEqual(r.summary("Mixed Grants"), ["≈ £90,000"])
+        self.assertEqual(r.record["rates"], {"EUR": 0.9})
 
     def test_partial_coverage_suffix(self):
         r = Run(config_rates() + '''
@@ -234,9 +243,8 @@ class TotalTest(unittest.TestCase):
             title = "Mixed Grants"
             summary = ["total"]
         ''')
-        self.assertEqual(r.summary("Mixed Grants")[0],
-                         "≈ £1.1M total award value "
-                         "(1 award without a recorded amount)")
+        self.assertEqual(r.summary("Mixed Grants"),
+                         ["≈ £1.1M, 1 award without an amount"])
         self.assertEqual(len(r.warnings), 1)
         self.assertIn("without a recorded amount", r.warnings[0])
 
@@ -246,8 +254,26 @@ class TotalTest(unittest.TestCase):
             title = "Research Income"
             summary = ["total"]
         ''')
-        self.assertEqual(r.summary("Research Income")[0],
-                         "≈ £4,700 total award value")  # £2,000 + €3,000 × 0.9
+        self.assertEqual(r.summary("Research Income"),
+                         ["≈ £4,700"])  # £2,000 + €3,000 × 0.9
+
+    def test_no_awards_kept_no_total(self):
+        r = Run('''
+            [[section]]
+            title = "Research Income"
+            summary = ["count", "total"]
+              [[section.group]]
+              title = "Projects"
+        ''')
+        self.assertEqual(r.summary("Research Income"), ["1 of 3"])
+        r = Run('''
+            [[section]]
+            title = "Research Income"
+            summary = ["total"]
+              [[section.group]]
+              title = "Projects"
+        ''')
+        self.assertIsNone(r.summary("Research Income"))  # no empty "()"
 
     def test_explicit_total_without_grants_is_an_error(self):
         problems = errors('[[section]]\ntitle = "Talks"\nsummary = ["total"]\n')
@@ -265,7 +291,7 @@ class TotalTest(unittest.TestCase):
         ''')
         self.assertIsNone(r.summary("Talks"))
         # Whole section: the default count is left out, the total is not.
-        self.assertEqual(r.summary("Home Grants"), ["£1.3M total award value"])
+        self.assertEqual(r.summary("Home Grants"), ["£1.3M"])
 
     def test_pi_share(self):
         r = Run(config_rates() + '''
@@ -274,8 +300,7 @@ class TotalTest(unittest.TestCase):
             summary = ["total"]
         ''')
         # PI: £500,000 + €10,000 × 0.9; everything adds pb's £300,000.
-        self.assertEqual(r.summary("Led Grants"), [
-            "≈ £809,000 total award value", "≈ £509,000 as PI"])
+        self.assertEqual(r.summary("Led Grants"), ["≈ £809,000, £509,000 as PI"])
         self.assertIsNotNone(r.note("Led Grants"))
 
     def test_pi_share_of_a_subset(self):
@@ -285,20 +310,14 @@ class TotalTest(unittest.TestCase):
             summary = ["total"]
             ids = ["pa", "pb"]
         ''')
-        self.assertEqual(r.summary("Led Grants"), [
-            "£800,000 of ≈ £809,000 total award value",
-            "£500,000 of ≈ £509,000 as PI"])
+        self.assertEqual(r.summary("Led Grants"), ["£800,000, £500,000 as PI"])
         r = Run(config_rates() + '''
             [[section]]
             title = "Led Grants"
             summary = ["total"]
             ids = ["pb"]
         ''')
-        self.assertEqual(r.summary("Led Grants")[1], "£0 of ≈ £509,000 as PI")
-
-    def test_no_pi_awards_no_pi_part(self):
-        r = Run('[[section]]\ntitle = "Home Grants"\nsummary = ["total"]\n')
-        self.assertEqual(r.summary("Home Grants"), ["£1.3M total award value"])
+        self.assertEqual(r.summary("Led Grants"), ["£300,000"])  # no PI kept
 
     def test_money_format(self):
         fmt = build_subset.fmt_money
@@ -377,7 +396,7 @@ class RatesTest(unittest.TestCase):
         r = Run('[money]\ncurrency = "EUR"\n'
                 '[[section]]\ntitle = "Home Grants"\nsummary = ["total"]\n')
         # £1,266,761.4 at €1/0.85 per £.
-        self.assertEqual(r.summary("Home Grants"), ["≈ €1.5M total award value"])
+        self.assertEqual(r.summary("Home Grants"), ["≈ €1.5M"])
         self.assertEqual(r.note("Home Grants"), "Converted to EUR at ECB "
                          "reference rates of 26 September 2026.")
 
@@ -400,14 +419,14 @@ class RatesTest(unittest.TestCase):
             [[section]]
             title = "Mixed Grants"
             summary = ["total"]
-            ids = ["m1"]
+            ids = ["m1", "m3"]
         ''')
-        # Only m1 (GBP) is kept, but the whole section's USD is shown too.
         self.assertEqual(len(problems), 1)
         self.assertIn("no rate for USD", problems[0])
 
     def test_missing_currency_in_ecb_feed(self):
-        problems = errors(RatesTableTest.SECTION,
+        problems = errors('[[section]]\ntitle = "Mixed Grants"\n'
+                          'summary = ["total"]\nids = ["m3"]\n',
                           ecb=(ECB_DAY, {"EUR": 1.0, "GBP": 0.85}))
         self.assertIn("no rate for USD", problems[0])
 
@@ -515,19 +534,14 @@ class BuildTest(unittest.TestCase):
             self.assertEqual(run.returncode, 0, run.stderr)
             out = c.dir / "money"
             cv = json.loads((out / "cv.json").read_text(encoding="utf-8"))
-            summary = cv["sections"][0]["summary"]
-            self.assertEqual(len(summary), 3)
-            self.assertEqual(summary[0], "2 of 28 items")
-            # £6,788,641 + €250,000 × 0.85 of the whole Awards group.
-            self.assertRegex(summary[1], r"^≈ £7\.0M of ≈ £\d+\.\dM total "
-                                         r"award value$")
-            # The first one is held as PI (in GBP), the second as CoI.
-            self.assertRegex(summary[2], r"^£6\.8M of ≈ £\d+\.\dM as PI$")
+            # £6,788,641 (as PI) + €250,000 × 0.85 (as CoI).
+            self.assertEqual(cv["sections"][0]["summary"],
+                             ["2 of 28", "≈ £7.0M, £6.8M as PI"])
             self.assertEqual(cv["sections"][0]["summary_note"],
                              "Converted to GBP at exchange rates of 1 June 2025.")
             m = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(m["rates"]["source"], "config")
-            self.assertEqual(m["rates"]["rates"], {"EUR": 0.85, "USD": 0.75})
+            self.assertEqual(m["rates"]["rates"], {"EUR": 0.85})  # kept only
             # Rates of 2025-06-01, built "on" 2026-01-01: 214 days old.
             self.assertEqual(len(m["warnings"]), 1)
             self.assertIn("214 days", m["warnings"][0])
@@ -536,7 +550,7 @@ class BuildTest(unittest.TestCase):
             html = render_html(out / "cv.json", c.dir / "html")
             self.assertIn('<h2>Research Income <span class="summary" title='
                           '"Converted to GBP at exchange rates of 1 June 2025.">'
-                          '(2 of 28 items · ≈ £7.0M', html)
+                          '(2 of 28; ≈ £7.0M, £6.8M as PI)*</span>', html)
             pdf = out / "darribas-cv-money.pdf"
             # In the heading line, not the PDF bookmark: that is the title.
             self.assertEqual(pdf_bookmarks(pdf), ["Awards", "Research Income"])
@@ -544,7 +558,8 @@ class BuildTest(unittest.TestCase):
                 text = subprocess.run(["pdftotext", str(pdf), "-"],
                                       capture_output=True, text=True,
                                       check=True).stdout
-                self.assertIn("Research Income (2 of 28 items", text)
+                self.assertIn("Research Income (2 of 28; ≈ £7.0M, £6.8M as PI)",
+                              text)
                 self.assertIn("Converted to GBP at exchange rates of 1 June "
                               "2025.", text)  # the footnote
 

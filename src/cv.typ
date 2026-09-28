@@ -216,8 +216,8 @@
   }
 }
 
-// A subset build's summary ("12 of 112 publications · …", set in its derived
-// data) prints in parentheses after the heading's title, and its currency
+// A summary ("7 of 28; ≈ £11.1M, £7.5M as PI", set in the derived data)
+// prints in parentheses after the heading's title, and its currency
 // note as a footnote. It reaches the heading show rules below through this
 // state, not the heading's body, so it stays out of the PDF bookmarks.
 // Summaries are set by the subset build, and for the full CV by
@@ -228,7 +228,7 @@
   if s != none {
     h(0.35em)
     // The footnote marker sits inside the small italic text, not the title's.
-    text(size: 11pt, weight: "regular", style: "italic")[(#s.parts.join(" · "))#if s.note != none { footnote(s.note) }]
+    text(size: 11pt, weight: "regular", style: "italic")[(#s.parts.join("; "))#if s.note != none { footnote(s.note) }]
   }
 }
 #let summarised-heading(level, x) = {

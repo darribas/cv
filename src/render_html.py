@@ -352,7 +352,7 @@ def heading_text(x):
     tip = f' title="{esc(note)}"' if note else ""
     mark = "*" if note else ""
     return (f'{esc(x["title"])} <span class="summary"{tip}>'
-            f'({esc(" · ".join(x["summary"]))}){mark}</span>')
+            f'({esc("; ".join(x["summary"]))}){mark}</span>')
 
 
 def render_publications(section):

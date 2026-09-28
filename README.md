@@ -61,8 +61,9 @@ command again: now it builds. Outputs land beside the config
 `src/subset.template.toml` documents every config key.
 
 A heading can carry a summary in parentheses after its title — `summary =
-["count", "total"]` gives "(12 of 112 publications)" or "(≈ £1.3M of ≈ £4.4M
-total award value)"; `[summary] default = ["count"]` adds counts to every
+["count", "total"]` on Research Income gives "Research Income (7 of 28;
+≈ £11.1M, £7.5M as PI)": records kept, then the summed award amounts and the
+part held as PI. `[summary] default = ["count"]` adds counts to every
 section that lost records. Totals in mixed currencies use the ECB's daily rates, fetched only
 when needed; rates written in the config's `[money.rates]` serve as the
 fallback offline (or always, with `source = "config"`).
