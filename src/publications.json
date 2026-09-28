@@ -4307,5 +4307,35 @@
         "url": "https://city2graph.net/latest/"
       }
     ]
+  },
+  {
+    "id": "metzler2026satellite",
+    "type": "article-journal",
+    "title": "Is a (satellite) image worth a thousand data points? Comparing machine learning approaches to predict environmental and social inequalities in England",
+    "author": [
+      {
+        "family": "Metzler",
+        "given": "B"
+      },
+      {
+        "family": "Fleischmann",
+        "given": "M"
+      },
+      {
+        "family": "Arribas-Bel",
+        "given": "D"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "category": "journal-article",
+    "container-title": "PLOS ONE",
+    "volume": "21(8), e0356472",
+    "DOI": "10.1371/journal.pone.0356472"
   }
 ]
