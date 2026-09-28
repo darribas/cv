@@ -274,3 +274,27 @@ Third phase of `notes/SUBSET-CV-SPEC.md` (§15 P2); P3–P5 stay in `TODO.md`.
   "config"`, stale and missing-currency rates, the `[money]`/`summary`
   config errors, and a real build through both renderers (summary beside
   the heading, footnote, bookmarks unchanged) and `--strict`.
+
+## Web page: Links switch keeps the reader's place (#16)
+
+Toggling "Links" jumped to the top of the page: clicking the `<label>`
+focuses the visually-hidden checkbox, and the browser scrolls focus into view
+— and the checkbox sat at the top. One CSS rule (`#show-links { position:
+fixed }`) keeps it always in view, so toggling no longer scrolls. Checked in
+headless Chromium and Firefox and by hand in Firefox; Safari unchecked. Known
+residue: the text can shift by up to one row of link pills when an entry
+partly under the sticky bar gains or loses its links row. PR #19.
+
+## Web page: per-item links (#17)
+
+Every item renders with its record id as its HTML `id` and a faint link glyph
+in the left margin (shown on hover/focus, dimly on touch screens). Opening a
+`#<id>` URL makes the item `:target`: a soft wash, and `main:has(:target)`
+fades the rest back until the URL points elsewhere; a half-viewport
+`scroll-margin-top` lands it mid-screen. The page gained its first script —
+progressive enhancement — which copies the permalink on click and handles a
+new `?links=on|off` parameter: it overrides the switch's default and is
+rewritten as the switch flips, so a reload or a shared link keeps the view.
+That supersedes the "resets on reload" trade-off recorded under *Web-only
+publication links* above. `test_site_unchanged` now allows the HTML to differ
+only by these anchors. `ARCHITECTURE.md` Decision 4 has the design. PR #20.

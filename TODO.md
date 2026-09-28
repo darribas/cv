@@ -36,12 +36,12 @@ standard academic CV, which is the main need this repo addresses.
 
 **Progress.** The "less URLs" half is done for publications: a publication in
 `src/publications.json` carries a `links` array of typed web-only URLs (official
-version, code, data, visualisation, …), rendered on the web page behind a "Links"
-switch and never in the PDF, and the research page's links are now transcribed in
-(140 links, 88 publications). See `LOG.md` and `ARCHITECTURE.md` Decision 4. That
-answers the key question above — merging this kind of information does *not*
-compromise the clean academic PDF, because the PDF renderer simply never reads
-the field.
+version, code, data, visualisation, …), rendered on the web page behind a
+"Links" switch and never in the PDF, and the research page's links are now
+transcribed in (140 links at import; 143 across 89 publications now). See
+`LOG.md` and `ARCHITECTURE.md` Decision 4. That answers the key question above —
+merging this kind of information does *not* compromise the clean academic PDF,
+because the PDF renderer simply never reads the field.
 
 **Direction settled.** This repo is intended to *replace* the website's research
 page, not to sync with it. So the transcription above is a one-way import, and
@@ -139,7 +139,7 @@ there's less content (e.g., only  a few recent papers) or because less
 information needs including (e.g., no links to code repositories for papers,
 related to previous point).
 
-**Fully specified — ready to implement.** `notes/SUBSET-CV-SPEC.md` is the
+**Partly built: P0–P2 done, P3–P5 to go.** `notes/SUBSET-CV-SPEC.md` is the
 implementation brief (hand it to Claude Code as-is); `ARCHITECTURE.md` Decision 5
 has the decisions behind it. In short: a **TOML config**, kept in the
 gitignored `subsets/` folder or outside the repo (template in
@@ -172,3 +172,14 @@ it was worth: the ECB publishes the full history back to 1999
 (`eurofxref-hist.xml`), so this could be a `money.basis = "current" |
 "award-year"` option. Neither is inflation-adjusted. Awards dated before 1999
 would need another source. The P2 totals now exist, so this can be picked up.
+
+### Web page: long URLs overflow on phones
+
+At phone width (375px) long URLs and DOIs don't wrap, so the page scrolls
+horizontally. Noticed while checking #17; not yet an issue. Probably an
+`overflow-wrap: anywhere` on the monospace link text in `src/style.css`.
+
+### Open data issues
+
+- #4 — add the missing DOIs to publications.
+- #10 — the missing `official` link (see "Merging with online list of work").

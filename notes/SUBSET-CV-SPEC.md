@@ -1,11 +1,11 @@
 # Subset CVs — implementation spec
 
-**Status: final — ready to implement.** This is the brief for building the
-subset-CV feature (`TODO.md`, "Tooling for building subsets of the CV"). It is
-written for the implementer — human or Claude Code — to work from without
-further design discussion. Design rationale lives in `ARCHITECTURE.md`
-Decision 5; this document says *what to build*. Anything not decided is listed
-in §19 and is **out of scope** until decided.
+**Status: final; P0–P2 implemented (PRs #14, #15, #18), P3–P5 to go.** This is
+the brief for building the subset-CV feature (`TODO.md`, "Tooling for building
+subsets of the CV"). It is written for the implementer — human or Claude Code —
+to work from without further design discussion. Design rationale lives in
+`ARCHITECTURE.md` Decision 5; this document says *what to build*. Anything not
+decided is listed in §19 and is **out of scope** until decided.
 
 Read before starting: `ARCHITECTURE.md` (Decisions 2 and 5), `src/cv.typ`,
 `src/render_html.py`, `src/cv.schema.json`, `.claude/skills/add-cv-record/`.
@@ -51,7 +51,7 @@ author's machine, reproducibly:
    output (§14.2). The only output change in the whole feature is P0's
    deliberate one-entry data fix (`Co-I` → `CoI`).
 
-## 3. The repository today (verified facts)
+## 3. The repository before P0 (verified facts)
 
 - `src/cv.json`: `basics` + 17 `sections`. A section is **flat**
   (`type` + `entries`) or **grouped** (`groups[]`, each with `title`, `type`,
