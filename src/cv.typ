@@ -216,10 +216,18 @@
   }
 }
 
+// A subset build's summary ("12 of 112 publications · …"), set in its derived
+// data: one italic line under the heading. The full CV never has one.
+#let render-summary(x) = if "summary" in x {
+  block(above: 0em, below: 0.9em, text(size: 0.9em, style: "italic",
+    x.summary.join(" · ")))
+}
+
 #let render-publications(section) = {
   let all = json(section.source)
   for g in section.groups {
     heading(level: 2)[#g.title]
+    render-summary(g)
     let items = all.filter(p => p.at("category", default: none) == g.category).sorted(key: p => -pub-year(p))
     for (label, p) in with-labels(items, p => str(pub-year(p))) { render-pub(label, p) }
   }
@@ -288,12 +296,14 @@
 
 #for section in cv.sections {
   heading(level: 1)[#section.title]
+  render-summary(section)
   let kind = section.at("type", default: none)
   if kind == "publications" {
     render-publications(section)
   } else if "groups" in section {
     for g in section.groups {
       heading(level: 2)[#g.title]
+      render-summary(g)
       render-list(g.type, g.entries)
     }
   } else {

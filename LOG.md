@@ -223,3 +223,40 @@ Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
   the same HTML), the selection rule, every P1 config error, the output-path
   guard, and a real build from a temp-dir config leaving `git status`
   unchanged.
+
+## Subset CVs — P2: summaries and money
+
+Third phase of `notes/SUBSET-CV-SPEC.md` (§15 P2); P3–P5 stay in `TODO.md`.
+
+- **Summary lines**: `summary = ["count", "total"]` on a `[[section]]` or
+  `[[section.group]]`, or `[summary] default = [...]` for every section
+  without its own. The build writes the finished strings into the derived
+  data's new `summary` array (`cv.schema.json`); `cv.typ` and
+  `render_html.py` print it under the heading, italic, ~0.9×, joined by
+  " · ". The full CV never has one, so `make site` is unchanged.
+- **`count`**: "1 of 112 publications", or "112 publications" when nothing
+  was dropped. The noun is a publications heading's own (source) title, else
+  per type (awards, talks, people, courses), else "items"; a warning on
+  text-list/named sections.
+- **`total`**: the summed `amount` of the award (type `grant`) entries in
+  scope, subset and whole side by side ("≈ £7.0M of ≈ £12.5M total award
+  value"), `≈` and a "Converted to GBP at … of <date>." note when currencies
+  were converted, and "(N awards without a recorded amount)" plus a warning
+  for gaps. Projects never count. An explicit `total` on a section without
+  awards is an error; one from `summary.default` just skips such sections.
+- **`[money]`**: `currency` (GBP/EUR/USD), `source = "live" | "config"`,
+  `rates_date`, `[money.rates]`. Live rates are the ECB daily reference rates
+  (cross rates via EUR, six significant figures), fetched only when a total
+  needs converting; config rates are the fallback (with a warning) or, with
+  `source = "config"`, always used without any network request. Missing
+  rates, a missing currency, malformed rates and stale (90+ day) rates are
+  errors or warnings per spec §8.3/§12. `manifest.json` gains `rates`: source,
+  date, the rates used and a snippet ready to paste into the config.
+- **Settled**: the conversion note is the last element of the same summary
+  line (the renderers stay generic); `source = "config"` without
+  `[money.rates]` is an error even if nothing needs converting.
+- **Tests**: `tests/test_summary.py` (29, the ECB fetch always patched):
+  both `count` forms, single- and multi-currency totals, the partial-coverage
+  suffix, all six cells of the rates table, no fetch with `source =
+  "config"`, stale and missing-currency rates, the `[money]`/`summary`
+  config errors, and a real build through both renderers and `--strict`.

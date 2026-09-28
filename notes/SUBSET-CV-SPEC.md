@@ -449,6 +449,14 @@ tracked follow-up in `TODO.md`, not part of this spec.
 Network access is only ever attempted when a `total` needs a conversion and
 `source = "live"`. Tests never hit the network (§14).
 
+*Settled in P2:* the conversion note is the last element of the same summary
+array, so it prints on the same line after a ` · ` (renderers stay generic);
+`count`'s publications noun is the source title, not a `rename`;
+`summary.default` applies to sections only, and a `total` that comes from it
+silently skips sections without `grant` entries (an explicit one is an
+error); cross rates are kept to six significant figures, the same figures
+the manifest records.
+
 ## 9. Style (P3)
 
 | Key | Type | Default (= full CV) | Typst input |

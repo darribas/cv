@@ -60,6 +60,12 @@ command again: now it builds. Outputs land beside the config
 [SECTION="Teaching"]` prints record ids with their dates and titles;
 `src/subset.template.toml` documents every config key.
 
+A section can carry a summary line under its heading — `summary = ["count",
+"total"]` gives "12 of 112 publications" or "≈ £1.3M of ≈ £4.4M total award
+value". Totals in mixed currencies use the ECB's daily rates, fetched only
+when needed; rates written in the config's `[money.rates]` serve as the
+fallback offline (or always, with `source = "config"`).
+
 Subsets are private. `subsets/` and every `*.toml` but the template are
 gitignored, CI fails if one is ever committed, and inside the repo the build
 only writes where git ignores the path — never `docs/` (the public site) or

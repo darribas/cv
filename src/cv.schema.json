@@ -57,7 +57,8 @@
         "note": { "$ref": "#/$defs/comment" },
         "entries": { "type": "array", "items": { "$ref": "#/$defs/entry" } },
         "groups": { "type": "array", "items": { "$ref": "#/$defs/group" }, "description": "Bold sub-sections, each with its own type + entries." },
-        "source": { "type": "string", "description": "Path to a CSL-JSON file (publications sections only)." }
+        "source": { "type": "string", "description": "Path to a CSL-JSON file (publications sections only)." },
+        "summary": { "type": "array", "items": { "type": "string" }, "description": "Set only by the subset build: finished lines (counts, totals) printed under the heading, joined by ' · '. The full CV never has it." }
       },
       "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
       "additionalProperties": false
@@ -72,7 +73,8 @@
         "type": { "$ref": "#/$defs/sectionType" },
         "note": { "$ref": "#/$defs/comment" },
         "entries": { "type": "array", "items": { "$ref": "#/$defs/entry" } },
-        "category": { "type": "string", "description": "For publications groups: the CSL 'category' value to filter on." }
+        "category": { "type": "string", "description": "For publications groups: the CSL 'category' value to filter on." },
+        "summary": { "type": "array", "items": { "type": "string" }, "description": "Set only by the subset build: finished lines (counts, totals) printed under the heading, joined by ' · '. The full CV never has it." }
       },
       "patternProperties": { "^//": { "$ref": "#/$defs/comment" } },
       "additionalProperties": false

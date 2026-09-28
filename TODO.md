@@ -154,10 +154,8 @@ repo — with a snapshot of the config and a manifest so any subset can be
 rebuilt. Validation runs inside every build. Subsets are never committed and
 never published; the build, `.gitignore` and a CI tripwire all enforce it.
 
-Phases (spec §15), one PR each (P0 and P1 done — see `LOG.md`):
+Phases (spec §15), one PR each (P0–P2 done — see `LOG.md`):
 
-- **P2 — summaries + currency.** `count` and `total`; ECB rates, config rates as
-  fallback or fixed.
 - **P3 — typography.** Font/size/paper/margins/page numbers, with a hard
   font-availability check.
 - **P4 — DOCX.** `render_markdown.py` + `reference.docx` + pandoc.
@@ -171,4 +169,4 @@ rates. Converting each award at the rate of its own year would be truer to what
 it was worth: the ECB publishes the full history back to 1999
 (`eurofxref-hist.xml`), so this could be a `money.basis = "current" |
 "award-year"` option. Neither is inflation-adjusted. Awards dated before 1999
-would need another source. Pick up once the P2 totals exist.
+would need another source. The P2 totals now exist, so this can be picked up.

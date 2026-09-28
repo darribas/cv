@@ -341,11 +341,19 @@ def render_list(kind, entries):
                    for label, e in with_labels(entries, by_date))
 
 
+def render_summary(x):
+    """A subset build's summary line under a heading; the full CV has none."""
+    if "summary" not in x:
+        return ""
+    return f'<p class="summary">{esc(" · ".join(x["summary"]))}</p>'
+
+
 def render_publications(section):
     all_pubs = json.loads((SRC / section["source"]).read_text(encoding="utf-8"))
     out = []
     for g in section["groups"]:
         out.append(f'<h3 id="{slug(section["title"])}-{slug(g["title"])}">{esc(g["title"])}</h3>')
+        out.append(render_summary(g))
         items = sorted(
             (p for p in all_pubs if p.get("category") == g["category"]),
             key=pub_year, reverse=True,
@@ -367,12 +375,14 @@ def slug(title):
 def render_section(section):
     title = section["title"]
     kind = section.get("type")
-    out = [f'<section id="{slug(title)}"><h2>{esc(title)}</h2>']
+    out = [f'<section id="{slug(title)}"><h2>{esc(title)}</h2>',
+           render_summary(section)]
     if kind == "publications":
         out.append(render_publications(section))
     elif "groups" in section:
         for g in section["groups"]:
             out.append(f'<h3 id="{slug(title)}-{slug(g["title"])}">{esc(g["title"])}</h3>')
+            out.append(render_summary(g))
             out.append(render_list(g["type"], g["entries"]))
     else:
         out.append(render_list(kind, section["entries"]))
