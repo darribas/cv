@@ -435,11 +435,21 @@ def render_toc_popover():
 def render_links_switch():
     """The state half of the "Links" toggle: a visually-hidden checkbox placed
     before <main>, so style.css can drive the whole page from `#show-links:checked
-    ~ main …`. Its visible half is the <label> button in render_header(). No JS —
-    same spirit as the Sections popover. The trade-off is that the choice resets
-    on reload (there is nowhere to persist it without script); `checked` here is
-    what the page opens with."""
-    return '<input type="checkbox" id="show-links" class="visually-hidden" checked>'
+    ~ main …`. Its visible half is the <label> button in render_header(). The
+    toggle itself needs no JS — same spirit as the Sections popover; `checked`
+    here is what the page opens with.
+
+    A `?links=on|off` in the URL overrides that default, so a shared link can
+    say which view it means (SCRIPT keeps the parameter in step with the
+    switch). The script sits right after the checkbox so it runs before
+    <main> is parsed: the page never paints in the wrong state, and the jump
+    to a #fragment lands on the final layout."""
+    return ('<input type="checkbox" id="show-links" class="visually-hidden" checked>\n'
+            '<script>(() => {\n'
+            '  const v = new URLSearchParams(location.search).get("links");\n'
+            '  if (v === "on" || v === "off")\n'
+            '    document.getElementById("show-links").checked = v === "on";\n'
+            '})();</script>')
 
 
 def render_actions():
@@ -476,14 +486,24 @@ def render_footer():
     return f'<footer>{stamp}</footer>'
 
 
-# The page's only script, and optional: a permalink is a plain #fragment link
+# The page's main script, and optional: a permalink is a plain #fragment link
 # that already jumps to and highlights its item without it. This adds the copy
-# — the full URL onto the clipboard, and a brief "copied" note (style.css).
+# — the full URL onto the clipboard, and a brief "copied" note (style.css) —
+# and keeps a `?links=on|off` in the URL, and so in every copied link, in step
+# with the "Links" switch (render_links_switch reads it back on load).
 SCRIPT = """<script>
+const links = document.getElementById("show-links");
+const withLinks = href => {
+  const u = new URL(href);
+  u.searchParams.set("links", links.checked ? "on" : "off");
+  return u.href;
+};
+links.addEventListener("change", () =>
+  history.replaceState(history.state, "", withLinks(location.href)));
 document.addEventListener("click", ev => {
   const a = ev.target.closest(".permalink");
   if (!a || !navigator.clipboard) return;
-  navigator.clipboard.writeText(a.href).then(() => {
+  navigator.clipboard.writeText(withLinks(a.href)).then(() => {
     a.classList.add("copied");
     setTimeout(() => a.classList.remove("copied"), 1500);
   }, () => {});

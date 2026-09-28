@@ -301,9 +301,13 @@ section h3 {
 /* lifts the fade. The copy-to-clipboard is the page's one small script.   */
 /* ---------------------------------------------------------------------- */
 
+/* A jump to an item lands it mid-screen, faded neighbours above and below,
+   rather than tucked under the control bar: its top stops a little above the
+   middle of the viewport, which centres a typical two-to-four-line item. (Near
+   the top or bottom of the page the browser scrolls as far as it can.) */
 .entry, .named {
   position: relative;
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: calc(50vh - 1rem);
   transition: opacity 0.4s ease;
 }
 
@@ -330,6 +334,7 @@ section h3 {
    wash both tighten to share it. */
 @media (max-width: 40rem) {
   .permalink { margin-right: 0.3rem; }
+  .entry, .named { scroll-margin-top: calc(50vh - 4rem); }  /* taller items */
   :is(.entry, .named):target { --spread: 0.25rem; }
 }
 
