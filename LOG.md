@@ -223,3 +223,54 @@ Second phase of `notes/SUBSET-CV-SPEC.md` (§15 P1); P2–P5 stay in `TODO.md`.
   the same HTML), the selection rule, every P1 config error, the output-path
   guard, and a real build from a temp-dir config leaving `git status`
   unchanged.
+
+## Subset CVs — P2: summaries and money
+
+Third phase of `notes/SUBSET-CV-SPEC.md` (§15 P2); P3–P5 stay in `TODO.md`.
+
+- **Summaries**: `summary = ["count", "total"]` on a `[[section]]` or
+  `[[section.group]]`, or `[summary] default = [...]` for every section
+  without its own. The build writes the finished strings into the derived
+  data's new `summary` array (and a currency note into `summary_note`,
+  `cv.schema.json`); `cv.typ` and `render_html.py` print them in
+  parentheses after the heading's title, smaller, italic, joined by "; " —
+  no extra vertical space: "Research Income (7 of 28; ≈ £11.1M, £7.5M as
+  PI)" — and the note as a footnote (a tooltip on the
+  web page). In Typst the summary reaches the heading's show rule through a
+  `state`, so the PDF bookmarks keep the bare title; the footnote marker is
+  set small and italic like the summary.
+- **`count`**: "1 of 112", no noun; "112" when nothing was dropped, but
+  only when asked for on that section: a count from `summary.default` is
+  left out for sections kept whole. A warning on text-list/named sections.
+- **`total`**: the summed `amount` of the award (type `grant`) entries kept,
+  unlabelled, then the part held as PI: "≈ £11.1M, £7.5M as PI" (role "PI";
+  left out when none is). One `≈` and a "Converted to GBP at … of <date>."
+  footnote when currencies were converted; ", N awards without an amount"
+  plus a warning for gaps. Projects never count. An explicit `total` on a section without
+  awards is an error; one from `summary.default` just skips such sections.
+- **`[money]`**: `currency` (GBP/EUR/USD), `source = "live" | "config"`,
+  `rates_date`, `[money.rates]`. Live rates are the ECB daily reference rates
+  (cross rates via EUR, six significant figures), fetched only when a total
+  needs converting; config rates are the fallback (with a warning) or, with
+  `source = "config"`, always used without any network request. Missing
+  rates, a missing currency, malformed rates and stale (90+ day) rates are
+  errors or warnings per spec §8.3/§12. `manifest.json` gains `rates`: source,
+  date, the rates used and a snippet ready to paste into the config.
+- **Settled with the author** ("parsimony is king"): summaries sit beside the
+  heading rather than on a line of their own; no nouns; subsets show only
+  their own money, not "of" the whole; `source = "config"` without
+  `[money.rates]` is an error even if nothing needs converting.
+- **Full CV summaries** (added at the author's request): `make site` now
+  renders `build/site/cv.json`, written by `src/build_site_data.py` —
+  `src/cv.json` plus the summaries configured in the new, tracked
+  `src/summaries.json` (Research Income: "(≈ £12.5M, £7.7M as PI)",
+  with a footnote on the conversion). Its dated rates are tracked so CI
+  builds offline and reproducibly; `make rates` refreshes them from the ECB.
+  ARCHITECTURE.md Decision 5 records why.
+- **Tests**: `tests/test_summary.py` (33) and `tests/test_site_data.py` (10),
+  the ECB fetch always patched:
+  both `count` forms, single- and multi-currency totals, the partial-coverage
+  suffix, all six cells of the rates table, no fetch with `source =
+  "config"`, stale and missing-currency rates, the `[money]`/`summary`
+  config errors, and a real build through both renderers (summary beside
+  the heading, footnote, bookmarks unchanged) and `--strict`.

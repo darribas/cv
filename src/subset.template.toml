@@ -13,10 +13,11 @@
 #
 # Easier start: `make subset CONFIG=subsets/x.toml` with no file there
 # yet writes a config listing every section, group and record id; build a
-# subset by deleting lines and running the same command again. `make subset-list [SECTION="Teaching"]` prints the ids with their
-# dates and titles.
+# subset by deleting lines and running the same command again.
+# `make subset-list [SECTION="Teaching"]` prints the ids with their dates
+# and titles.
 #
-# Keys marked (P2)…(P5) belong to phases not built yet
+# Keys marked (P3)…(P5) belong to phases not built yet
 # (notes/SUBSET-CV-SPEC.md §15); using one is an error that says so.
 
 name    = "example"         # output folder + file names (darribas-cv-<name>.pdf);
@@ -37,16 +38,31 @@ title = "Curriculum Vitae"  # replaces the document heading (basics.title)
 # page_numbers = true       #   "1 of 3", centred footer
 # fallback     = "Liberation Sans"  # used, with a warning, if `font` is missing
 
-# [money]                   # (P2) for `total` summaries
-# currency   = "GBP"        #   convert award amounts to this
-# source     = "live"       #   "live" (ECB rates) | "config" (the rates below)
-# rates_date = 2026-09-24   #   required with [money.rates]
-# [money.rates]             #   1 unit of each currency = this many GBP
-# EUR = 0.87
-# USD = 0.74
+[money]                     # for `total` summaries; every key optional
+currency   = "GBP"          # the currency totals are shown in (GBP, EUR, USD)
+source     = "live"         # "live": today's ECB reference rates, fetched only
+                            #   when a total mixes currencies; these rates are
+                            #   the fallback (with a warning) if that fails.
+                            # "config": always these rates, never the network.
+rates_date = 2026-09-24     # the date of the rates below; required with them
+                            #   (a warning once it is 90+ days old)
+[money.rates]               # 1 unit of each currency = this many GBP; the
+EUR = 0.87                  #   manifest.json of a live build records the
+USD = 0.74                  #   rates it used in this form, ready to paste
 
-# [summary]                 # (P2)
-# default = []              #   metrics for every section without its own
+[summary]
+default = []                # metrics for every section without its own
+                            #   `summary` (groups only get one explicitly)
+
+# Metrics, shown in parentheses after the heading's title, joined by "; ",
+# e.g. "Research Income (7 of 28; ≈ £11.1M, £7.5M as PI)":
+#   "count" -> "7 of 28": records kept of the section's; for a whole
+#              section "28" if asked for explicitly, and nothing if it only
+#              comes from `default`
+#   "total" -> "≈ £11.1M, £7.5M as PI": the summed `amount` of the award
+#              (type grant) entries kept — whole awards, not a share — then
+#              the part from awards held as PI (if any). ≈ and a footnote
+#              "Converted to GBP at …" when currencies were converted.
 
 # ---- Sections --------------------------------------------------------------
 # Listed -> included, in the order listed; unlisted -> dropped.
@@ -66,11 +82,12 @@ rename = "Selected Publications"  # heading shown; matching still uses `title`
 ids = [                           # only these records; a grouped section's ids
   "rey2023geographic",            # may come from any of its groups, and groups
 ]                                 # left empty are dropped
-# summary = ["count"]             # (P2) "1 of 112 publications"
+summary = ["count"]               # "(1 of 112)"
 
 [[section]]
-title = "Research Income"
+title   = "Research Income"
+summary = ["count", "total"]      # "(22 of 28; ≈ £…M, £…M as PI)"
   [[section.group]]               # only these groups, in this order
   title = "Awards"                # the whole group
-  # rename, ids and (P2) summary work here as on a section. A section with
+  # rename, ids and summary work here as on a section. A section with
   # group tables takes its ids under the groups, not at section level.

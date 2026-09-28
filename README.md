@@ -60,6 +60,20 @@ command again: now it builds. Outputs land beside the config
 [SECTION="Teaching"]` prints record ids with their dates and titles;
 `src/subset.template.toml` documents every config key.
 
+A heading can carry a summary in parentheses after its title — `summary =
+["count", "total"]` on Research Income gives "Research Income (7 of 28;
+≈ £11.1M, £7.5M as PI)": records kept, then the summed award amounts and the
+part held as PI. `[summary] default = ["count"]` adds counts to every
+section that lost records. Totals in mixed currencies use the ECB's daily
+rates, fetched only when needed; rates written in the config's
+`[money.rates]` serve as the fallback offline (or always, with `source =
+"config"`).
+
+The full CV has summaries too: `src/summaries.json` picks the headings
+(Research Income: "(≈ £12.5M, £7.7M as PI)") and holds the dated
+exchange rates it uses, so the site builds offline. `make rates` refreshes
+them from the ECB.
+
 Subsets are private. `subsets/` and every `*.toml` but the template are
 gitignored, CI fails if one is ever committed, and inside the repo the build
 only writes where git ignores the path — never `docs/` (the public site) or

@@ -384,11 +384,14 @@ With no inputs/arguments both behave exactly as today.
 
 ### 8.1 Mechanism
 
+*The output format in §8.1–8.2 is the original brief; what was built is
+settled at the end of §8.3 (beside the heading, no nouns, kept figures only).*
+
 `cv.schema.json` gains `"summary": {"type": "array", "items": {"type":
 "string"}}` on `$defs/section` and `$defs/group`. The build writes
 pre-formatted strings there. Each renderer prints them as one line directly
 under the heading: italic, ~0.9× body size, parts joined by ` · `. No other
-renderer logic. The full CV never sets `summary`.
+renderer logic. `src/cv.json` never sets `summary` (but see "Full CV" below).
 
 A section whose `total` was converted also gets a final note line — appended by
 the build as the last `summary` element, rendered the same way:
@@ -423,7 +426,8 @@ Warn (not fail) if `count` is set on a section of type `text-list` or `named`.
 
 ### 8.3 Exchange rates
 
-Never committed to the repo. Two sources:
+A subset's rates are never committed to the repo (the full CV's are: see
+below). Two sources:
 
 - **Live** — ECB daily reference rates,
   `https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml`, via
@@ -448,6 +452,38 @@ tracked follow-up in `TODO.md`, not part of this spec.
 
 Network access is only ever attempted when a `total` needs a conversion and
 `source = "live"`. Tests never hit the network (§14).
+
+*Settled in P2, with the author — supersedes the format in §8.1–8.2
+("parsimony is king"):* the summary prints in parentheses after the heading's
+title, not on a line below it, parts joined by `; `:
+`Research Income (7 of 28; ≈ £11.1M, £7.5M as PI)`.
+
+- `count` has no noun: `7 of 28`, or `28` for a whole section when asked for
+  explicitly; a `count` that comes from `summary.default` is omitted for a
+  section or group kept whole.
+- `total` shows only the figures for the records kept (the count already
+  says it is a selection; the full CV carries the complete figures) and no
+  label: `≈ £11.1M`, then `, £7.5M as PI` — the part from awards whose
+  `role` is "PI", omitted if none is — then `, N award(s) without an amount`
+  if any. One `≈` leads the money when anything was converted; the
+  conversion note goes in its own `summary_note` string, printed as a
+  footnote (a tooltip in HTML). A total with no awards kept is omitted.
+- `summary.default` applies to sections only, and a `total` that comes from
+  it silently skips sections without `grant` entries (an explicit one is an
+  error); rates are needed only for the currencies of the awards kept; cross
+  rates are kept to six significant figures, the same figures the manifest
+  records.
+
+### 8.4 Full CV (added after P2, at the author's request)
+
+The full CV carries heading summaries too. `src/summaries.json` names the
+sections and their metrics (today: Research Income → `total`) and holds dated
+exchange rates (`rates_date`, `rates_source`, `rates`); `src/build_site_data.py`
+writes `build/site/cv.json` — `src/cv.json` plus the summary strings — and
+`make site` / `make preview` render that. The site build never fetches: its
+rates are tracked, refreshed on demand with `make rates` (ECB). Rates 90+ days
+old warn; a missing currency fails the build. `make watch` still renders
+`src/cv.json` directly, without summaries.
 
 ## 9. Style (P3)
 
@@ -624,8 +660,9 @@ PDF render, snapshot + manifest, `--list`, `--scaffold`, `--out`, `--strict`);
 *Done when:* identity and P1 tests pass; the author can build a real subset
 from a config outside the repo.
 
-**P2 — summaries and money.** Schema `summary`; the three-line lead-line block
-in `cv.typ` and `render_html.py`; metrics; exchange rates.
+**P2 — summaries and money.** Schema `summary`; the summary beside the
+heading in `cv.typ` and `render_html.py` (§8.3 "Settled"); metrics; exchange
+rates; then, at the author's request, the full CV's summaries (§8.4).
 
 **P3 — style.** `[style]` keys, relative heading sizes, page numbers, font check.
 
@@ -642,23 +679,25 @@ After each phase: update `LOG.md` (what was done), trim `TODO.md`, and keep
 | File | P0 | P1 | P2 | P3 | P4 | P5 |
 |---|---|---|---|---|---|---|
 | `src/cv.json` | ids, CoI | | | | | |
-| `src/cv.schema.json` | `id` | | `summary` | | | basics.required |
+| `src/cv.schema.json` | `id` | | `summary`, `summary_note` | | | basics.required |
 | `src/assign_ids.py` | new | | | | | |
 | `src/validate_cv.py` | moved | | | | | |
 | `.claude/skills/add-cv-record/*` | ids, shim | | | | | |
 | `src/build_subset.py` | | new | ✓ | ✓ | ✓ | ✓ |
 | `src/subset.template.toml` | | new | ✓ | ✓ | ✓ | ✓ |
+| `src/build_site_data.py`, `src/summaries.json` | | | new (§8.4) | | | |
 | `src/cv.typ` | | `data` | summary | style | | optional contact |
-| `src/render_html.py` | | args | summary | | | optional contact |
+| `src/render_html.py`, `src/style.css` | | args | summary | | | optional contact |
 | `src/render_markdown.py`, `src/reference.docx` | | | | | new | ✓ |
-| `Makefile` | `test`, validate | `subset` | | | | |
+| `Makefile` | `test`, validate | `subset` | site data, `rates` | | | |
 | `.github/workflows/build-site.yml` | test step | tripwire | | | (pandoc?) | |
 | `.gitignore` | | toml rules | | | | |
 | `tests/` | new | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ## 17. Acceptance (feature complete)
 
-1. `make site` output identical to before the feature (identity test).
+1. `make site` output identical to before the feature (identity test), bar
+   the full-CV summaries added deliberately in P2 (§8.4).
 2. `make test` green locally and in CI.
 3. A real config outside the repo builds PDF and DOCX, A4/Arial/11pt/page
    numbers, with count and converted-total summaries, into the config's

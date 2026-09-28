@@ -186,6 +186,15 @@ section h3 {
   margin: 1.5rem 0 0.8rem;
 }
 
+/* A subset build's summary, in parentheses after a heading's title (never
+   on the full CV). */
+.summary {
+  font-variant: normal;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.8em;
+}
+
 /* ---------------------------------------------------------------------- */
 /* Entries — mirrors cv.typ's entry() grid: label column + body            */
 /* ---------------------------------------------------------------------- */

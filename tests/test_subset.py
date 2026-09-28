@@ -1,5 +1,7 @@
 """src/build_subset.py (spec P1): config, selection, PDF, guards.
 
+The P2 summaries and exchange rates are tested in test_summary.py.
+
 Configs are written inside each test into a temporary directory — none are
 tracked, which also exercises "config and outputs outside the repo". The two
 tests that put a config inside the repo use the gitignored subsets/ folder and
@@ -387,11 +389,7 @@ class ConfigErrorTest(unittest.TestCase):
         base = sections_config(["Education"])
         for text, key, phase in [
             ('[style]\nfont = "Arial"\n' + base, "'style'", "P3"),
-            ('[money]\ncurrency = "GBP"\n' + base, "'money'", "P2"),
-            ('[summary]\ndefault = []\n' + base, "'summary'", "P2"),
             ('[header]\nemail = false\n' + base, "'email'", "P5"),
-            ('[[section]]\ntitle = "Education"\nsummary = ["count"]\n',
-             "'summary'", "P2"),
             ('formats = ["pdf", "docx"]\n' + base, "'docx'", "P4"),
         ]:
             with self.subTest(key=key):
@@ -592,6 +590,7 @@ class BuildTest(unittest.TestCase):
             self.assertEqual([(s["section"], s["kept"]) for s in m["sections"]],
                              [("Education", 3), ("Publications", 1)])
             self.assertEqual(m["warnings"], [])
+            self.assertIsNone(m["rates"])  # no summaries, nothing converted
             self.assertTrue((out / "darribas-cv-erc-2027.pdf").read_bytes()
                             .startswith(b"%PDF"))
         self.assertEqual(git_status(), before)

@@ -2,11 +2,19 @@
 """Build a subset CV: a shorter, audience-specific CV from the same data.
 
 A TOML config (see src/subset.template.toml; git ignores every *.toml but
-that template, so a config inside the repo stays untracked) names the sections to include and, optionally, the ids of the records to keep.
-The build filters the master data into a derived cv.json + publications.json
-that still validate against cv.schema.json, then runs the unchanged renderers
-over it (ARCHITECTURE.md, Decision 5; the full brief is
-notes/SUBSET-CV-SPEC.md). Renderers learn nothing about configs or ids.
+that template, so a config inside the repo stays untracked) names the
+sections to include and, optionally, the ids of the records to keep, and
+which headings carry a summary ("(7 of 28; ≈ £11.1M, £7.5M as PI)": records
+kept of the section's, then the summed award amounts and the share as PI).
+The build filters the master data into a derived cv.json +
+publications.json that still validate against cv.schema.json, writes the finished summary strings into them, then runs the
+unchanged renderers over it (ARCHITECTURE.md, Decision 5; the full brief is
+notes/SUBSET-CV-SPEC.md). Renderers learn nothing about configs or ids; they
+print a `summary` if one is there.
+
+Totals in mixed currencies are converted at the ECB's daily reference rates
+(fetched only when needed) or at rates given in the config; the manifest
+records which, in a form ready to paste into the config.
 
     make subset      CONFIG=~/cv-subsets/erc-2027.toml [OUT=dir]
     make subset-list [SECTION="Research Income"]         # record ids
@@ -29,7 +37,7 @@ read files outside its --root.
 
 Every problem — in the data, the config or the output path — stops the build
 with a message naming the file, key and value; all are reported together.
-Stdlib + the Typst binary only.
+Stdlib + the Typst binary only (and the network, for live rates).
 """
 
 import argparse
@@ -37,16 +45,20 @@ import copy
 import datetime
 import difflib
 import json
+import math
 import os
 import re
 import shutil
 import subprocess
 import sys
 import tomllib
+import urllib.request
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import validate_cv
 from assign_ids import KEY_FIELD, slugify
+from render_html import CURRENCY_SYMBOL
 
 SRC = Path(__file__).resolve().parent
 REPO = SRC.parent
@@ -59,18 +71,27 @@ NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 # Config keys by table. A key in LATER belongs to a phase not built yet: it is
 # an error that says which phase adds it, rather than being silently ignored.
-TOP_KEYS = {"name", "formats", "header", "section", "drop"}
+TOP_KEYS = {"name", "formats", "header", "money", "summary", "section", "drop"}
 HEADER_KEYS = {"title"}
-SECTION_KEYS = {"title", "rename", "ids", "group"}
-GROUP_KEYS = {"title", "rename", "ids"}
+MONEY_KEYS = {"currency", "source", "rates_date", "rates"}
+SUMMARY_KEYS = {"default"}
+SECTION_KEYS = {"title", "rename", "ids", "summary", "group"}
+GROUP_KEYS = {"title", "rename", "ids", "summary"}
 LATER = {
-    "top": {"style": "P3", "money": "P2", "summary": "P2"},
+    "top": {"style": "P3"},
     "header": {"affiliation": "P5", "email": "P5", "url": "P5"},
-    "section": {"summary": "P2"},
-    "group": {"summary": "P2"},
 }
 FORMATS = {"pdf"}
 LATER_FORMATS = {"docx": "P4", "md": "P4"}
+
+# Section summaries (spec §8): the metrics a `summary` array may name, and
+# the exchange-rate sources for `total`.
+METRICS = ("count", "total")
+UNCOUNTABLE = {"text-list", "named"}  # `count` on these warns
+SOURCES = ("live", "config")
+CODE_RE = re.compile(r"^[A-Z]{3}$")
+ECB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+STALE_DAYS = 90
 
 
 class BuildError(Exception):
@@ -155,9 +176,9 @@ def _suggest(value, choices):
     return f" — did you mean {close[0]!r}?" if close else ""
 
 
-def _keys(table, where, allowed, later, problems):
+def _keys(table, where, allowed, problems, later=None):
     for key in table:
-        if key in later:
+        if key in (later or {}):
             problems.append(f"{where}: key {key!r} is not available yet — it is "
                             f"added in phase {later[key]} of the subset-CV "
                             "feature (notes/SUBSET-CV-SPEC.md §15)")
@@ -233,12 +254,110 @@ def _ids(table, where, problems, master, section, group, what):
     return ids
 
 
+def _metrics(table, key, where, problems):
+    """Validate a `summary`-style array of metric names; None if absent/bad."""
+    if key not in table:
+        return None
+    value, at = table[key], f"{where}.{key}"
+    if not isinstance(value, list) or not all(_is(v, str) for v in value):
+        problems.append(f"{at}: expected an array of metric names "
+                        f"({', '.join(METRICS)}), got {value!r}")
+        return None
+    good = True
+    for i, v in enumerate(value):
+        if v not in METRICS:
+            problems.append(f"{at}[{i}]: unknown metric {v!r} (available: "
+                            f"{', '.join(METRICS)})" + _suggest(v, METRICS))
+            good = False
+    for v in sorted({v for v in value if value.count(v) > 1}):
+        problems.append(f"{at}: {v!r} is listed more than once")
+        good = False
+    return value if good else None
+
+
+def _is_date(value):
+    return (isinstance(value, datetime.date)
+            and not isinstance(value, datetime.datetime))
+
+
+def _money(raw, fname, problems):
+    """The [money] table, with defaults. Rates are checked for form here and
+    for completeness once the build knows which currencies it converts."""
+    money = {"currency": "GBP", "source": "live", "rates_date": None,
+             "rates": None}
+    table = raw.get("money", {})
+    where = f"{fname}: [money]"
+    if not isinstance(table, dict):
+        problems.append(f"{fname}: money: expected a table, got {table!r}")
+        return money
+    _keys(table, where, MONEY_KEYS, problems)
+
+    currency = table.get("currency", "GBP")
+    if currency in CURRENCY_SYMBOL:
+        money["currency"] = currency
+    else:
+        problems.append(f"{where}.currency: {currency!r} is not supported "
+                        f"(available: {', '.join(CURRENCY_SYMBOL)})")
+    source = table.get("source", "live")
+    if source in SOURCES:
+        money["source"] = source
+    else:
+        problems.append(f"{where}.source: {source!r} must be one of "
+                        + " or ".join(f'"{s}"' for s in SOURCES))
+
+    date = table.get("rates_date")
+    if date is not None and not _is_date(date):
+        problems.append(f"{where}.rates_date: expected a date written like "
+                        f"2026-09-24 (no quotes), got {date!r}")
+    elif date is not None:
+        money["rates_date"] = date
+
+    rates = table.get("rates")
+    if rates is None:
+        if "rates_date" in table:
+            problems.append(f"{where}: rates_date is set but there is no "
+                            "[money.rates] table for it to date")
+        if money["source"] == "config":
+            problems.append(f"{where}: source = \"config\" needs the rates "
+                            "in a [money.rates] table (with rates_date)")
+        return money
+    if not isinstance(rates, dict):
+        problems.append(f"{where}.rates: expected a [money.rates] table, got "
+                        f"{rates!r}")
+        return money
+    if not rates:
+        problems.append(f"{fname}: [money.rates] is empty — give a rate per "
+                        "currency, or remove the table")
+    if "rates_date" not in table:
+        problems.append(f"{fname}: [money.rates] needs rates_date = "
+                        "YYYY-MM-DD in [money]: the date the rates are from")
+    good = {}
+    for code, value in rates.items():
+        at = f"{fname}: [money.rates].{code}"
+        if not CODE_RE.match(code):
+            problems.append(f"{at}: the key must be a 3-letter uppercase "
+                            "currency code, such as EUR")
+        elif code == money["currency"]:
+            problems.append(f"{at}: {code} is the target currency "
+                            "(money.currency) — remove it")
+        elif not (_is(value, (int, float)) and math.isfinite(value)
+                  and value > 0):
+            problems.append(f"{at}: expected a positive number (units of "
+                            f"{money['currency']} per 1 {code}), got {value!r}")
+        else:
+            good[code] = value
+    money["rates"] = good
+    return money
+
+
 def parse_config(path, master):
     """Read and validate a config file. Returns the plan; BuildError if bad.
 
-    The plan: {"name", "formats", "header_title", "sections": [
-        {"title", "rename", "ids", "groups": None | [{"title", "rename", "ids"}]}
-    ]} — sections in output order, every title and id checked against master.
+    The plan: {"name", "formats", "header_title", "money", "summary_default",
+    "sections": [{"title", "rename", "ids", "summary",
+                  "groups": None | [{"title", "rename", "ids", "summary"}]}]}
+    — sections in output order, every title and id checked against master.
+    A `summary` of None means "not given" (a section then takes the default).
     """
     fname = path.name
     try:
@@ -249,7 +368,7 @@ def parse_config(path, master):
         raise BuildError([f"{fname}: not valid TOML: {e}"])
 
     problems = []
-    _keys(raw, fname, TOP_KEYS, LATER["top"], problems)
+    _keys(raw, fname, TOP_KEYS, problems, LATER["top"])
 
     name = raw.get("name", path.stem)
     if not (_is(name, str) and NAME_RE.match(name)):
@@ -276,12 +395,24 @@ def parse_config(path, master):
     if not isinstance(header, dict):
         problems.append(f"{fname}: header: expected a table, got {header!r}")
     else:
-        _keys(header, f"{fname}: [header]", HEADER_KEYS, LATER["header"], problems)
+        _keys(header, f"{fname}: [header]", HEADER_KEYS, problems,
+              LATER["header"])
         header_title = header.get("title")
         if header_title is not None and not _is(header_title, str):
             problems.append(f"{fname}: [header].title: must be a string, got "
                             f"{header_title!r}")
             header_title = None
+
+    money = _money(raw, fname, problems)
+    summary_default = []
+    summary = raw.get("summary", {})
+    if not isinstance(summary, dict):
+        problems.append(f"{fname}: summary: expected a [summary] table, got "
+                        f"{summary!r}")
+    else:
+        _keys(summary, f"{fname}: [summary]", SUMMARY_KEYS, problems)
+        summary_default = _metrics(summary, "default", f"{fname}: [summary]",
+                                   problems) or []
 
     if ("section" in raw) == ("drop" in raw):
         problems.append(f"{fname}: needs exactly one of [[section]] (list what to "
@@ -296,6 +427,7 @@ def parse_config(path, master):
     if problems:
         raise BuildError(problems)
     return {"name": name, "formats": formats, "header_title": header_title,
+            "money": money, "summary_default": summary_default,
             "sections": sections}
 
 
@@ -310,7 +442,8 @@ def _plan_drop(drop, fname, master, problems):
                             + _suggest(t, master.sections))
     for t in sorted({t for t in drop if drop.count(t) > 1}):
         problems.append(f"{fname}: drop: {t!r} is listed more than once")
-    return [{"title": t, "rename": None, "ids": None, "groups": None}
+    return [{"title": t, "rename": None, "ids": None, "summary": None,
+             "groups": None}
             for t in master.sections if t not in drop]
 
 
@@ -322,9 +455,10 @@ def _plan_sections(tables, fname, master, problems):
     plan, seen = [], set()
     for n, table in enumerate(tables, 1):
         where = f"{fname}: [[section]] #{n}"
-        _keys(table, where, SECTION_KEYS, LATER["section"], problems)
+        _keys(table, where, SECTION_KEYS, problems)
         title = _title(table, where, problems)
         rename = _rename(table, where, problems)
+        summary = _metrics(table, "summary", where, problems)
         if title is None:
             continue
         where = f"{where} {title!r}"
@@ -345,7 +479,7 @@ def _plan_sections(tables, fname, master, problems):
                                 "tables — put the ids under the groups they "
                                 "belong to, or drop the group tables")
         plan.append({"title": title, "rename": rename, "ids": ids,
-                     "groups": groups})
+                     "summary": summary, "groups": groups})
     return plan
 
 
@@ -363,9 +497,10 @@ def _plan_groups(tables, where, master, section, problems):
     plan, seen = [], set()
     for n, table in enumerate(tables, 1):
         gwhere = f"{where} [[section.group]] #{n}"
-        _keys(table, gwhere, GROUP_KEYS, LATER["group"], problems)
+        _keys(table, gwhere, GROUP_KEYS, problems)
         title = _title(table, gwhere, problems)
         rename = _rename(table, gwhere, problems)
+        summary = _metrics(table, "summary", gwhere, problems)
         if title is None:
             continue
         gwhere = f"{gwhere} {title!r}"
@@ -378,7 +513,8 @@ def _plan_groups(tables, where, master, section, problems):
                             f"titled {title!r}" + _suggest(title, by_title))
             continue
         ids = _ids(table, gwhere, problems, master, section, group, "group")
-        plan.append({"title": title, "rename": rename, "ids": ids})
+        plan.append({"title": title, "rename": rename, "ids": ids,
+                     "summary": summary})
     return plan
 
 
@@ -392,16 +528,24 @@ def select(plan, master):
     Listed -> included; nothing more specified -> included in full; ids given
     -> only those, in source order. Retained records are copied verbatim.
     """
+    return select_scoped(plan, master)[:3]
+
+
+def select_scoped(plan, master):
+    """select(), plus each section's scope for the summaries: a list of
+    {"plan", "src", "out", "parts": [(source group or None, kept records)],
+     "groups": [{"plan", "src", "out", "kept"}]} in output order."""
     cv = {k: copy.deepcopy(v) for k, v in master.cv.items() if k != "sections"}
     if plan["header_title"] is not None:
         cv["basics"]["title"] = plan["header_title"]
-    sections, counts, kept_pubs = [], [], set()
+    sections, counts, kept_pubs, scopes = [], [], set(), []
 
     for sp in plan["sections"]:
         src = master.sections[sp["title"]]
         wanted = set(sp["ids"]) if sp["ids"] else None
         kept = 0
         out = {}
+        scope = {"plan": sp, "src": src, "out": out, "parts": [], "groups": []}
         for key, value in src.items():
             if key == "title":
                 out[key] = sp["rename"] or value
@@ -409,7 +553,8 @@ def select(plan, master):
                 out[key] = f"{WORK_FROM_SRC}/publications.json"
             elif key == "groups":
                 chosen = sp["groups"] or [
-                    {"title": g["title"], "rename": None, "ids": None}
+                    {"title": g["title"], "rename": None, "ids": None,
+                     "summary": None}
                     for g in value]
                 by_title = {g["title"]: g for g in value}
                 out[key] = []
@@ -433,19 +578,235 @@ def select(plan, master):
                     if master.is_pubs(src):
                         kept_pubs.update(p["id"] for p in items)
                     out[key].append(new)
+                    scope["parts"].append((g, items))
+                    scope["groups"].append({"plan": gp, "src": g, "out": new,
+                                            "kept": items})
             elif key == "entries":
                 items = [e for e in value if wanted is None or e["id"] in wanted]
                 kept += len(items)
                 out[key] = copy.deepcopy(items)
+                scope["parts"].append((None, items))
             else:
                 out[key] = copy.deepcopy(value)
         sections.append(out)
+        scopes.append(scope)
         counts.append({"section": sp["title"], "heading": out["title"],
                        "kept": kept, "total": len(master.items(src))})
 
     cv["sections"] = sections
     pubs = [copy.deepcopy(p) for p in master.pubs if p["id"] in kept_pubs]
-    return cv, pubs, counts
+    return cv, pubs, counts, scopes
+
+
+# ===========================================================================
+# Summaries (spec §8): "7 of 28", "≈ £11.1M, £7.5M as PI". The build writes finished strings into the derived data's
+# `summary` arrays (and a currency note in `summary_note`); the renderers only
+# print them, in parentheses after the heading's title.
+# ===========================================================================
+
+class RatesUnavailable(Exception):
+    """The live exchange rates could not be fetched or read."""
+
+
+def fetch_ecb_rates():
+    """The ECB's daily reference rates: (date, {code: units per 1 EUR}).
+
+    The one network call in the build (tests patch it). RatesUnavailable if
+    the feed cannot be fetched or read.
+    """
+    try:
+        with urllib.request.urlopen(ECB_URL, timeout=10) as r:
+            root = ET.fromstring(r.read())
+        day = next(c for c in root.iter() if c.get("time"))
+        rates = {c.get("currency"): float(c.get("rate")) for c in day
+                 if c.get("currency")}
+        date = datetime.date.fromisoformat(day.get("time"))
+    except (OSError, ET.ParseError, StopIteration, TypeError, ValueError) as e:
+        raise RatesUnavailable(f"{type(e).__name__}: {e}") from None
+    if not rates:
+        raise RatesUnavailable("the feed lists no rates")
+    rates["EUR"] = 1.0
+    return date, rates
+
+
+def _long_date(d):
+    return f"{d.day} {d:%B %Y}"
+
+
+def _sig(x):
+    """Six significant figures: what the manifest records and the build uses,
+    so pasting the manifest's rates into a config reproduces the totals."""
+    return float(f"{x:.6g}")
+
+
+def resolve_rates(money, needed, today, warnings):
+    """Units of money.currency per 1 unit of each currency in `needed`.
+
+    Returns ({code: rate}, record for the manifest) — ({}, None) when nothing
+    needs converting, in which case nothing is fetched. BuildError if the
+    rates are unavailable or incomplete (spec §8.3).
+    """
+    if not needed:
+        return {}, None
+    target, configured = money["currency"], money["rates"]
+    hint = (f"Give fallback rates in the config — under [money]: rates_date = "
+            f"{today.isoformat()} and a [money.rates] table with "
+            + ", ".join(f"{c} = <{target} per 1 {c}>" for c in sorted(needed)))
+
+    rates = None
+    if money["source"] == "live":
+        try:
+            date, eur = fetch_ecb_rates()
+        except RatesUnavailable as e:
+            if configured is None:
+                raise BuildError([f"exchange rates: could not fetch the ECB "
+                                  f"reference rates ({e}). " + hint])
+            warnings.append(f"could not fetch the ECB reference rates ({e}); "
+                            "used the config's [money.rates] of "
+                            f"{money['rates_date']} instead")
+        else:
+            missing = sorted((needed | {target}) - eur.keys())
+            if missing:
+                raise BuildError([f"exchange rates: the ECB reference rates of "
+                                  f"{date} have no rate for "
+                                  f"{', '.join(missing)}. " + hint])
+            rates = {c: _sig(eur[target] / eur[c]) for c in sorted(needed)}
+            source, label = "ECB", f"ECB reference rates of {_long_date(date)}"
+
+    if rates is None:  # the config's rates: chosen, or the fallback
+        date = money["rates_date"]
+        missing = sorted(needed - configured.keys())
+        if missing:
+            raise BuildError([f"exchange rates: [money.rates] has no rate for "
+                              f"{c}, which in-scope awards are in" for c in missing])
+        rates = {c: configured[c] for c in sorted(needed)}
+        source = "config"
+        label = f"{money.get('label', 'exchange rates')} of {_long_date(date)}"
+        age = (today - date).days
+        if age > STALE_DAYS:
+            warnings.append(f"the exchange rates are from {date}, {age} days "
+                            f"before this build (more than {STALE_DAYS}); "
+                            + money.get("refresh", "update [money.rates] and "
+                                                   "rates_date"))
+
+    pasteable = "\n".join([f"rates_date = {date.isoformat()}", "",
+                           "[money.rates]"]
+                          + [f"{c} = {v!r}" for c, v in rates.items()])
+    record = {"source": source, "date": date.isoformat(), "currency": target,
+              "rates": rates, "note": f"Converted to {target} at {label}.",
+              "toml": pasteable + "\n"}
+    return rates, record
+
+
+def _grants(master, src, parts):
+    return [e for g, items in parts if master.kind(src, g) == "grant"
+            for e in items]
+
+
+def fmt_money(value, currency):
+    """£1.3M from a million up (one decimal), £54,761 below."""
+    symbol = CURRENCY_SYMBOL[currency]
+    if value >= 1_000_000:
+        return f"{symbol}{value / 1_000_000:.1f}M"
+    return f"{symbol}{round(value):,}"
+
+
+def _count(kept, full):
+    """"7 of 28" where records were dropped, else "28"."""
+    n, total = sum(len(i) for _, i in kept), sum(len(i) for _, i in full)
+    return f"{n} of {total}" if n != total else f"{total}"
+
+
+def _total(grants, target, rates, warnings, where):
+    """(text, converted?) for the `total` metric over the grant entries kept:
+    "≈ £11.1M, £7.5M as PI" — the summed award amounts, then the share from
+    awards held as PI (left out if none is). One ≈ covers both figures."""
+    def value(grants):
+        return sum(e["amount"]["value"] * (1 if e["amount"]["currency"] == target
+                                           else rates[e["amount"]["currency"]])
+                   for e in grants if "amount" in e)
+
+    converted = any(e["amount"]["currency"] != target
+                    for e in grants if "amount" in e)
+    parts = [("≈ " if converted else "") + fmt_money(value(grants), target)]
+    pi = [e for e in grants if e.get("role") == "PI"]
+    if pi:
+        parts.append(f"{fmt_money(value(pi), target)} as PI")
+    missing = sum("amount" not in e for e in grants)
+    if missing:
+        s = "s" * (missing != 1)
+        parts.append(f"{missing} award{s} without an amount")
+        warnings.append(f"{where}: total: {missing} award{s} without a "
+                        "recorded amount, left out of the total")
+    return ", ".join(parts), converted
+
+
+def summarise(plan, master, scopes, today, warnings):
+    """Write each summary into the derived data (scopes' "out" dicts).
+
+    A `count` that comes from summary.default is left out where nothing was
+    dropped (the heading already says it all); an explicit one always shows.
+    Returns the exchange-rate record for the manifest, or None if nothing was
+    converted. Appends to `warnings`; BuildError on a config mistake or when
+    rates are needed but unavailable.
+    """
+    jobs, problems = [], []
+    for sc in scopes:
+        sp, src = sc["plan"], sc["src"]
+        full = [(g, master.items(src, g)) for g in master.groups(src) or [None]]
+        metrics = sp["summary"] if sp["summary"] is not None \
+            else plan["summary_default"]
+        jobs.append((f"section {sp['title']!r}", sc["out"], src, None,
+                     metrics, sp["summary"] is not None, sc["parts"], full))
+        for gs in sc["groups"]:
+            if gs["plan"]["summary"] is not None:
+                g = gs["src"]
+                jobs.append((f"section {sp['title']!r}, group {g['title']!r}",
+                             gs["out"], src, g, gs["plan"]["summary"], True,
+                             [(g, gs["kept"])], [(g, master.items(src, g))]))
+
+    todo, needed = [], set()
+    target = plan["money"]["currency"]
+    for where, out, src, group, metrics, explicit, kept, full in jobs:
+        grants = _grants(master, src, full)
+        if "total" in metrics and not grants:
+            if explicit:
+                problems.append(f"{where}: summary 'total' needs award "
+                                "(type grant) entries, and there are none")
+            metrics = [m for m in metrics if m != "total"]
+        whole = sum(len(i) for _, i in kept) == sum(len(i) for _, i in full)
+        if "count" in metrics and not explicit and whole:
+            metrics = [m for m in metrics if m != "count"]
+        if "count" in metrics and {master.kind(src, g)
+                                   for g, _ in full} <= UNCOUNTABLE:
+            warnings.append(f"{where}: summary 'count' on a list of "
+                            "text-list/named entries, which are not "
+                            "separate records — shown anyway")
+        if "total" in metrics:
+            needed |= {e["amount"]["currency"]
+                       for e in _grants(master, src, kept)
+                       if "amount" in e} - {target}
+        if metrics:
+            todo.append((where, out, src, group, metrics, kept, full))
+    if problems:
+        raise BuildError(problems)
+
+    rates, record = resolve_rates(plan["money"], needed, today, warnings)
+    for where, out, src, group, metrics, kept, full in todo:
+        parts, converted = [], False
+        for m in metrics:
+            if m == "count":
+                parts.append(_count(kept, full))
+            elif _grants(master, src, kept):  # no awards kept: no total
+                text, conv = _total(_grants(master, src, kept), target,
+                                    rates, warnings, where)
+                parts.append(text)
+                converted = converted or conv
+        if parts:
+            out["summary"] = parts
+        if converted:
+            out["summary_note"] = record["note"]
+    return record
 
 
 # ===========================================================================
@@ -553,12 +914,12 @@ def _git(*args):
     return run.stdout.strip() if run.returncode == 0 else None
 
 
-def build_time():
+def build_now():
     """UTC build time; honours SOURCE_DATE_EPOCH (as Typst does)."""
     epoch = os.environ.get("SOURCE_DATE_EPOCH")
     t = (datetime.datetime.fromtimestamp(int(epoch), datetime.timezone.utc)
          if epoch else datetime.datetime.now(datetime.timezone.utc))
-    return t.replace(microsecond=0).isoformat()
+    return t.replace(microsecond=0)
 
 
 def build(config, out=None, strict=False, master=None):
@@ -568,8 +929,10 @@ def build(config, out=None, strict=False, master=None):
     plan = parse_config(config, master)
     target = resolve_out(config, plan["name"], out)
 
-    warnings = []  # none raised yet in this phase; later phases add them
-    cv, pubs, counts = select(plan, master)
+    now = build_now()
+    warnings = []
+    cv, pubs, counts, scopes = select_scoped(plan, master)
+    rates = summarise(plan, master, scopes, now.date(), warnings)
 
     schema = json.loads((SRC / "cv.schema.json").read_text(encoding="utf-8"))
     check = validate_cv.SchemaValidator(schema)
@@ -595,7 +958,7 @@ def build(config, out=None, strict=False, master=None):
                   "src", "fonts")
     manifest = {
         "name": plan["name"],
-        "built": build_time(),
+        "built": now.isoformat(),
         "config": str(config),
         "data_commit": commit,
         "dirty": None if status is None else bool(status),
@@ -603,6 +966,7 @@ def build(config, out=None, strict=False, master=None):
         "files": [name for _, name in files],
         "pages": pdf_pages(WORK / "cv.pdf") if "pdf" in plan["formats"] else None,
         "sections": counts,
+        "rates": rates,
         "warnings": warnings,
     }
 

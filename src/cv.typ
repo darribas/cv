@@ -216,10 +216,36 @@
   }
 }
 
+// A summary ("7 of 28; ≈ £11.1M, £7.5M as PI", set in the derived data)
+// prints in parentheses after the heading's title, and its currency
+// note as a footnote. It reaches the heading show rules below through this
+// state, not the heading's body, so it stays out of the PDF bookmarks.
+// Summaries are set by the subset build, and for the full CV by
+// src/build_site_data.py (make site); src/cv.json itself never has one.
+#let heading-summary = state("heading-summary", none)
+#let summary-aside = context {
+  let s = heading-summary.get()
+  if s != none {
+    h(0.35em)
+    // The footnote marker sits inside the small italic text, not the title's.
+    text(size: 11pt, weight: "regular", style: "italic")[(#s.parts.join("; "))#if s.note != none { footnote(s.note) }]
+  }
+}
+#let summarised-heading(level, x) = {
+  if "summary" in x {
+    heading-summary.update((parts: x.summary,
+                            note: x.at("summary_note", default: none)))
+    heading(level: level)[#x.title]
+    heading-summary.update(none)
+  } else {
+    heading(level: level)[#x.title]
+  }
+}
+
 #let render-publications(section) = {
   let all = json(section.source)
   for g in section.groups {
-    heading(level: 2)[#g.title]
+    summarised-heading(2, g)
     let items = all.filter(p => p.at("category", default: none) == g.category).sorted(key: p => -pub-year(p))
     for (label, p) in with-labels(items, p => str(pub-year(p))) { render-pub(label, p) }
   }
@@ -253,14 +279,14 @@
 //   - comfortable space BELOW the rule -> before the section's items
 #show heading.where(level: 1): it => block(above: 1.7em, below: 0.8em, stack(
   spacing: 0.3em,
-  text(size: 14pt, weight: "bold")[#smallcaps(it.body)],
+  text(size: 14pt, weight: "bold")[#smallcaps(it.body)#summary-aside],
   line(length: 100%, stroke: 0.5pt),
 ))
 
 // Sub-section heading (e.g. Awards within Research Income): room above so it
 // doesn't crowd the section rule, and a little gap before its own items.
 #show heading.where(level: 2): it => block(above: 1.05em, below: 0.7em,
-  text(size: 13pt, weight: "bold")[#it.body],
+  text(size: 13pt, weight: "bold")[#it.body#summary-aside],
 )
 
 // ===========================================================================
@@ -287,13 +313,13 @@
 // ===========================================================================
 
 #for section in cv.sections {
-  heading(level: 1)[#section.title]
+  summarised-heading(1, section)
   let kind = section.at("type", default: none)
   if kind == "publications" {
     render-publications(section)
   } else if "groups" in section {
     for g in section.groups {
-      heading(level: 2)[#g.title]
+      summarised-heading(2, g)
       render-list(g.type, g.entries)
     }
   } else {
