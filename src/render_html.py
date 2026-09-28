@@ -341,19 +341,23 @@ def render_list(kind, entries):
                    for label, e in with_labels(entries, by_date))
 
 
-def render_summary(x):
-    """A subset build's summary line under a heading; the full CV has none."""
+def heading_text(x):
+    """A heading's title, plus a subset build's summary in parentheses after
+    it (and its currency note as a tooltip). The full CV has no summaries."""
     if "summary" not in x:
-        return ""
-    return f'<p class="summary">{esc(" · ".join(x["summary"]))}</p>'
+        return esc(x["title"])
+    note = x.get("summary_note")
+    tip = f' title="{esc(note)}"' if note else ""
+    mark = "*" if note else ""
+    return (f'{esc(x["title"])} <span class="summary"{tip}>'
+            f'({esc(" · ".join(x["summary"]))}){mark}</span>')
 
 
 def render_publications(section):
     all_pubs = json.loads((SRC / section["source"]).read_text(encoding="utf-8"))
     out = []
     for g in section["groups"]:
-        out.append(f'<h3 id="{slug(section["title"])}-{slug(g["title"])}">{esc(g["title"])}</h3>')
-        out.append(render_summary(g))
+        out.append(f'<h3 id="{slug(section["title"])}-{slug(g["title"])}">{heading_text(g)}</h3>')
         items = sorted(
             (p for p in all_pubs if p.get("category") == g["category"]),
             key=pub_year, reverse=True,
@@ -375,14 +379,12 @@ def slug(title):
 def render_section(section):
     title = section["title"]
     kind = section.get("type")
-    out = [f'<section id="{slug(title)}"><h2>{esc(title)}</h2>',
-           render_summary(section)]
+    out = [f'<section id="{slug(title)}"><h2>{heading_text(section)}</h2>']
     if kind == "publications":
         out.append(render_publications(section))
     elif "groups" in section:
         for g in section["groups"]:
-            out.append(f'<h3 id="{slug(title)}-{slug(g["title"])}">{esc(g["title"])}</h3>')
-            out.append(render_summary(g))
+            out.append(f'<h3 id="{slug(title)}-{slug(g["title"])}">{heading_text(g)}</h3>')
             out.append(render_list(g["type"], g["entries"]))
     else:
         out.append(render_list(kind, section["entries"]))

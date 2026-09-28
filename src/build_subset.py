@@ -4,7 +4,7 @@
 A TOML config (see src/subset.template.toml; git ignores every *.toml but
 that template, so a config inside the repo stays untracked) names the
 sections to include and, optionally, the ids of the records to keep, and
-which sections carry a summary line ("12 of 112 publications", "≈ £1.3M of
+which headings carry a summary ("12 of 112 publications", "≈ £1.3M of
 ≈ £4.4M total award value"). The build filters the master data into a
 derived cv.json + publications.json that still validate against
 cv.schema.json, writes the finished summary strings into them, then runs the
@@ -605,7 +605,8 @@ def select_scoped(plan, master):
 # ===========================================================================
 # Summaries (spec §8): "12 of 112 publications", "≈ £1.3M of ≈ £4.4M total
 # award value". The build writes finished strings into the derived data's
-# `summary` arrays; the renderers only print them under the heading.
+# `summary` arrays (and a currency note in `summary_note`); the renderers only
+# print them, in parentheses after the heading's title.
 # ===========================================================================
 
 class RatesUnavailable(Exception):
@@ -760,6 +761,8 @@ def _total(kept, full, target, rates, warnings, where):
 def summarise(plan, master, scopes, today, warnings):
     """Write each summary into the derived data (scopes' "out" dicts).
 
+    A `count` that comes from summary.default is left out where nothing was
+    dropped (the heading already says it all); an explicit one always shows.
     Returns the exchange-rate record for the manifest, or None if nothing was
     converted. Appends to `warnings`; BuildError on a config mistake or when
     rates are needed but unavailable.
@@ -788,6 +791,9 @@ def summarise(plan, master, scopes, today, warnings):
                 problems.append(f"{where}: summary 'total' needs award "
                                 "(type grant) entries, and there are none")
             metrics = [m for m in metrics if m != "total"]
+        whole = sum(len(i) for _, i in kept) == sum(len(i) for _, i in full)
+        if "count" in metrics and not explicit and whole:
+            metrics = [m for m in metrics if m != "count"]
         if "count" in metrics and {master.kind(src, g)
                                    for g, _ in full} <= UNCOUNTABLE:
             warnings.append(f"{where}: summary 'count' on a list of "
@@ -813,9 +819,9 @@ def summarise(plan, master, scopes, today, warnings):
                                     rates, warnings, where)
                 parts.append(text)
                 converted = converted or conv
-        if converted:
-            parts.append(record["note"])
         out["summary"] = parts
+        if converted:
+            out["summary_note"] = record["note"]
     return record
 
 

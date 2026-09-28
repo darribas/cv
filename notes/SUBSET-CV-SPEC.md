@@ -449,9 +449,12 @@ tracked follow-up in `TODO.md`, not part of this spec.
 Network access is only ever attempted when a `total` needs a conversion and
 `source = "live"`. Tests never hit the network (§14).
 
-*Settled in P2:* the conversion note is the last element of the same summary
-array, so it prints on the same line after a ` · ` (renderers stay generic);
-`count`'s publications noun is the source title, not a `rename`;
+*Settled in P2* (with the author, to save space): the summary prints in
+parentheses after the heading's title, not on a line below it, and the
+conversion note goes in its own `summary_note` string, printed as a footnote
+(a tooltip in HTML), not as a `summary` element; a `count` that comes from
+`summary.default` is omitted for a section or group kept whole (an explicit
+one still shows "112 publications"); `count`'s publications noun is the source title, not a `rename`;
 `summary.default` applies to sections only, and a `total` that comes from it
 silently skips sections without `grant` entries (an explicit one is an
 error); cross rates are kept to six significant figures, the same figures

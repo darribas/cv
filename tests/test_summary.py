@@ -8,11 +8,13 @@ real data. The ECB fetch is always patched: tests never touch the network.
 import datetime
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tomllib
 import unittest
+import zlib
 from unittest import mock
 
 from support import REPO, SRC, load
@@ -81,11 +83,17 @@ class Run:
             self.record = build_subset.summarise(self.plan, master, scopes,
                                                  today, self.warnings)
 
-    def summary(self, title, group=None):
+    def heading(self, title, group=None):
         s = next(s for s in self.cv["sections"] if s["title"] == title)
         if group is not None:
             s = next(g for g in s["groups"] if g["title"] == group)
-        return s.get("summary")
+        return s
+
+    def summary(self, title, group=None):
+        return self.heading(title, group).get("summary")
+
+    def note(self, title, group=None):
+        return self.heading(title, group).get("summary_note")
 
 
 def errors(text, master=FIXTURE, **kw):
@@ -122,9 +130,8 @@ class CountTest(unittest.TestCase):
             ids = ["rey2023geographic"]
         ''', master=MASTER)
         self.assertEqual(r.summary("Publications"), [f"1 of {n} publications"])
-        r = Run('[summary]\ndefault = ["count"]\n'
-                '[[section]]\ntitle = "Publications"\nrename = "Papers"\n',
-                master=MASTER)
+        r = Run('[[section]]\ntitle = "Publications"\nrename = "Papers"\n'
+                'summary = ["count"]\n', master=MASTER)
         # The noun is the source title, whatever the heading is renamed to.
         self.assertEqual(r.summary("Papers"), [f"{n} publications"])
 
@@ -151,15 +158,32 @@ class CountTest(unittest.TestCase):
             default = ["count"]
             [[section]]
             title = "Talks"
+            ids = ["t0", "t2"]
             [[section]]
             title = "Staff"
             summary = []
             [[section]]
             title = "Research Income"
+              [[section.group]]
+              title = "Awards"
         ''')
-        self.assertEqual(r.summary("Talks"), ["3 talks"])
+        self.assertEqual(r.summary("Talks"), ["2 of 3 talks"])
         self.assertIsNone(r.summary("Staff"))  # its own empty summary wins
+        self.assertEqual(r.summary("Research Income"), ["2 of 3 items"])
         self.assertIsNone(r.summary("Research Income", "Awards"))
+
+    def test_default_count_omitted_for_whole_sections(self):
+        r = Run('''
+            [summary]
+            default = ["count"]
+            [[section]]
+            title = "Talks"
+            [[section]]
+            title = "Staff"
+            summary = ["count"]
+        ''')
+        self.assertIsNone(r.summary("Talks"))  # nothing dropped: no summary
+        self.assertEqual(r.summary("Staff"), ["1 person"])  # explicit: shown
 
     def test_count_on_named_warns(self):
         r = Run('[[section]]\ntitle = "Languages"\nsummary = ["count"]\n')
@@ -178,6 +202,7 @@ class TotalTest(unittest.TestCase):
         ''')
         self.assertEqual(r.summary("Home Grants"),
                          ["2 of 3 awards", "£66,761 of £1.3M total award value"])
+        self.assertIsNone(r.note("Home Grants"))
         self.assertIsNone(r.record)
         r.fetch.assert_not_called()  # nothing to convert, so no network
 
@@ -193,9 +218,10 @@ class TotalTest(unittest.TestCase):
             ids = ["m2"]
         ''')
         # €100,000 × 0.9; the whole: £1,000,000 + £90,000 + $50,000 × 0.8.
-        self.assertEqual(r.summary("Mixed Grants"), [
-            "≈ £90,000 of ≈ £1.1M total award value",
-            "Converted to GBP at exchange rates of 24 September 2026."])
+        self.assertEqual(r.summary("Mixed Grants"),
+                         ["≈ £90,000 of ≈ £1.1M total award value"])
+        self.assertEqual(r.note("Mixed Grants"), "Converted to GBP at "
+                         "exchange rates of 24 September 2026.")
         self.assertEqual(r.record["rates"], {"EUR": 0.9, "USD": 0.8})
         self.assertEqual(r.warnings, [])
 
@@ -234,9 +260,9 @@ class TotalTest(unittest.TestCase):
             [[section]]
             title = "Home Grants"
         ''')
-        self.assertEqual(r.summary("Talks"), ["3 talks"])
-        self.assertEqual(r.summary("Home Grants"),
-                         ["3 awards", "£1.3M total award value"])
+        self.assertIsNone(r.summary("Talks"))
+        # Whole section: the default count is left out, the total is not.
+        self.assertEqual(r.summary("Home Grants"), ["£1.3M total award value"])
 
     def test_money_format(self):
         fmt = build_subset.fmt_money
@@ -260,9 +286,9 @@ class RatesTableTest(unittest.TestCase):
 
     def assert_used(self, r, expected):
         figure, source = expected
-        line, note = r.summary("Mixed Grants")
+        (line,) = r.summary("Mixed Grants")
         self.assertTrue(line.startswith(figure), line)
-        self.assertEqual(note, f"Converted to GBP at {source}.")
+        self.assertEqual(r.note("Mixed Grants"), f"Converted to GBP at {source}.")
 
     def test_live_no_rates_reachable(self):
         r = Run(self.SECTION)
@@ -315,9 +341,9 @@ class RatesTest(unittest.TestCase):
         r = Run('[money]\ncurrency = "EUR"\n'
                 '[[section]]\ntitle = "Home Grants"\nsummary = ["total"]\n')
         # £1,266,761.4 at €1/0.85 per £.
-        self.assertEqual(r.summary("Home Grants"), [
-            "≈ €1.5M total award value",
-            "Converted to EUR at ECB reference rates of 26 September 2026."])
+        self.assertEqual(r.summary("Home Grants"), ["≈ €1.5M total award value"])
+        self.assertEqual(r.note("Home Grants"), "Converted to EUR at ECB "
+                         "reference rates of 26 September 2026.")
 
     def test_stale_rates_warn(self):
         section = '[[section]]\ntitle = "Mixed Grants"\nsummary = ["total"]\nids = ["m2"]\n'
@@ -399,6 +425,20 @@ class MoneyConfigErrorTest(unittest.TestCase):
         self.assertIn("more than once", cm.exception.problems[0])
 
 
+def pdf_bookmarks(pdf):
+    """The PDF outline's titles (Typst writes them as plain literal strings
+    in compressed object streams)."""
+    data = pdf.read_bytes()
+    chunks = [data]
+    for m in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+        try:
+            chunks.append(zlib.decompress(m.group(1)))
+        except zlib.error:
+            pass
+    return [t.decode("latin-1") for c in chunks
+            for t in re.findall(rb"/Title\s*\(((?:[^()\\]|\\.)*)\)", c)]
+
+
 def render_html(data, out):
     subprocess.run([sys.executable, str(SRC / "render_html.py"), "--data",
                     str(data), "--out", str(out)], check=True,
@@ -440,12 +480,13 @@ class BuildTest(unittest.TestCase):
             out = c.dir / "money"
             cv = json.loads((out / "cv.json").read_text(encoding="utf-8"))
             summary = cv["sections"][0]["summary"]
+            self.assertEqual(len(summary), 2)
             self.assertEqual(summary[0], "2 of 28 items")
             # £6,788,641 + €250,000 × 0.85 of the whole Awards group.
             self.assertRegex(summary[1], r"^≈ £7\.0M of ≈ £\d+\.\dM total "
                                          r"award value$")
-            self.assertEqual(summary[2], "Converted to GBP at exchange rates "
-                                         "of 1 June 2025.")
+            self.assertEqual(cv["sections"][0]["summary_note"],
+                             "Converted to GBP at exchange rates of 1 June 2025.")
             m = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(m["rates"]["source"], "config")
             self.assertEqual(m["rates"]["rates"], {"EUR": 0.85, "USD": 0.75})
@@ -455,12 +496,19 @@ class BuildTest(unittest.TestCase):
             self.assertIn("warning:", run.stderr)
 
             html = render_html(out / "cv.json", c.dir / "html")
-            self.assertIn('<p class="summary">2 of 28 items · ≈ £7.0M', html)
+            self.assertIn('<h2>Research Income <span class="summary" title='
+                          '"Converted to GBP at exchange rates of 1 June 2025.">'
+                          '(2 of 28 items · ≈ £7.0M', html)
+            pdf = out / "darribas-cv-money.pdf"
+            # In the heading line, not the PDF bookmark: that is the title.
+            self.assertEqual(pdf_bookmarks(pdf), ["Awards", "Research Income"])
             if shutil.which("pdftotext"):
-                text = subprocess.run(
-                    ["pdftotext", str(out / "darribas-cv-money.pdf"), "-"],
-                    capture_output=True, text=True, check=True).stdout
-                self.assertIn("2 of 28 items", text)
+                text = subprocess.run(["pdftotext", str(pdf), "-"],
+                                      capture_output=True, text=True,
+                                      check=True).stdout
+                self.assertIn("Research Income (2 of 28 items", text)
+                self.assertIn("Converted to GBP at exchange rates of 1 June "
+                              "2025.", text)  # the footnote
 
             strict = self.build(c, "--strict", "--out", c.dir / "strict")
             self.assertEqual(strict.returncode, 1)

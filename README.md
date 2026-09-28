@@ -60,9 +60,10 @@ command again: now it builds. Outputs land beside the config
 [SECTION="Teaching"]` prints record ids with their dates and titles;
 `src/subset.template.toml` documents every config key.
 
-A section can carry a summary line under its heading — `summary = ["count",
-"total"]` gives "12 of 112 publications" or "≈ £1.3M of ≈ £4.4M total award
-value". Totals in mixed currencies use the ECB's daily rates, fetched only
+A heading can carry a summary in parentheses after its title — `summary =
+["count", "total"]` gives "(12 of 112 publications)" or "(≈ £1.3M of ≈ £4.4M
+total award value)"; `[summary] default = ["count"]` adds counts to every
+section that lost records. Totals in mixed currencies use the ECB's daily rates, fetched only
 when needed; rates written in the config's `[money.rates]` serve as the
 fallback offline (or always, with `source = "config"`).
 
