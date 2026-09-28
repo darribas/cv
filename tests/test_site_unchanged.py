@@ -1,4 +1,6 @@
-"""Ids never reach the output: `make site` is identical with and without them.
+"""Ids change nothing but the web page's per-item links: the PDF is identical
+with and without them, and the HTML differs only by each item's `id` attribute
+and permalink glyph (issue #17).
 
 Both builds run in this test, side by side in temp copies of the repo — never
 against the committed docs/, whose PDF embeds its build time and date (spec
@@ -8,6 +10,7 @@ the fixed date), so the PDFs can be compared byte for byte.
 """
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -18,6 +21,14 @@ from pathlib import Path
 from support import copy_repo, strip_ids
 
 FIXED_EPOCH = "1767225600"  # 2026-01-01T00:00:00Z
+
+# What render_html.anchor() adds for a record with an id.
+_ANCHOR = re.compile(rb'(<div class="(?:entry|named)") id="[^"]*">'
+                     rb'<a class="permalink" [^>]*>.*?</a>')
+
+
+def without_anchors(html):
+    return _ANCHOR.sub(rb"\1>", html)
 
 
 class SiteUnchangedByIdsTest(unittest.TestCase):
@@ -41,9 +52,12 @@ class SiteUnchangedByIdsTest(unittest.TestCase):
                        check=True, capture_output=True, cwd=root)
         return (root / "docs" / "index.html").read_bytes()
 
-    def test_html_identical(self):
-        self.assertEqual(self.render_html(self.with_ids),
-                         self.render_html(self.without_ids))
+    def test_html_differs_only_by_anchors(self):
+        with_ids = self.render_html(self.with_ids)
+        # sanity: the stripped copy does lose its cv.json anchors
+        self.assertIn(b'id="education-2010-phd-economics"', with_ids)
+        self.assertEqual(without_anchors(with_ids),
+                         without_anchors(self.render_html(self.without_ids)))
 
     @unittest.skipUnless(shutil.which("typst"), "typst not installed")
     def test_pdf_identical(self):

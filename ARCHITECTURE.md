@@ -213,12 +213,29 @@ ignore what they don't know.
 
 ### The toggle: a checkbox, not JavaScript
 
-The page is JS-free (the Sections popover is the native Popover API), and the
-toggle keeps it that way: a visually-hidden checkbox before `<main>`, the header
-button is its `<label>`, and `#show-links:checked ~ main .weblinks` does the
-rest. The honest cost is that the choice **resets on reload** — persisting it
-needs `localStorage`, i.e. the first script on the page. Not worth it for a
-preference that costs one click, and the trade is reversible.
+The page's controls are JS-free (the Sections popover is the native Popover
+API), and the toggle keeps it that way: a visually-hidden checkbox before
+`<main>`, the header button is its `<label>`, and `#show-links:checked ~ main
+.weblinks` does the rest. The state lives in the URL rather than in
+`localStorage`: a `?links=on|off` parameter overrides the default, and the
+page's script (see per-item links below) rewrites it as the switch flips. So a
+reload keeps the view, and a shared link — a copied permalink included — says
+which view it means. A URL without the parameter opens with the default.
+
+### Per-item links: a fragment, plus one optional script
+
+Every item renders with its record id as its HTML `id`, and a faint link glyph
+in the left margin that points at `#<id>` (issue #17). Arriving at such a URL
+is pure CSS: the item is `:target`, gets a soft wash, and `main:has(:target)`
+fades everything else back until the URL points somewhere else. The one thing
+CSS cannot do is put the link on the clipboard, so the page carries one short
+script for that (and for the `?links=` parameter above) — progressive
+enhancement: without it the glyph is still an ordinary link, and the address
+bar holds the URL to copy. The jump lands the item mid-screen, with faded
+neighbours above and below, via a half-viewport `scroll-margin-top` — CSS
+again, so it holds for page loads and back/forward as well as clicks. The record
+ids were built to be permanent (Decision 5), which is what makes them safe to
+publish as URLs.
 
 Default is **on**: the extras are the reason the web version exists; someone who
 wants the austere version has the PDF button right there.

@@ -37,6 +37,10 @@
   --fg-muted: #55524d;
   --rule: #cfc9bd;
   --link: #00004d;
+  /* the linked item's wash (issue #17): a whisper of the link colour, so it
+     follows the theme without a second pair of values */
+  --target: color-mix(in srgb, var(--link) 8%, transparent);
+  --target-flash: color-mix(in srgb, var(--link) 22%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -285,6 +289,106 @@ section h3 {
   outline-offset: 2px;
 }
 
+/* ---------------------------------------------------------------------- */
+/* Permalinks + the linked item (issue #17)                                */
+/*                                                                         */
+/* Every item carries its record id as an HTML id, and a faint link glyph  */
+/* in the left margin — shown on hover or keyboard focus (always, dimly,   */
+/* on touch screens), so it is there when wanted and out of the way        */
+/* otherwise. Following it, or arriving with a #id URL, makes the item     */
+/* :target: it gets a soft wash, and everything else fades back while the  */
+/* URL points at it. Following any other anchor (e.g. a Sections link)     */
+/* lifts the fade. The copy-to-clipboard is the page's one small script.   */
+/* ---------------------------------------------------------------------- */
+
+/* A jump to an item lands it mid-screen, faded neighbours above and below,
+   rather than tucked under the control bar: its top stops a little above the
+   middle of the viewport, which centres a typical two-to-four-line item. (Near
+   the top or bottom of the page the browser scrolls as far as it can.) */
+.entry, .named {
+  position: relative;
+  scroll-margin-top: calc(50vh - 1rem);
+  transition: opacity 0.4s ease;
+}
+
+.permalink {
+  position: absolute;
+  right: 100%;
+  top: 0.3em;
+  margin-right: 0.6rem;  /* clear of the :target wash's 0.5rem spread */
+  padding: 0.1rem;
+  display: flex;
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+:is(.entry, .named):hover > .permalink,
+:is(.entry, .named):target > .permalink,
+.permalink:focus-visible { opacity: 0.75; }
+.permalink:hover { opacity: 1; color: var(--link); }
+@media (hover: none) {
+  .permalink { opacity: 0.35; }
+}
+/* Phones: <main>'s 1.25rem side padding is the whole margin, so glyph and
+   wash both tighten to share it. */
+@media (max-width: 40rem) {
+  .permalink { margin-right: 0.3rem; }
+  .entry, .named { scroll-margin-top: calc(50vh - 4rem); }  /* taller items */
+  :is(.entry, .named):target { --spread: 0.25rem; }
+}
+
+/* the script's confirmation: a small pill above the glyph, fading out */
+.permalink.copied { opacity: 1; color: var(--link); }
+.permalink.copied::after {
+  content: "copied";
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  margin-bottom: 0.2rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 3px;
+  background: var(--link);
+  color: var(--bg);
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  white-space: nowrap;
+  animation: copied 1.5s ease forwards;
+}
+@keyframes copied {
+  0%, 60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+:is(.entry, .named):target {
+  border-radius: 3px;
+  background: var(--target);
+  box-shadow: 0 0 0 var(--spread, 0.5rem) var(--target);
+  animation: target-flash 1.2s ease-out;
+}
+@keyframes target-flash {
+  from {
+    background: var(--target-flash);
+    box-shadow: 0 0 0 var(--spread, 0.5rem) var(--target-flash);
+  }
+}
+
+/* Everything else fades back, still readable. A from-only keyframe animates
+   *to* the declared opacity, so the fade also plays when the page opens on a
+   #id URL (a transition would not); the transition above covers the way back. */
+main:has(:is(.entry, .named):target)
+  :is(header, h2, h3, .entry, .named, footer):not(:target) {
+  opacity: 0.4;
+  animation: fade-back 0.6s ease-out;
+}
+@keyframes fade-back {
+  from { opacity: 1; }
+}
+header, h2, h3, footer { transition: opacity 0.4s ease; }
+
 footer {
   margin-top: 3rem;
   color: var(--fg-muted);
@@ -332,4 +436,7 @@ footer {
 @media print {
   .header-actions { display: none; }
   .weblinks { display: none !important; }
+  .permalink { display: none; }
+  main :is(header, h2, h3, .entry, .named, footer) { opacity: 1 !important; }
+  :is(.entry, .named):target { background: none; box-shadow: none; }
 }
