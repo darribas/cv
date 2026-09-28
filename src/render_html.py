@@ -141,9 +141,33 @@ def pub_year(p):
     return p["issued"]["date-parts"][0][0]
 
 
-def entry(label, body):
-    """A CV row: label column + body, mirroring cv.typ's entry() grid."""
-    return (f'<div class="entry"><div class="date">{esc(label)}</div>'
+# A chain-link glyph, stroked in currentColor so it follows the theme.
+LINK_ICON = ('<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true" '
+             'fill="none" stroke="currentColor" stroke-width="2" '
+             'stroke-linecap="round" stroke-linejoin="round">'
+             '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/>'
+             '<path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>')
+
+
+def anchor(rid):
+    """A record's id attribute and its permalink (issue #17): the record's
+    permanent id becomes a #fragment, so any single item can be linked to.
+    Following one highlights the item (`:target` in style.css); the page's one
+    script also copies the link (PAGE). An item without an id — only possible
+    in hand-built data, the schema requires one — just renders without."""
+    if not rid:
+        return "", ""
+    return (f' id="{esc(rid)}"',
+            f'<a class="permalink" href="#{esc(rid)}" title="Copy link to this item" '
+            f'aria-label="Link to this item">{LINK_ICON}</a>')
+
+
+def entry(label, body, rid=None):
+    """A CV row: label column + body, mirroring cv.typ's entry() grid. The
+    permalink is absolutely positioned into the left margin, so it takes no
+    grid cell."""
+    attr, link = anchor(rid)
+    return (f'<div class="entry"{attr}>{link}<div class="date">{esc(label)}</div>'
             f'<div class="body">{body}</div></div>')
 
 
@@ -181,25 +205,26 @@ def render_education(label, e):
         body += f'<br><span class="small">Supervisor: {esc(e["supervisor"])}</span>'
     if "committee" in e:
         body += f'<br><span class="small">Committee: {esc(e["committee"])}</span>'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_positions(label, e):
     body = esc(e["role"])
     if "organisation" in e:
         body += f', {esc(e["organisation"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_editorial(label, e):
-    return entry(label, f'{esc(e["role"])}, <em>{esc(e["journal"])}</em>')
+    return entry(label, f'{esc(e["role"])}, <em>{esc(e["journal"])}</em>',
+                 e.get("id"))
 
 
 def render_awards(label, e):
     body = f'<em>{esc(e["title"])}</em>'
     if "detail" in e:
         body += f' {esc(e["detail"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_grant(label, e):
@@ -214,7 +239,7 @@ def render_grant(label, e):
         body += f' {esc(e["period"])}.'
     if "amount" in e:
         body += f' {esc(fmt_amount(e["amount"]))}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_project(label, e):
@@ -230,7 +255,7 @@ def render_project(label, e):
         parts.append(f'Sponsor: {esc(e["sponsor"])}')
     if "funding" in e:
         parts.append(esc(e["funding"]))
-    return entry(label, ". ".join(parts) + ".")
+    return entry(label, ". ".join(parts) + ".", e.get("id"))
 
 
 def render_visits(label, e):
@@ -239,21 +264,21 @@ def render_visits(label, e):
         parts.append(esc(e["location"]))
     if "role" in e:
         parts.append(esc(e["role"]))
-    return entry(label, ". ".join(parts) + ".")
+    return entry(label, ". ".join(parts) + ".", e.get("id"))
 
 
 def render_talks(label, e):
     body = f'“{esc(e["title"])}”'
     if "venue" in e:
         body += f'. {esc(e["venue"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_events(label, e):
     body = f'<em>{esc(e["title"])}</em>'
     if "detail" in e:
         body += f'. {esc(e["detail"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_courses(label, e):
@@ -262,21 +287,21 @@ def render_courses(label, e):
         body += f' ({esc(e["years"])})'
     if "url" in e:
         body += f'. {weblink(e["url"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_people(label, e):
     body = esc(e["name"])
     if "detail" in e:
         body += f'. {esc(e["detail"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_textlist(label, e):
     body = esc(e["text"])
     if "url" in e:
         body += f'. {weblink(e["url"])}'
-    return entry(label, body)
+    return entry(label, body, e.get("id"))
 
 
 def render_named(e):
@@ -286,7 +311,8 @@ def render_named(e):
         body += f' — {esc(e["detail"])}'
     if "url" in e:
         body += f' {weblink(e["url"])}'
-    return f'<div class="named">{body}</div>'
+    attr, link = anchor(e.get("id"))
+    return f'<div class="named"{attr}>{link}{body}</div>'
 
 
 def render_pub(label, p):
@@ -304,7 +330,8 @@ def render_pub(label, p):
         parts.append(f'<code>{esc(p["DOI"])}</code>')
     if "URL" in p:
         parts.append(weblink(p["URL"]))
-    return entry(label, ". ".join(parts) + render_links(p.get("links")))
+    return entry(label, ". ".join(parts) + render_links(p.get("links")),
+                 p.get("id"))
 
 
 # ===========================================================================
@@ -331,7 +358,7 @@ def render_entry(kind, label, e):
     fn = RENDERERS.get(kind)
     if fn:
         return fn(label, e)
-    return entry(label, esc(e.get("text", "")))
+    return entry(label, esc(e.get("text", "")), e.get("id"))
 
 
 def render_list(kind, entries):
@@ -449,6 +476,21 @@ def render_footer():
     return f'<footer>{stamp}</footer>'
 
 
+# The page's only script, and optional: a permalink is a plain #fragment link
+# that already jumps to and highlights its item without it. This adds the copy
+# — the full URL onto the clipboard, and a brief "copied" note (style.css).
+SCRIPT = """<script>
+document.addEventListener("click", ev => {
+  const a = ev.target.closest(".permalink");
+  if (!a || !navigator.clipboard) return;
+  navigator.clipboard.writeText(a.href).then(() => {
+    a.classList.add("copied");
+    setTimeout(() => a.classList.remove("copied"), 1500);
+  }, () => {});
+});
+</script>"""
+
+
 PAGE = """<!doctype html>
 <html lang="en">
 <head>
@@ -466,6 +508,7 @@ PAGE = """<!doctype html>
 {sections}
 {footer}
 </main>
+{script}
 </body>
 </html>
 """
@@ -500,6 +543,7 @@ def main(argv=None):
         header=render_header(),
         sections=sections_html,
         footer=render_footer(),
+        script=SCRIPT,
     )
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(html, encoding="utf-8")
