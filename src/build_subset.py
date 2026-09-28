@@ -599,8 +599,7 @@ def select_scoped(plan, master):
 
 
 # ===========================================================================
-# Summaries (spec §8): "12 of 112 publications", "≈ £1.3M of ≈ £4.4M total
-# award value". The build writes finished strings into the derived data's
+# Summaries (spec §8): "7 of 28", "≈ £11.1M, £7.5M as PI". The build writes finished strings into the derived data's
 # `summary` arrays (and a currency note in `summary_note`); the renderers only
 # print them, in parentheses after the heading's title.
 # ===========================================================================

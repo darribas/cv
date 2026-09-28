@@ -384,6 +384,9 @@ With no inputs/arguments both behave exactly as today.
 
 ### 8.1 Mechanism
 
+*The output format in §8.1–8.2 is the original brief; what was built is
+settled at the end of §8.3 (beside the heading, no nouns, kept figures only).*
+
 `cv.schema.json` gains `"summary": {"type": "array", "items": {"type":
 "string"}}` on `$defs/section` and `$defs/group`. The build writes
 pre-formatted strings there. Each renderer prints them as one line directly
@@ -657,8 +660,9 @@ PDF render, snapshot + manifest, `--list`, `--scaffold`, `--out`, `--strict`);
 *Done when:* identity and P1 tests pass; the author can build a real subset
 from a config outside the repo.
 
-**P2 — summaries and money.** Schema `summary`; the three-line lead-line block
-in `cv.typ` and `render_html.py`; metrics; exchange rates.
+**P2 — summaries and money.** Schema `summary`; the summary beside the
+heading in `cv.typ` and `render_html.py` (§8.3 "Settled"); metrics; exchange
+rates; then, at the author's request, the full CV's summaries (§8.4).
 
 **P3 — style.** `[style]` keys, relative heading sizes, page numbers, font check.
 
@@ -675,23 +679,25 @@ After each phase: update `LOG.md` (what was done), trim `TODO.md`, and keep
 | File | P0 | P1 | P2 | P3 | P4 | P5 |
 |---|---|---|---|---|---|---|
 | `src/cv.json` | ids, CoI | | | | | |
-| `src/cv.schema.json` | `id` | | `summary` | | | basics.required |
+| `src/cv.schema.json` | `id` | | `summary`, `summary_note` | | | basics.required |
 | `src/assign_ids.py` | new | | | | | |
 | `src/validate_cv.py` | moved | | | | | |
 | `.claude/skills/add-cv-record/*` | ids, shim | | | | | |
 | `src/build_subset.py` | | new | ✓ | ✓ | ✓ | ✓ |
 | `src/subset.template.toml` | | new | ✓ | ✓ | ✓ | ✓ |
+| `src/build_site_data.py`, `src/summaries.json` | | | new (§8.4) | | | |
 | `src/cv.typ` | | `data` | summary | style | | optional contact |
-| `src/render_html.py` | | args | summary | | | optional contact |
+| `src/render_html.py`, `src/style.css` | | args | summary | | | optional contact |
 | `src/render_markdown.py`, `src/reference.docx` | | | | | new | ✓ |
-| `Makefile` | `test`, validate | `subset` | | | | |
+| `Makefile` | `test`, validate | `subset` | site data, `rates` | | | |
 | `.github/workflows/build-site.yml` | test step | tripwire | | | (pandoc?) | |
 | `.gitignore` | | toml rules | | | | |
 | `tests/` | new | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ## 17. Acceptance (feature complete)
 
-1. `make site` output identical to before the feature (identity test).
+1. `make site` output identical to before the feature (identity test), bar
+   the full-CV summaries added deliberately in P2 (§8.4).
 2. `make test` green locally and in CI.
 3. A real config outside the repo builds PDF and DOCX, A4/Arial/11pt/page
    numbers, with count and converted-total summaries, into the config's

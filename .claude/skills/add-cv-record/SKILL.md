@@ -210,7 +210,10 @@ a row of small pills under the entry, behind the header's "Links" switch.
    its wording: configs outside the repo depend on it staying put.
 
 Money uses `"amount": { "value": <number>, "currency": "GBP" | "EUR" | "USD" }` —
-never a hard-coded symbol; the renderer prints the symbol.
+never a hard-coded symbol; the renderer prints the symbol. A grant's `role`
+is exactly `"PI"` or `"CoI"`: the Research Income summary on the full CV
+(`src/summaries.json`) sums the amounts and the part held as `"PI"`. If
+`make site` then fails for want of an exchange rate, run `make rates`.
 
 ### 4. Validate
 

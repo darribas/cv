@@ -141,17 +141,18 @@ related to previous point).
 
 **Fully specified — ready to implement.** `notes/SUBSET-CV-SPEC.md` is the
 implementation brief (hand it to Claude Code as-is); `ARCHITECTURE.md` Decision 5
-has the decisions behind it. In short: a **TOML config**, kept outside the repo
-(template in `src/subset.template.toml`), lists the sections to include and,
+has the decisions behind it. In short: a **TOML config**, kept in the
+gitignored `subsets/` folder or outside the repo (template in
+`src/subset.template.toml`), lists the sections to include and,
 optionally, the ids of the items wanted in each; the build filters the master
 data into a derived, still-schema-valid `cv.json` + `publications.json` that the
-existing renderers consume. Sections can carry summary lines ("12 of 112
-publications", totals converted to one currency at live ECB rates, or rates
-supplied in the config when those can't be fetched); the config also sets
-typography (font, size, paper, margins, page numbers). Output is PDF (Typst) and
-DOCX (a new Markdown renderer + pandoc), written beside the config — outside the
-repo — with a snapshot of the config and a manifest so any subset can be
-rebuilt. Validation runs inside every build. Subsets are never committed and
+existing renderers consume. Headings can carry summaries ("Research Income
+(7 of 28; ≈ £11.1M, £7.5M as PI)", totals converted to one currency at live
+ECB rates, or rates supplied in the config when those can't be fetched); the
+config also sets typography (font, size, paper, margins, page numbers).
+Output is PDF (Typst) and DOCX (a new Markdown renderer + pandoc), written
+beside the config with a snapshot of the config and a manifest so any subset
+can be rebuilt. Validation runs inside every build. Subsets are never committed and
 never published; the build, `.gitignore` and a CI tripwire all enforce it.
 
 Phases (spec §15), one PR each (P0–P2 done — see `LOG.md`):
@@ -162,10 +163,11 @@ Phases (spec §15), one PR each (P0–P2 done — see `LOG.md`):
 - **P5 — header overrides.** Per-subset affiliation lines, and omitting
   email/URL.
 
-### Award-year exchange rates for subset totals
+### Award-year exchange rates for totals
 
-The subset CV's `total` summary (spec §8.3) converts every award at *today's*
-rates. Converting each award at the rate of its own year would be truer to what
+The `total` summary (spec §8.3; subsets and, since P2, the full CV's
+Research Income) converts every award at *today's* rates (the full CV's: the
+dated rates in `src/summaries.json`). Converting each award at the rate of its own year would be truer to what
 it was worth: the ECB publishes the full history back to 1999
 (`eurofxref-hist.xml`), so this could be a `money.basis = "current" |
 "award-year"` option. Neither is inflation-adjusted. Awards dated before 1999
