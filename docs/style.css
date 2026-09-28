@@ -251,6 +251,11 @@ section h3 {
 }
 #show-links:checked ~ main .weblinks { display: flex; }
 
+/* Clicking the label focuses the checkbox, and the browser scrolls focus into
+   view: absolutely positioned, that meant a jump to the top of the page
+   (issue #16). Fixed, it is always in view, so toggling keeps your place. */
+#show-links { position: fixed; top: 0; left: 0; }
+
 /* Small caps pills, deliberately quieter than the entry text they hang off. */
 .weblink {
   font-size: 0.72rem;
