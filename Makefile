@@ -26,10 +26,10 @@ pdf: $(PDF)
 $(PDF): $(SRC) $(SITEDATA) | docs
 	$(TYPST) compile --root . --font-path $(FONTS) --input data=../$(SITEDATA) $(SRC) $(PDF)
 
-## html: build the CV web page into docs/ (index.html, style.css, fonts/)
+## html: build the CV web page into docs/ (index.html, style.css, favicon.svg, fonts/)
 html: $(HTML)
 
-$(HTML): src/render_html.py src/style.css $(SITEDATA) | docs
+$(HTML): src/render_html.py src/style.css src/favicon.svg $(SITEDATA) | docs
 	$(PYTHON) src/render_html.py --data $(SITEDATA)
 
 $(SITEDATA): src/build_site_data.py src/build_subset.py $(JSON)
@@ -82,5 +82,5 @@ subset-list:
 ##        committed ones with `git checkout docs`)
 clean:
 	rm -rf $(PREVIEW) $(dir $(SITEDATA))
-	rm -f $(PDF) $(HTML) docs/style.css
+	rm -f $(PDF) $(HTML) docs/style.css docs/favicon.svg
 	rm -rf docs/fonts
