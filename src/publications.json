@@ -33,7 +33,12 @@
       {
         "type": "official",
         "url": "https://www.routledge.com/Geographic-Data-Science-with-Python/Rey-Arribas-Bel-Wolf/p/book/9781032445953",
-        "label": "Book"
+        "label": "Publisher's page"
+      },
+      {
+        "type": "site",
+        "url": "https://geographicdata.science/book/",
+        "label": "Open access version"
       }
     ]
   },
