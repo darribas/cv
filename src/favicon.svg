@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- A sheet with a folded corner: a heading line and two lines of text.
+       Inked in the page's link colour (the link token in style.css), light and dark. -->
+  <style>
+    .ink { fill: none; stroke: #00004d; stroke-linecap: round; stroke-linejoin: round; }
+    @media (prefers-color-scheme: dark) { .ink { stroke: #a9c4ff; } }
+  </style>
+  <path class="ink" stroke-width="2" d="M7 3h12l6 6v20H7z M19 3v6h6"/>
+  <path class="ink" stroke-width="2.5" d="M11 15h7"/>
+  <path class="ink" stroke-width="1.5" d="M11 20h10 M11 24h8"/>
+</svg>

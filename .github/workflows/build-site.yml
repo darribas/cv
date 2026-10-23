@@ -1,7 +1,7 @@
 name: Build CV site
 
-# Rebuilds docs/ (cv.pdf, index.html, style.css, fonts/) whenever the data or
-# either renderer changes, and commits the result back on pushes to main. On
+# Rebuilds docs/ (cv.pdf, index.html, style.css, favicon.svg, fonts/) whenever
+# the data or either renderer changes, and commits the result back on pushes to main. On
 # pull requests it only builds (no commit) so a broken source is caught
 # before merge. See ARCHITECTURE.md for why this needs nothing beyond the
 # Typst binary and stdlib Python — no TeXLive, no system fonts (TeX Gyre
@@ -72,7 +72,7 @@ jobs:
         # make's timestamp check can't be trusted to detect "source changed" —
         # force the rebuild rather than risk silently reusing stale output.
         run: |
-          rm -f docs/cv.pdf docs/index.html docs/style.css
+          rm -f docs/cv.pdf docs/index.html docs/style.css docs/favicon.svg
           rm -rf docs/fonts
           make site
 

@@ -517,6 +517,7 @@ PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{name} — {doctitle}</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -571,6 +572,8 @@ def main(argv=None):
 
     shutil.copy(SRC / "style.css", out / "style.css")
     print(f"Wrote {shown(out / 'style.css')}")
+    shutil.copy(SRC / "favicon.svg", out / "favicon.svg")
+    print(f"Wrote {shown(out / 'favicon.svg')}")
 
     out_fonts = out / "fonts"
     out_fonts.mkdir(exist_ok=True)
