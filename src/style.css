@@ -297,8 +297,8 @@ section h3 {
 /* on touch screens), so it is there when wanted and out of the way        */
 /* otherwise. Following it, or arriving with a #id URL, makes the item     */
 /* :target: it gets a soft wash, and everything else fades back while the  */
-/* URL points at it. Section headings work the same way (issue #26).       */
-/* Following any other anchor (e.g. a publications sub-heading)            */
+/* URL points at it; section headings carry the glyph too (issue #26).    */
+/* Following any other anchor (e.g. a Sections link)                       */
 /* lifts the fade. The copy-to-clipboard is the page's one small script.   */
 /* ---------------------------------------------------------------------- */
 
@@ -326,7 +326,7 @@ section h3 {
 }
 :is(.entry, .named, section h2):hover > .permalink,
 :is(.entry, .named):target > .permalink,
-section:target > h2 > .permalink,
+section.highlight > h2 > .permalink,
 .permalink:focus-visible { opacity: 0.75; }
 .permalink:hover { opacity: 1; color: var(--link); }
 @media (hover: none) {
@@ -337,7 +337,7 @@ section:target > h2 > .permalink,
 @media (max-width: 40rem) {
   .permalink { margin-right: 0.3rem; }
   .entry, .named { scroll-margin-top: calc(50vh - 4rem); }  /* taller items */
-  :is(.entry, .named, section):target { --spread: 0.25rem; }
+  :is(.entry, .named):target, section.highlight { --spread: 0.25rem; }
 }
 
 /* the script's confirmation: a small pill above the glyph, fading out */
@@ -367,7 +367,7 @@ h2 .permalink.copied::after { font-weight: 400; }
   100% { opacity: 0; }
 }
 
-:is(.entry, .named, section):target {
+:is(.entry, .named):target, section.highlight {
   border-radius: 3px;
   background: var(--target);
   box-shadow: 0 0 0 var(--spread, 0.5rem) var(--target);
@@ -393,13 +393,14 @@ main:has(:is(.entry, .named):target)
 }
 header, h2, h3, footer { transition: opacity 0.4s ease; }
 
-/* Section links (issue #26): each section heading carries the same glyph, and
-   a #section URL treats the whole section as the item — the same wash, and
-   the rest of the page (header, other sections, footer) fades back. The
-   Sections menu links to the same ids, so jumping there highlights too. */
+/* Section links (issue #26): each section heading carries the same glyph,
+   linking to ?highlight#section; the script then marks the section
+   .highlight — not :target, so a plain jump (the Sections menu) stays plain —
+   and it gets the item's wash while the rest of the page (header, other
+   sections, footer) fades back. */
 section h2 { position: relative; }
 section { transition: opacity 0.4s ease; }
-main:has(> section:target) :is(header, section:not(:target), footer) {
+main:has(> section.highlight) :is(header, section:not(.highlight), footer) {
   opacity: 0.4;
   animation: fade-back 0.6s ease-out;
 }
@@ -453,5 +454,5 @@ footer {
   .weblinks { display: none !important; }
   .permalink { display: none; }
   main :is(header, section, h2, h3, .entry, .named, footer) { opacity: 1 !important; }
-  :is(.entry, .named, section):target { background: none; box-shadow: none; }
+  :is(.entry, .named):target, section.highlight { background: none; box-shadow: none; }
 }
