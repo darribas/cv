@@ -149,17 +149,20 @@ LINK_ICON = ('<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="tru
              '<path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>')
 
 
-def anchor(rid):
+def anchor(rid, what="item", query=""):
     """A record's id attribute and its permalink (issue #17): the record's
     permanent id becomes a #fragment, so any single item can be linked to.
     Following one highlights the item (`:target` in style.css); the page's one
     script also copies the link (PAGE). An item without an id — only possible
-    in hand-built data, the schema requires one — just renders without."""
+    in hand-built data, the schema requires one — just renders without.
+    Section headings reuse the glyph (`what="section"`, issue #26), linking
+    with `?highlight` — the script, not :target, highlights a section, so a
+    plain #section jump (the Sections menu) does not."""
     if not rid:
         return "", ""
     return (f' id="{esc(rid)}"',
-            f'<a class="permalink" href="#{esc(rid)}" title="Copy link to this item" '
-            f'aria-label="Link to this item">{LINK_ICON}</a>')
+            f'<a class="permalink" href="{query}#{esc(rid)}" title="Copy link to this {what}" '
+            f'aria-label="Link to this {what}">{LINK_ICON}</a>')
 
 
 def entry(label, body, rid=None):
@@ -408,7 +411,8 @@ def slug(title):
 def render_section(section):
     title = section["title"]
     kind = section.get("type")
-    out = [f'<section id="{slug(title)}"><h2>{heading_text(section)}</h2>']
+    attr, link = anchor(slug(title), "section", "?highlight")
+    out = [f'<section{attr}><h2>{link}{heading_text(section)}</h2>']
     if kind == "publications":
         out.append(render_publications(section))
     elif "groups" in section:
@@ -491,18 +495,54 @@ def render_footer():
 # — the full URL onto the clipboard, and a brief "copied" note (style.css) —
 # and keeps a `?links=on|off` in the URL, and so in every copied link, in step
 # with the "Links" switch (render_links_switch reads it back on load).
+# Section links (issue #26) are `?highlight#<section>`: the script marks that
+# section `.highlight` (style.css) on load, on its own glyph's click — taken
+# over so it does not reload the page — and on back/forward; following any
+# other #link first drops `?highlight`, so a plain jump never highlights, but
+# notes it in the entry's state, so going back puts it back.
 SCRIPT = """<script>
 const links = document.getElementById("show-links");
+// a bare `?highlight`, not the `?highlight=` URLSearchParams writes
+const bare = u => u.href.replace(/([?&]highlight)=(?=&|#|$)/, "$1");
 const withLinks = href => {
   const u = new URL(href);
   u.searchParams.set("links", links.checked ? "on" : "off");
-  return u.href;
+  return bare(u);
 };
 links.addEventListener("change", () =>
   history.replaceState(history.state, "", withLinks(location.href)));
+const highlight = () => {
+  document.querySelectorAll("section.highlight")
+    .forEach(s => s.classList.remove("highlight"));
+  const u = new URL(location.href);
+  if (history.state?.highlight && !u.searchParams.has("highlight")) {
+    u.searchParams.set("highlight", "");
+    history.replaceState(history.state, "", bare(u));
+  }
+  const s = u.searchParams.has("highlight") && u.hash &&
+    document.getElementById(decodeURIComponent(u.hash.slice(1)));
+  if (s && s.tagName === "SECTION") s.classList.add("highlight");
+};
+highlight();
+addEventListener("popstate", highlight);
+addEventListener("hashchange", highlight);
 document.addEventListener("click", ev => {
-  const a = ev.target.closest(".permalink");
-  if (!a || !navigator.clipboard) return;
+  const a = ev.target.closest('a[href^="#"], a[href^="?highlight#"]');
+  if (!a) return;
+  if (a.getAttribute("href").startsWith("?highlight")) {
+    ev.preventDefault();
+    history.pushState(null, "", withLinks(a.href));
+    highlight();
+    document.getElementById(a.hash.slice(1)).scrollIntoView({ behavior: "smooth" });
+  } else if (new URL(location.href).searchParams.has("highlight")) {
+    const u = new URL(location.href);
+    u.searchParams.delete("highlight");
+    // a jump to the same #id adds no entry to come back to: just drop it
+    const same = a.hash === u.hash;
+    history.replaceState(same ? null : { highlight: true }, "", u.href);
+    if (same) highlight();
+  }
+  if (!a.classList.contains("permalink") || !navigator.clipboard) return;
   navigator.clipboard.writeText(withLinks(a.href)).then(() => {
     a.classList.add("copied");
     setTimeout(() => a.classList.remove("copied"), 1500);

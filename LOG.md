@@ -298,3 +298,19 @@ rewritten as the switch flips, so a reload or a shared link keeps the view.
 That supersedes the "resets on reload" trade-off recorded under *Web-only
 publication links* above. `test_site_unchanged` now allows the HTML to differ
 only by these anchors. `ARCHITECTURE.md` Decision 4 has the design. PR #20.
+
+## Web page: section links (#26)
+
+Sections now link the way items do (#17): each section heading carries the
+same permalink glyph in the left margin, linking to
+`?highlight#<section-id>` — e.g. `?highlight#research-income`, on the ids the
+sections already had from their titles. That URL gives the whole section the
+item's wash while the header, the other sections and the footer fade back.
+CSS cannot read a query, so the page's script applies the highlight (a
+`.highlight` class): on load, on the glyph's click (which it takes over, so
+the page does not reload, and copies with `?links=` as items do), and on
+back/forward. A plain `#<section-id>` — what the Sections menu links to —
+just jumps, as before: following any other link drops `?highlight`, noting it
+in that history entry's state so going back restores it. Without JS a
+highlight link is a plain jump. Checked in headless Chromium, light and dark,
+desktop and phone width.
