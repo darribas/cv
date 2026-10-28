@@ -149,17 +149,18 @@ LINK_ICON = ('<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="tru
              '<path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>')
 
 
-def anchor(rid):
+def anchor(rid, what="item"):
     """A record's id attribute and its permalink (issue #17): the record's
     permanent id becomes a #fragment, so any single item can be linked to.
     Following one highlights the item (`:target` in style.css); the page's one
     script also copies the link (PAGE). An item without an id — only possible
-    in hand-built data, the schema requires one — just renders without."""
+    in hand-built data, the schema requires one — just renders without.
+    Section headings reuse the glyph (`what="section"`, issue #26)."""
     if not rid:
         return "", ""
     return (f' id="{esc(rid)}"',
-            f'<a class="permalink" href="#{esc(rid)}" title="Copy link to this item" '
-            f'aria-label="Link to this item">{LINK_ICON}</a>')
+            f'<a class="permalink" href="#{esc(rid)}" title="Copy link to this {what}" '
+            f'aria-label="Link to this {what}">{LINK_ICON}</a>')
 
 
 def entry(label, body, rid=None):
@@ -408,7 +409,8 @@ def slug(title):
 def render_section(section):
     title = section["title"]
     kind = section.get("type")
-    out = [f'<section id="{slug(title)}"><h2>{heading_text(section)}</h2>']
+    attr, link = anchor(slug(title), "section")
+    out = [f'<section{attr}><h2>{link}{heading_text(section)}</h2>']
     if kind == "publications":
         out.append(render_publications(section))
     elif "groups" in section:

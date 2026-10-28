@@ -298,3 +298,15 @@ rewritten as the switch flips, so a reload or a shared link keeps the view.
 That supersedes the "resets on reload" trade-off recorded under *Web-only
 publication links* above. `test_site_unchanged` now allows the HTML to differ
 only by these anchors. `ARCHITECTURE.md` Decision 4 has the design. PR #20.
+
+## Web page: section links (#26)
+
+Sections now link the way items do (#17): each section heading carries the
+same permalink glyph in the left margin (it copies the URL, keeping
+`?links=`), and opening `#<section-id>` — e.g. `#research-income`, the ids the
+sections already had from their titles — gives the whole section the item's
+wash while the header, the other sections and the footer fade back. The
+Sections menu points at the same ids, so jumping from it highlights too;
+following any other anchor lifts it. Publication sub-headings (h3) are left
+as plain anchors. Checked in headless Chromium, light and dark, desktop and
+phone width.
